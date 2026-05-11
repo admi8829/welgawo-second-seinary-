@@ -27,6 +27,40 @@ async function startServer() {
     res.json({ success: true, students });
   });
 
+  app.get("/api/quiz", (req, res) => {
+    const sampleQuestions = [
+      {
+        id: 1,
+        question: "Which of the following is a scalar quantity?",
+        options: JSON.stringify(["Velocity", "Force", "Acceleration", "Mass"]),
+        answer: "Mass"
+      },
+      {
+        id: 2,
+        question: "I ____ to the library every Wednesday.",
+        options: JSON.stringify(["go", "goes", "going", "gone"]),
+        answer: "go"
+      },
+      {
+        id: 3,
+        question: "If 2x + 5 = 15, then x is:",
+        options: JSON.stringify(["2", "5", "10", "7.5"]),
+        answer: "5"
+      },
+      {
+        id: 4,
+        question: "The chemical symbol for Gold is:",
+        options: JSON.stringify(["Ag", "Au", "Pb", "Fe"]),
+        answer: "Au"
+      }
+    ];
+    res.json({ success: true, questions: sampleQuestions });
+  });
+
+  app.get("/quiz.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "quiz.html"));
+  });
+
   // Serve static files explicitly for simulation
   app.get("/join-free.html", (req, res) => {
     res.sendFile(path.join(process.cwd(), "join-free.html"));

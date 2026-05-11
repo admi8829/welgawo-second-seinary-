@@ -35,7 +35,45 @@ export default {
       }
     }
 
-    // 3. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
+    // 3. Quiz Data Fetching
+    if (url.pathname === "/api/quiz") {
+      try {
+        if (env.DB) {
+          const results = await env.DB.prepare(
+            "SELECT * FROM questions ORDER BY RANDOM() LIMIT 5"
+          ).all();
+          return new Response(JSON.stringify({ success: true, questions: results.results }), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        
+        // Fallback or Sample for initial setup
+        const sampleQuestions = [
+          {
+            id: 1,
+            question: "Which of the following is a scalar quantity?",
+            options: JSON.stringify(["Velocity", "Force", "Acceleration", "Mass"]),
+            answer: "Mass"
+          },
+          {
+            id: 2,
+            question: "I ____ to the library every Wednesday.",
+            options: JSON.stringify(["go", "goes", "going", "gone"]),
+            answer: "go"
+          }
+        ];
+        return new Response(JSON.stringify({ success: true, questions: sampleQuestions }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // 4. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
     // ይህ የሚሰራው በ Cloudflare Pages ላይ ብቻ ነው
     return env.ASSETS.fetch(request);
   },

@@ -21,7 +21,19 @@ The registration form uses Cloudflare D1. To make it work in production:
      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
    );
    ```
-3. Bind the database to your Pages project in `wrangler.toml` or the Cloudflare Dashboard:
+
+3. Create the `questions` table (Optional for Quiz):
+   ```sql
+   CREATE TABLE questions (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     question TEXT NOT NULL,
+     options TEXT NOT NULL, -- JSON string like '["Opt1", "Opt2"]'
+     answer TEXT NOT NULL,
+     subject TEXT
+   );
+   ```
+
+4. Bind the database to your Pages project in `wrangler.toml` or the Cloudflare Dashboard:
    - Go to **Pages** -> **Your Project** -> **Settings** -> **Functions** -> **D1 database bindings**.
    - Bind `DB` to your `smart-x-db`.
 

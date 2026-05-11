@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart X Admin | Data Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+      .mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+  </head>
+  <body class="bg-slate-50 min-h-screen p-8">
+    <div class="max-w-7xl mx-auto space-y-8">
+      
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic tracking-tight shadow-md">X</div>
+          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight uppercase">Admin Dashboard</h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <button onclick="fetchStudents()" class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            Refresh Data
+          </button>
+          <a href="/" class="text-sm text-slate-500 font-medium">View Website</a>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+        <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
+          <h2 class="font-bold text-lg">Registered Students (የተመዘገቡ ተማሪዎች)</h2>
+          <span id="countBadge" class="bg-blue-600 px-3 py-1 rounded-full text-xs font-bold">... Loading</span>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-100">
+                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Name</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Email</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Grade</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Phone</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Reg Date</th>
+              </tr>
+            </thead>
+            <tbody id="studentList">
+              <!-- Data will be injected here -->
+            </tbody>
+          </table>
+          
+          <div id="loadingState" class="p-20 text-center space-y-4">
+            <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p class="text-slate-400 text-sm font-medium">Fetching students from D1 Database...</p>
+          </div>
+
+          <div id="emptyState" class="hidden p-20 text-center space-y-2">
+            <p class="text-slate-900 font-bold text-xl">No students found yet.</p>
+            <p class="text-slate-400 text-sm">When students register, they will appear here automatically.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 text-sm text-blue-800 space-y-2">
+        <p class="font-bold">Pro Tip for Cloudflare Admin:</p>
+        <p>ይህ ዳሽቦርድ በ Cloudflare D1 ዳታቤዝ ውስጥ ያሉትን መረጃዎች በቀጥታ የሚያወጣ ነው። መረጃው እዚህ ጋር ከታየ ዳታቤዙ በትክክል እየሰራ መሆኑን ያረጋግጣል።</p>
+      </div>
+    </div>
+
+    <script>
+      async function fetchStudents() {
+        const list = document.getElementById('studentList');
+        const countBadge = document.getElementById('countBadge');
+        const loading = document.getElementById('loadingState');
+        const empty = document.getElementById('emptyState');
+
+        list.innerHTML = '';
+        loading.classList.remove('hidden');
+        empty.classList.add('hidden');
+        countBadge.textContent = 'Syncing...';
+
+        try {
+          const response = await fetch('/api/admin/students');
+          const data = await response.json();
+          
+          loading.classList.add('hidden');
+
+          if (!data.success || !data.students || data.students.length === 0) {
+            empty.classList.remove('hidden');
+            countBadge.textContent = '0 Total';
+            return;
+          }
+
+          countBadge.textContent = `${data.students.length} Total`;
+          
+          data.students.forEach(s => {
+            const row = document.createElement('tr');
+            row.className = 'border-b border-slate-50 hover:bg-slate-50 transition-colors';
+            row.innerHTML = `
+              <td class="px-6 py-4 font-bold text-slate-900">${s.name}</td>
+              <td class="px-6 py-4 text-slate-500">${s.email}</td>
+              <td class="px-6 py-4"><span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">Grade ${s.grade}</span></td>
+              <td class="px-6 py-4 font-medium text-slate-700">+251 ${s.phone}</td>
+              <td class="px-6 py-4 text-slate-400 text-xs mono">${s.created_at || 'N/A'}</td>
+            `;
+            list.appendChild(row);
+          });
+        } catch (err) {
+          loading.classList.add('hidden');
+          alert('Error loading students: ' + err.message);
+        }
+      }
+
+      window.onload = fetchStudents;
+    </script>
+  </body>
+</html>

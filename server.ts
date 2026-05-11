@@ -18,9 +18,22 @@ async function startServer() {
 
   app.post("/api/register", (req, res) => {
     const student = req.body;
-    console.log("New Student Registration:", student);
+    student.created_at = new Date().toISOString();
     students.push(student);
     res.json({ success: true, message: "በተሳካ ሁኔታ ተመዝግበዋል! (Local Simulation)" });
+  });
+
+  app.get("/api/admin/students", (req, res) => {
+    res.json({ success: true, students });
+  });
+
+  // Serve static files explicitly for simulation
+  app.get("/join-free.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "join-free.html"));
+  });
+
+  app.get("/admin.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "admin.html"));
   });
 
   // Vite middleware for development

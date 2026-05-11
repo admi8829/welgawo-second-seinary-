@@ -6,9 +6,9 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Cloudflare Function Simulation: /functions/hello.js -> /hello
+  // Local simulation of _worker.js
   app.get("/hello", (req, res) => {
-    res.json({ message: "Hello from the backend!" });
+    res.json({ message: "Hello from local simulation!" });
   });
 
   // Vite middleware for development

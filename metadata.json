@@ -1,0 +1,6 @@
+{
+  "name": "Cloudflare Pages Hello World",
+  "description": "A simple Cloudflare Pages project with Functions demonstration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

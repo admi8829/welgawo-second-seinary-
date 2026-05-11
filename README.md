@@ -2,15 +2,36 @@
 
 This is a simple template for a Cloudflare Pages project with Functions.
 
-## GitHub Folder Structure
+## Cloudflare D1 Database Setup (REQUIRED for Registration)
 
-To host this on Cloudflare Pages, your GitHub repository should look like this:
+The registration form uses Cloudflare D1. To make it work in production:
+
+1. Create a D1 database in Cloudflare:
+   ```bash
+   npx wrangler d1 create smart-x-db
+   ```
+2. Create the `students` table:
+   ```sql
+   CREATE TABLE students (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     name TEXT NOT NULL,
+     email TEXT NOT NULL,
+     grade TEXT NOT NULL,
+     phone TEXT NOT NULL,
+     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+   );
+   ```
+3. Bind the database to your Pages project in `wrangler.toml` or the Cloudflare Dashboard:
+   - Go to **Pages** -> **Your Project** -> **Settings** -> **Functions** -> **D1 database bindings**.
+   - Bind `DB` to your `smart-x-db`.
+
+## Folder Structure for GitHub
 
 ```text
 your-repo/
-├── functions/          <-- Cloudflare Functions dir
-│   └── hello.js        <-- Endpoint at /hello
-└── index.html          <-- Main static file
+├── _worker.js          <-- Cloudflare Worker (Logic & API)
+├── index.html          <-- Home & Dashboard (UI)
+└── ...
 ```
 
 ## How it works

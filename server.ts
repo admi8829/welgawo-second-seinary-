@@ -6,9 +6,21 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  app.use(express.json());
+
+  // Local simulation of DB
+  const students: any[] = [];
+
   // Local simulation of _worker.js
   app.get("/hello", (req, res) => {
     res.json({ message: "Hello from local simulation!" });
+  });
+
+  app.post("/api/register", (req, res) => {
+    const student = req.body;
+    console.log("New Student Registration:", student);
+    students.push(student);
+    res.json({ success: true, message: "በተሳካ ሁኔታ ተመዝግበዋል! (Local Simulation)" });
   });
 
   // Vite middleware for development

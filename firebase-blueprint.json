@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "User profile data",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "grade": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "teachers": {
+      "title": "Teacher",
+      "description": "Faculty members",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "name": { "type": "string" },
+        "subject": { "type": "string" },
+        "bio": { "type": "string" },
+        "photo": { "type": "string" },
+        "likes": { "type": "number" }
+      },
+      "required": ["name", "subject"]
+    },
+    "comments": {
+      "title": "Comment",
+      "description": "Public feedback for teachers",
+      "type": "object",
+      "properties": {
+        "teacherId": { "type": "number" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["teacherId", "userId", "text"]
+    },
+    "quiz_results": {
+      "title": "Quiz Result",
+      "description": "Results of student quizzes",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "score": { "type": "number" },
+        "total": { "type": "number" },
+        "subject": { "type": "string" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "score", "total"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "users",
+      "description": "Private user profiles"
+    },
+    "teachers/{teacherId}": {
+      "schema": "teachers",
+      "description": "Public teacher list"
+    },
+    "teachers/{teacherId}/comments/{commentId}": {
+      "schema": "comments",
+      "description": "Comments on a teacher"
+    },
+    "users/{userId}/quiz_results/{resultId}": {
+      "schema": "quiz_results",
+      "description": "Quiz performance history"
+    }
+  }
+}

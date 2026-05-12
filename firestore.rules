@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isSignedIn() && request.auth.uid == userId 
+        && request.resource.data.keys().hasAll(['uid', 'email', 'name'])
+        && request.resource.data.uid == userId;
+      allow update: if isOwner(userId) 
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'grade', 'photoURL']);
+    }
+
+    match /teachers/{teacherId} {
+      allow read: if true; // Publicly viewable
+      allow write: if false; // Only via admin or system (mocked for now as public read-only)
+      
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isSignedIn() 
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.text is string 
+          && request.resource.data.text.size() > 0 
+          && request.resource.data.text.size() <= 1000;
+        allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid);
+      }
+    }
+
+    match /users/{userId}/quiz_results/{resultId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasAll(['userId', 'score', 'total'])
+        && request.resource.data.userId == userId;
+    }
+  }
+}

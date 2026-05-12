@@ -125,14 +125,15 @@ async function startServer() {
     res.sendFile(path.join(process.cwd(), "privacy.html"));
   });
 
+  app.get("/auth.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "auth.html"));
+  });
+
   app.get("/feedback.html", (req, res) => {
     res.sendFile(path.join(process.cwd(), "feedback.html"));
   });
 
   // Serve static files explicitly for simulation
-  app.get("/join-free.html", (req, res) => {
-    res.sendFile(path.join(process.cwd(), "join-free.html"));
-  });
 
   app.get("/admin.html", (req, res) => {
     res.sendFile(path.join(process.cwd(), "admin.html"));

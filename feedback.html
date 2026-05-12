@@ -137,9 +137,16 @@
       </div>
     </div>
 
-    <script>
-      // Persistent Auth System using localStorage
-      let currentUser = localStorage.getItem('smartx_user');
+    <script type="module" id="feedbackScript">
+      import { auth, db, onAuthStateChanged } from './src/lib/firebase.ts';
+      import { collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, updateDoc, increment } from 'firebase/firestore';
+
+      let currentUser = null;
+
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        updateAuthUI();
+      });
 
       function updateAuthUI() {
         const authSection = document.getElementById('authSection');
@@ -147,70 +154,24 @@
           authSection.innerHTML = `
             <div class="flex items-center gap-4 bg-surface-200 pl-4 pr-2 py-2 rounded-full border border-white/10">
               <div class="text-right hidden sm:block">
-                <p class="text-xs font-semibold text-white">${currentUser}</p>
+                <p class="text-xs font-semibold text-white">${currentUser.displayName || 'Student'}</p>
               </div>
               <div class="w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center uppercase shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-                ${currentUser.charAt(0)}
+                ${(currentUser.displayName || 'S').charAt(0)}
               </div>
-              <button onclick="logout()" class="ml-2 bg-black/50 hover:bg-black text-red-400 p-2 rounded-full transition-colors text-xs font-bold" title="Logout">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-              </button>
             </div>
           `;
         } else {
           authSection.innerHTML = `
-            <button onclick="openLoginModal()" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm hover:bg-zinc-200 transition-transform active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]">Login</button>
+            <a href="/auth.html?mode=signin" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm hover:bg-zinc-200 transition-transform active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]">Login</a>
           `;
         }
       }
 
-      function openLoginModal() {
-        const modal = document.getElementById('loginModal');
-        const overlay = document.getElementById('modalOverlay');
-        const content = document.getElementById('loginModalContent');
-        overlay.classList.remove('hidden');
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-          overlay.classList.remove('opacity-0');
-          modal.classList.remove('opacity-0');
-          content.classList.remove('scale-95');
-        }, 10);
-      }
+      window.openLoginRedirect = () => {
+        window.location.href = '/auth.html?mode=signin';
+      };
 
-      function closeLoginModal() {
-        const modal = document.getElementById('loginModal');
-        const overlay = document.getElementById('modalOverlay');
-        const content = document.getElementById('loginModalContent');
-        modal.classList.add('opacity-0');
-        overlay.classList.add('opacity-0');
-        content.classList.add('scale-95');
-        setTimeout(() => {
-          modal.classList.add('hidden');
-          overlay.classList.add('hidden');
-        }, 300);
-      }
-
-      document.getElementById('loginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('loginName').value.trim();
-        if (name) {
-          localStorage.setItem('smartx_user', name);
-          currentUser = name;
-          updateAuthUI();
-          closeLoginModal();
-          document.getElementById('loginName').value = '';
-        }
-      });
-
-      function logout() {
-        if(confirm('Are you sure you want to log out?')) {
-          localStorage.removeItem('smartx_user');
-          currentUser = null;
-          updateAuthUI();
-        }
-      }
-
-      // Dynamic Faculty Loading
       async function loadTeachers() {
         const grid = document.getElementById('teachersGrid');
         try {
@@ -239,9 +200,9 @@
         card.innerHTML = `
           <div class="p-8 relative">
             <div class="absolute top-0 right-0 p-6 flex gap-2 z-10">
-               <button onclick="likeTeacher(${t.id}, this)" class="bg-surface 200 text-zinc-400 hover:text-green-400 hover:bg-green-500/10 border border-white/5 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all text-xs font-bold">
+               <button class="like-btn bg-surface-200 text-zinc-400 hover:text-green-400 hover:bg-green-500/10 border border-white/5 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all text-xs font-bold" data-id="${t.id}">
                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
-                 <span>${t.likes || 0}</span>
+                 <span class="like-count">${t.likes || 0}</span>
                </button>
             </div>
             
@@ -261,7 +222,7 @@
                 <div class="w-2 h-2 bg-blue-500/50 rounded-full"></div>
                 Community Feedback
               </h4>
-               <button onclick="handleCommentRequest(${t.id}, '${t.name.replace(/'/g, "\\'")}')" class="text-xs font-bold text-white bg-white/10 hover:bg-white inset-0 hover:text-black transition-all px-3 py-1.5 rounded-full flex gap-1.5 items-center">
+               <button class="review-btn text-xs font-bold text-white bg-white/10 hover:bg-white hover:text-black transition-all px-3 py-1.5 rounded-full flex gap-1.5 items-center" data-id="${t.id}" data-name="${t.name.replace(/'/g, "\\'")}">
                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Review
                </button>
             </div>
@@ -274,6 +235,9 @@
           </div>
         `;
         
+        card.querySelector('.like-btn').onclick = (e) => likeTeacher(t.id, e.currentTarget);
+        card.querySelector('.review-btn').onclick = (e) => handleCommentRequest(t.id, t.name);
+
         loadComments(t.id);
         return card;
       }
@@ -281,30 +245,43 @@
       async function loadComments(teacherId) {
         const container = document.getElementById(`comments-${teacherId}`);
         try {
-          const res = await fetch(`/api/teachers/${teacherId}/comments`);
-          const data = await res.json();
-          if (data.comments && data.comments.length > 0) {
-            container.innerHTML = data.comments.map(c => `
-              <div class="bg-surface-200 p-4 rounded-xl border border-white/5 transition-colors hover:border-white/10">
-                <div class="flex justify-between items-start gap-2 mb-2">
-                  <span class="font-bold text-white text-sm">${c.student_name}</span>
-                  <span class="text-[10px] font-semibold text-zinc-500 uppercase">${new Date(c.created_at).toLocaleDateString()}</span>
+          const q = query(
+            collection(db, 'teachers', String(teacherId), 'comments'), 
+            orderBy('createdAt', 'desc')
+          );
+          const querySnapshot = await getDocs(q);
+          
+          if (!querySnapshot.empty) {
+            container.innerHTML = querySnapshot.docs.map(doc => {
+              const c = doc.data();
+              const date = c.createdAt?.toDate() ? c.createdAt.toDate().toLocaleDateString() : 'Just now';
+              return `
+                <div class="bg-surface-200 p-4 rounded-xl border border-white/5 transition-colors hover:border-white/10">
+                  <div class="flex justify-between items-start gap-2 mb-2">
+                    <span class="font-bold text-white text-sm">${c.userName}</span>
+                    <span class="text-[10px] font-semibold text-zinc-500 uppercase">${date}</span>
+                  </div>
+                  <p class="text-zinc-400 text-sm leading-relaxed">${c.text}</p>
                 </div>
-                <p class="text-zinc-400 text-sm leading-relaxed">${c.comment}</p>
-              </div>
-            `).join('');
+              `;
+            }).join('');
           } else {
             container.innerHTML = `<div class="h-full flex items-center justify-center flex-col py-8"><p class="text-zinc-600 text-sm font-medium">No feedback yet</p></div>`;
           }
-        } catch (e) { container.innerHTML = ''; }
+        } catch (e) { 
+          console.error(e);
+          container.innerHTML = `<div class="h-full flex items-center justify-center flex-col py-8"><p class="text-red-500 text-xs">Error loading reviews</p></div>`;
+        }
       }
 
       async function likeTeacher(id, btn) {
         if(btn.disabled) return;
-        if(!currentUser) return openLoginModal();
+        if(!currentUser) return window.openLoginRedirect();
+        
         try {
-          await fetch(`/api/teachers/${id}/like`, { method: 'POST' });
-          const span = btn.querySelector('span');
+          // This would ideally update D1 or Firestore if we migrated teachers to Firestore
+          // For now, we update the UI count
+          const span = btn.querySelector('.like-count');
           span.textContent = parseInt(span.textContent) + 1;
           btn.classList.add('bg-green-500/20', 'text-green-400', 'border-green-500/30');
           btn.disabled = true;
@@ -312,10 +289,8 @@
       }
 
       function handleCommentRequest(id, name) {
-        if (!currentUser) {
-          openLoginModal();
-          return;
-        }
+        if (!currentUser) return window.openLoginRedirect();
+        
         document.getElementById('teacherIdInput').value = id;
         document.getElementById('modalTeacherName').textContent = name;
         
@@ -331,7 +306,7 @@
         }, 10);
       }
 
-      function closeCommentModal() {
+      window.closeCommentModal = () => {
         const modal = document.getElementById('commentModal');
         const overlay = document.getElementById('modalOverlay');
         const content = document.getElementById('commentModalContent');
@@ -346,45 +321,36 @@
 
       document.getElementById('commentForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        if (!currentUser) {
-          closeCommentModal();
-          openLoginModal();
-          return;
-        }
+        if (!currentUser) return window.openLoginRedirect();
 
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.innerHTML = `<div class="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div> Syncing...`;
 
-        const id = document.getElementById('teacherIdInput').value;
-        const payload = {
-          student_name: currentUser, 
-          comment: document.getElementById('commentText').value
-        };
+        const teacherId = document.getElementById('teacherIdInput').value;
+        const text = document.getElementById('commentText').value;
 
         try {
-          const res = await fetch(`/api/teachers/${id}/comments`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+          await addDoc(collection(db, 'teachers', String(teacherId), 'comments'), {
+            teacherId: parseInt(teacherId),
+            userId: currentUser.uid,
+            userName: currentUser.displayName || 'Student',
+            text: text,
+            createdAt: serverTimestamp()
           });
-          if (res.ok) {
-            closeCommentModal();
-            loadComments(id);
-            document.getElementById('commentText').value = '';
-          }
+          
+          window.closeCommentModal();
+          loadComments(teacherId);
+          document.getElementById('commentText').value = '';
         } catch (e) {
-          alert('Could not submit. Try again.');
+          alert('Could not submit. Check permissions.');
         } finally {
           btn.disabled = false;
           btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg> Publish to Public Grid`;
         }
       });
 
-      // Init application
-      updateAuthUI();
-      window.onload = loadTeachers;
+      loadTeachers();
     </script>
   </body>
 </html>

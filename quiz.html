@@ -72,11 +72,20 @@
       </div>
     </div>
 
-    <script>
+    <script type="module">
+      import { auth, db, onAuthStateChanged } from './src/lib/firebase.ts';
+      import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+      let currentUser = null;
       let currentQuestions = [];
       let currentIndex = 0;
       let score = 0;
       let selectedOption = null;
+
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        startQuiz();
+      });
 
       const loadingView = document.getElementById('loadingState');
       const quizView = document.getElementById('quizContainer');
@@ -104,6 +113,7 @@
       }
 
       function renderQuestion() {
+        if (currentIndex >= currentQuestions.length) return;
         const q = currentQuestions[currentIndex];
         questionCategory.textContent = `Question ${currentIndex + 1} of ${currentQuestions.length}`;
         questionText.textContent = q.question;
@@ -122,15 +132,12 @@
           `;
           
           btn.onclick = () => {
-             // Reset others
              Array.from(optionsContainer.children).forEach(c => {
                c.classList.remove('border-blue-500', 'bg-blue-50', 'ring-2', 'ring-blue-100');
                c.querySelector('div').innerHTML = '';
              });
-             // Select current
              btn.classList.add('border-blue-500', 'bg-blue-50', 'ring-2', 'ring-blue-100');
              btn.querySelector('div').innerHTML = '<div class="w-full h-full bg-blue-600 rounded-full scale-50"></div>';
-             
              selectedOption = opt;
              nextBtn.disabled = false;
           };
@@ -141,7 +148,7 @@
         progressBar.style.width = `${progress}%`;
       }
 
-      nextBtn.onclick = () => {
+      nextBtn.onclick = async () => {
         if (selectedOption === currentQuestions[currentIndex].answer) {
           score++;
         }
@@ -150,18 +157,30 @@
         if (currentIndex < currentQuestions.length) {
           renderQuestion();
         } else {
-          showResults();
+          await showResults();
         }
       };
 
-      function showResults() {
+      async function showResults() {
         quizView.classList.add('hidden');
         resultView.classList.remove('hidden');
         scoreDisplay.textContent = `${score} / ${currentQuestions.length}`;
         progressBar.style.width = '100%';
-      }
 
-      window.onload = startQuiz;
+        if (currentUser) {
+          try {
+            await addDoc(collection(db, 'users', currentUser.uid, 'quiz_results'), {
+              userId: currentUser.uid,
+              score: score,
+              total: currentQuestions.length,
+              subject: 'Daily Quiz',
+              completedAt: serverTimestamp()
+            });
+          } catch (e) {
+            console.error('Error saving quiz results:', e);
+          }
+        }
+      }
     </script>
   </body>
 </html>

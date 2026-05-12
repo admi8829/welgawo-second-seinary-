@@ -35,18 +35,50 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('mode') === 'signup') mode = 'signup';
 
 function updateUI() {
+  const activeTabClass = "text-xs font-black uppercase tracking-[0.2em] text-blue-600 border-b-2 border-blue-600 pb-2 transition-all duration-300";
+  const inactiveTabClass = "text-xs font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 transition-all duration-300 pb-2";
+
   if (mode === 'signup') {
-    signInBox?.classList.add('hidden');
-    signUpBox?.classList.remove('hidden');
-    if (tabSignUp) tabSignUp.className = "text-xs font-black uppercase tracking-[0.2em] text-blue-600 border-b-2 border-blue-600 pb-2 transition-all";
-    if (tabSignIn) tabSignIn.className = "text-xs font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 transition-all pb-2";
+    // On mobile we toggle, on desktop we can highlight
+    if (window.innerWidth < 1024) {
+      signInBox?.classList.add('hidden');
+      signUpBox?.classList.remove('hidden');
+      if (document.getElementById('illustrationBox')) {
+        document.getElementById('illustrationBox')!.classList.add('hidden');
+      }
+    } else {
+      signInBox?.classList.remove('hidden', 'opacity-50');
+      signUpBox?.classList.remove('hidden', 'opacity-50');
+      signInBox?.classList.add('opacity-30', 'scale-95', 'pointer-events-none');
+      signUpBox?.classList.remove('opacity-30', 'scale-95', 'pointer-events-none');
+      if (document.getElementById('illustrationBox')) {
+        document.getElementById('illustrationBox')!.classList.remove('hidden');
+      }
+    }
+    if (tabSignUp) tabSignUp.className = activeTabClass;
+    if (tabSignIn) tabSignIn.className = inactiveTabClass;
   } else {
-    signUpBox?.classList.add('hidden');
-    signInBox?.classList.remove('hidden');
-    if (tabSignIn) tabSignIn.className = "text-xs font-black uppercase tracking-[0.2em] text-blue-600 border-b-2 border-blue-600 pb-2 transition-all";
-    if (tabSignUp) tabSignUp.className = "text-xs font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 transition-all pb-2";
+    if (window.innerWidth < 1024) {
+      signUpBox?.classList.add('hidden');
+      signInBox?.classList.remove('hidden');
+      if (document.getElementById('illustrationBox')) {
+        document.getElementById('illustrationBox')!.classList.add('hidden');
+      }
+    } else {
+      signInBox?.classList.remove('hidden', 'opacity-30', 'scale-95', 'pointer-events-none');
+      signUpBox?.classList.remove('hidden');
+      signUpBox?.classList.add('opacity-30', 'scale-95', 'pointer-events-none');
+      if (document.getElementById('illustrationBox')) {
+        document.getElementById('illustrationBox')!.classList.remove('hidden');
+      }
+    }
+    if (tabSignIn) tabSignIn.className = activeTabClass;
+    if (tabSignUp) tabSignUp.className = inactiveTabClass;
   }
 }
+
+// Ensure UI updates on resize to handle hidden/visible boxes correctly
+window.addEventListener('resize', updateUI);
 
 // Photo Handling
 if (photoInput) {

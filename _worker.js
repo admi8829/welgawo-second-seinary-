@@ -226,8 +226,15 @@ export default {
       }
     }
 
-    // 8. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
-    // ይህ የሚሰራው በ Cloudflare Pages ላይ ብቻ ነው
+    // 8. Handle Clean URLs (e.g., /auth -> /auth.html)
+    const assets = ["/auth", "/about", "/contact", "/feedback", "/quiz", "/admin", "/terms", "/privacy"];
+    if (assets.includes(url.pathname)) {
+      const newUrl = new URL(url);
+      newUrl.pathname += ".html";
+      return env.ASSETS.fetch(new Request(newUrl, request));
+    }
+
+    // 9. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
     return env.ASSETS.fetch(request);
   },
 };

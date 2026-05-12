@@ -163,13 +163,13 @@
           `;
         } else {
           authSection.innerHTML = `
-            <a href="/auth.html?mode=signin" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm hover:bg-zinc-200 transition-transform active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]">Login</a>
+            <a href="/auth?mode=signin" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm hover:bg-zinc-200 transition-transform active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]">Login</a>
           `;
         }
       }
 
       window.openLoginRedirect = () => {
-        window.location.href = '/auth.html?mode=signin';
+        window.location.href = '/auth?mode=signin';
       };
 
       async function loadTeachers() {

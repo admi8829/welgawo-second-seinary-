@@ -20,6 +20,7 @@ export default defineConfig(({mode}) => {
           feedback: path.resolve(__dirname, 'feedback.html'),
           quiz: path.resolve(__dirname, 'quiz.html'),
           admin: path.resolve(__dirname, 'admin.html'),
+          profile: path.resolve(__dirname, 'profile.html'),
           terms: path.resolve(__dirname, 'terms.html'),
           privacy: path.resolve(__dirname, 'privacy.html')
         }

@@ -99,7 +99,7 @@ if (signUpForm) {
     const confirm = (document.getElementById('confirmPasswordInput') as HTMLInputElement).value;
     
     if (password !== confirm) {
-      alert("የምስጢር ቃላት አይዛመዱም! (Passwords don't match)");
+      alert("Passwords don't match!");
       return;
     }
 
@@ -110,7 +110,7 @@ if (signUpForm) {
 
     try {
       btn.disabled = true;
-      btn.textContent = 'የመገለጫ ማመሳሰል...';
+      btn.textContent = 'Syncing Profile...';
       const result = await createUserWithEmailAndPassword(auth, email, password);
       // Update profile with name and optionally photo
       await updateProfile(result.user, { 
@@ -122,13 +122,13 @@ if (signUpForm) {
       window.location.href = '/profile';
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
-        alert('ይህ ኢሜል ቀደም ብሎ ተመዝግቧል። እባክዎ ይግቡ። (Email already in use)');
+        alert('Email already in use. Please sign in instead.');
       } else {
-        alert('ምዝገባ አልተሳካም: ' + error.message);
+        alert('Registration failed: ' + error.message);
       }
     } finally {
       btn.disabled = false;
-      btn.textContent = 'ይመዝገቡ';
+      btn.textContent = 'Register';
     }
   });
 }
@@ -143,14 +143,14 @@ if (signInForm) {
 
     try {
       btn.disabled = true;
-      btn.textContent = 'በመግባት ላይ...';
+      btn.textContent = 'Signing in...';
       await signInWithEmailAndPassword(auth, email, password);
       window.location.href = '/profile';
     } catch (error: any) {
-      alert('መግባት አልተሳካም: ' + error.message);
+      alert('Sign in failed: ' + error.message);
     } finally {
       btn.disabled = false;
-      btn.textContent = 'ይግቡ';
+      btn.textContent = 'Sign In';
     }
   });
 }

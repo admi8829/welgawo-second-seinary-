@@ -42,163 +42,131 @@
       }
     </style>
   </head>
-  <body class="min-h-screen bg-[#f0f9ff] selection:bg-blue-100 font-sans text-slate-800">
+  <body class="min-h-screen bg-[#e0f2f1] selection:bg-teal-100 font-sans text-slate-700">
     
-    <!-- Background Elements -->
-    <div class="fixed inset-0 pointer-events-none -z-10 bg-gradient-to-br from-blue-50/50 to-indigo-50/50">
-      <div class="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+    <!-- Design Background Elements -->
+    <div class="fixed inset-0 pointer-events-none -z-10 bg-[radial-gradient(circle_at_top_right,rgba(45,212,191,0.1),transparent_50%)]">
+      <div class="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/white-diamond.png')]"></div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-6 py-8">
-      <!-- Header -->
-      <header class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+    <div class="max-w-[1400px] mx-auto px-6 py-8">
+      <!-- High-End Header -->
+      <header class="bg-white rounded-3xl shadow-sm border border-slate-100 px-10 py-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <a href="/" class="flex items-center gap-4 group">
-          <div class="w-12 h-12 bg-white rounded-xl shadow-lg border border-slate-100 flex items-center justify-center p-2 group-hover:scale-105 transition-all">
-            <svg class="w-full h-full text-blue-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 7l11 5 11-5-11-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+          <div class="w-12 h-12 bg-gradient-to-br from-teal-400 to-emerald-500 rounded-xl shadow-lg flex items-center justify-center p-2 group-hover:scale-105 transition-all">
+            <svg class="w-full h-full text-white" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+              <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
+            </svg>
           </div>
           <div class="flex flex-col">
-            <span class="font-display font-black text-2xl tracking-tighter leading-none text-slate-900 uppercase italic">Smart-<span class="text-blue-600">X</span></span>
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Academy</span>
+            <span class="font-display font-black text-2xl tracking-tighter leading-none text-slate-800 uppercase">Ethio-Learn</span>
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Academy</span>
           </div>
         </a>
-        <nav class="flex items-center gap-8 text-sm font-bold text-slate-500 uppercase tracking-widest">
-          <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
-          <a href="/about" class="hover:text-blue-600 transition-colors">About</a>
-          <a href="/contact" class="hover:text-blue-600 transition-colors">Contact</a>
-          <a href="/quiz" class="text-blue-600 bg-blue-50 px-4 py-2 rounded-lg">ትምህርት</a>
+        <nav class="flex items-center gap-10 text-[11px] font-black text-slate-500 uppercase tracking-widest">
+          <a href="/" class="hover:text-teal-600 transition-colors">Home</a>
+          <a href="/courses" class="hover:text-teal-600 transition-colors">Courses</a>
+          <a href="/resources" class="hover:text-teal-600 transition-colors">Resources</a>
+          <a href="/about" class="hover:text-teal-600 transition-colors">About</a>
+          <a href="/contact" class="hover:text-teal-600 transition-colors">Contact</a>
+          <a href="/quiz" class="hover:text-teal-600 transition-colors">Education</a>
         </nav>
       </header>
 
-      <!-- Main Layout -->
-      <main id="authContainer" class="bg-white rounded-[3rem] shadow-[0_20px_80px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden min-h-[700px] flex flex-col">
+      <!-- Main Interactive Board -->
+      <main class="bg-white rounded-[3.5rem] shadow-[0_30px_100px_rgba(0,0,0,0.04)] border border-slate-50 overflow-hidden min-h-[750px] flex flex-col">
         
-        <!-- Toggle Tabs -->
-        <div class="flex items-center justify-between border-b border-slate-50 px-12 py-10">
-          <div class="flex items-center gap-12">
-            <button id="tabSignIn" class="text-xs font-black uppercase tracking-[0.2em] text-blue-600 border-b-2 border-blue-600 pb-2 transition-all">Join / Sign In</button>
-            <h2 class="hidden md:block text-2xl font-display font-black text-slate-900 tracking-tight uppercase italic text-center flex-1">Sign in to your learning journey</h2>
-            <button id="tabSignUp" class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 transition-all pb-2 text-right">Create Account</button>
-          </div>
+        <!-- Tab Navigation Bar -->
+        <div class="flex items-center border-b border-slate-50 px-12 py-10 bg-slate-50/30">
+          <button id="tabSignIn" class="text-xs font-black uppercase tracking-[0.2em] text-teal-600 border-b-2 border-teal-600 pb-2 transition-all">Join</button>
+          <h2 class="text-3xl font-display font-black text-slate-900 tracking-tight uppercase italic text-center flex-1">Sign in to your learning journey</h2>
+          <button id="tabSignUp" class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 hover:text-teal-600 transition-all pb-2">Create Account</button>
         </div>
 
-        <div class="flex-1 p-8 md:p-16 flex flex-col lg:flex-row gap-8 justify-center items-stretch">
-          
-          <!-- LEFT: Sign In Box -->
-          <div id="signInBox" class="lg:w-1/2 bg-[#f8fafc] rounded-[2.5rem] p-8 md:p-12 border border-slate-100 flex flex-col items-center">
-            <h3 class="text-xl font-display font-black text-slate-900 uppercase tracking-widest mb-10">Sign In</h3>
-            <form id="signInForm" class="w-full max-w-sm space-y-6">
-              <div class="relative group">
-                <div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206"></path></svg>
-                </div>
-                <input type="email" id="loginEmail" required class="w-full bg-white border border-slate-200 rounded-2xl py-4 pl-14 pr-6 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium" placeholder="ኢሜል / ስልክ">
-              </div>
-              <div class="relative group">
-                <div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                </div>
-                <input type="password" id="loginPassword" required class="w-full bg-white border border-slate-200 rounded-2xl py-4 pl-14 pr-12 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium" placeholder="የምስጢር ቃል">
-                <button type="button" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                </button>
+        <!-- content areas -->
+        <div class="flex-1 p-10 lg:p-16 flex flex-col lg:flex-row gap-10 items-stretch">
+          <!-- Col 1: Sign In -->
+          <div id="signInBox" class="flex-1 bg-white rounded-[3rem] p-10 border border-slate-100 flex flex-col shadow-sm">
+            <h3 class="text-center text-xl font-display font-black text-slate-800 uppercase tracking-widest mb-10">Sign In</h3>
+            <form id="signInForm" class="space-y-6">
+              <div class="space-y-4">
+                <input type="email" id="loginEmail" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-teal-500 transition-all font-medium" placeholder="Email / Phone">
+                <input type="password" id="loginPassword" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-teal-500 transition-all font-medium" placeholder="Password">
               </div>
               <div class="text-right">
-                <a href="#" class="text-xs font-bold text-blue-600 hover:underline">የምስጢር ቃል ረስቻለሁ?</a>
+                <a href="#" class="text-[11px] font-bold text-teal-600 hover:underline">Forgot password?</a>
               </div>
-              <button type="submit" id="btnSignIn" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-widest text-sm">ይግቡ</button>
+              <button type="submit" id="btnSignIn" class="w-full bg-[#0097a7] text-white font-black py-5 rounded-[1.4rem] shadow-xl shadow-teal-500/20 hover:scale-[1.02] transition-all uppercase tracking-widest text-sm">Sign In</button>
               
-              <div class="pt-6 text-center space-y-4">
+              <div class="pt-8 text-center space-y-5">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Or Sign In With:</p>
                 <div class="flex items-center justify-center gap-4">
-                  <button type="button" class="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center shadow-sm hover:bg-slate-50 transition-all opacity-50 grayscale"><img src="https://www.google.com/favicon.ico" class="w-5 h-5"></button>
-                  <button type="button" class="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center shadow-sm hover:bg-slate-50 transition-all opacity-50 grayscale"><svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></button>
-                  <button type="button" class="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center shadow-sm hover:bg-slate-50 transition-all opacity-50 grayscale"><svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg></button>
+                  <button type="button" class="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center shadow-sm hover:scale-110 grayscale hover:grayscale-0 transition-all"><img src="https://www.google.com/favicon.ico" class="w-5 h-5"></button>
                 </div>
-                <p class="text-[11px] font-bold text-slate-500">Already have an account? <button type="button" id="switchSignIn" class="text-blue-600">Sign In</button></p>
+                <p class="text-[11px] font-bold text-slate-400 text-center">Already have an account? <button type="button" id="switchSignIn" class="text-teal-600 hover:underline">Sign In</button></p>
               </div>
             </form>
           </div>
 
-          <!-- MIDDLE: Illustration -->
-          <div class="hidden lg:flex lg:w-1/3 flex-col items-center justify-center space-y-8 px-8">
-            <div class="w-full aspect-square bg-[#fff8ef] rounded-[3rem] p-12 flex flex-col items-center justify-center text-center space-y-6">
-              <img src="https://img.freepik.com/free-vector/happy-diverse-students-working-laptop-together-study-background_1150-37965.jpg" class="w-full rounded-2xl mix-blend-multiply opacity-80" alt="Students">
-              <h4 class="text-xl font-display font-bold text-slate-800">Join our learning community</h4>
-              <p class="text-sm text-slate-500 font-medium leading-relaxed">Unlock access to expert resources, mock exams, and personalized AI tutoring.</p>
-            </div>
-            <p class="text-xs font-bold text-blue-600 uppercase tracking-widest text-center">Join thousands of high-achievers</p>
+          <!-- Col 2: Illustration -->
+          <div class="hidden lg:flex lg:w-1/3 flex-col border border-orange-100 bg-orange-50/30 rounded-[3rem] p-10 text-center space-y-6 items-center justify-center">
+            <h4 class="text-xl font-display font-black text-slate-800 uppercase tracking-widest">Join our learning community</h4>
+            <img src="https://img.freepik.com/free-vector/happy-diverse-students-working-laptop-together-study-background_1150-37965.jpg" class="w-full rounded-[2.5rem] mix-blend-multiply" alt="Illustration">
+            <p class="text-xs text-slate-500 font-medium leading-relaxed uppercase tracking-tighter">Accelerate your education with the most intelligent learning platform.</p>
           </div>
 
-          <!-- RIGHT: Create Account Box -->
-          <div id="signUpBox" class="lg:w-1/2 bg-[#fff8f0]/40 rounded-[2.5rem] p-8 md:p-12 border border-orange-100 flex flex-col items-center">
-            <h3 class="text-xl font-display font-black text-slate-900 uppercase tracking-widest mb-10">Create Account</h3>
-            <form id="signUpForm" class="w-full max-w-md space-y-5">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="nameInput" required class="w-full bg-white border border-slate-200 rounded-xl py-3.5 px-6 outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-sm" placeholder="ሙሉ ስም">
-                <input type="email" id="emailInput" required class="w-full bg-white border border-slate-200 rounded-xl py-3.5 px-6 outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-sm" placeholder="ኢሜል">
-                <input type="password" id="passwordInput" required class="w-full bg-white border border-slate-200 rounded-xl py-3.5 px-6 outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-sm" placeholder="የምስጢር ቃል">
-                <input type="password" id="confirmPasswordInput" required class="w-full bg-white border border-slate-200 rounded-xl py-3.5 px-6 outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-sm" placeholder="የምስጢር ቃል ያረጋግጡ">
-              </div>
+          <!-- Col 3: Create Account -->
+          <div id="signUpBox" class="flex-1 bg-[#fff8ef]/50 rounded-[3rem] p-10 border border-slate-100 flex flex-col shadow-sm">
+            <h3 class="text-center text-xl font-display font-black text-slate-800 uppercase tracking-widest mb-10">Create Account</h3>
+            <form id="signUpForm" class="space-y-4">
+              <input type="text" id="nameInput" placeholder="Full Name" required class="w-full bg-white border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-teal-500 transition-all font-medium text-sm">
+              <input type="email" id="emailInput" placeholder="Email" required class="w-full bg-white border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-teal-500 transition-all font-medium text-sm">
+              <input type="password" id="passwordInput" placeholder="Password" required class="w-full bg-white border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-teal-500 transition-all font-medium text-sm">
+              <input type="password" id="confirmPasswordInput" placeholder="Confirm Password" required class="w-full bg-white border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-teal-500 transition-all font-medium text-sm">
               
-              <div class="grid grid-cols-3 gap-3">
-                <select id="genderInput" class="w-full bg-white border border-slate-200 rounded-xl py-3.5 px-4 outline-none text-sm font-medium">
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-                <input type="number" id="ageInput" class="w-full bg-white border border-slate-200 rounded-xl py-3.5 px-4 outline-none text-sm font-medium" placeholder="Age">
-                <select id="gradeInput" class="w-full bg-white border border-slate-200 rounded-xl py-3.5 px-4 outline-none text-sm font-medium">
-                  <option value="9">G 9</option>
-                  <option value="10">G 10</option>
-                  <option value="11">G 11</option>
-                  <option value="12">G 12</option>
-                </select>
+              <div class="flex hidden grid-cols-2 gap-3">
+                 <input type="file" id="photoInput" accept="image/*" class="hidden">
+                 <select id="genderInput" class="hidden"><option value="Other">Other</option></select>
+                 <input type="number" id="ageInput" class="hidden" value="18">
+                 <select id="gradeInput" class="hidden"><option value="12">12</option></select>
+                 <input type="text" id="schoolInput" class="hidden" value="">
               </div>
 
-              <input type="text" id="schoolInput" class="w-full bg-white border border-slate-200 rounded-xl py-3.5 px-6 outline-none font-medium text-sm" placeholder="School Name">
-              
-              <div class="space-y-2">
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Profile Avatar</label>
-                <input type="file" id="photoInput" accept="image/*" class="w-full bg-white border border-slate-100 rounded-xl py-2 px-4 text-xs font-medium text-slate-500">
+              <div class="flex items-start gap-3 py-2">
+                <input type="checkbox" required class="w-4 h-4 mt-0.5 rounded border-slate-300 text-teal-600">
+                <p class="text-[10px] font-bold text-slate-500 leading-tight">I agree to the Terms of Service & Privacy Policy.</p>
               </div>
-
-              <div class="flex items-center gap-3 py-2">
-                <input type="checkbox" id="termsCheck" required class="w-4 h-4 rounded border-slate-300 text-blue-600">
-                <label for="termsCheck" class="text-[11px] font-bold text-slate-500">I agree to the <a href="/terms" class="text-blue-600 underline">Terms of Service & Privacy Policy</a>.</label>
-              </div>
-
-              <button type="submit" id="btnSignUp" class="w-full bg-orange-500 text-white font-black py-4 rounded-2xl shadow-xl shadow-orange-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-widest text-sm">ይመዝገቡ</button>
+              <button type="submit" id="btnSignUp" class="w-full bg-[#f4511e] text-white font-black py-5 rounded-[1.4rem] shadow-xl shadow-orange-500/20 hover:scale-[1.02] transition-all uppercase tracking-widest text-sm">Register</button>
               
-              <p class="text-center text-[11px] font-bold text-slate-500">New here? <button type="button" id="switchSignUp" class="text-blue-600">Create Account</button></p>
+              <p class="pt-4 text-center text-[11px] font-bold text-slate-400">New here? <button type="button" id="switchSignUp" class="text-teal-600 hover:underline">Create Account</button></p>
             </form>
           </div>
-
         </div>
 
+        <!-- Footer -->
+        <footer class="border-t border-slate-50 px-12 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex items-center gap-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <a href="#" class="hover:text-teal-600 transition-colors">About</a>
+            <a href="#" class="hover:text-teal-600 transition-colors">Help</a>
+            <a href="#" class="hover:text-teal-600 transition-colors">Contact</a>
+            <a href="#" class="hover:text-teal-600 transition-colors">Blog</a>
+            <a href="#" class="hover:text-teal-600 transition-colors">Education</a>
+          </div>
+          <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">© 2024 Ethio-Learn Academy. All Rights Reserved.</p>
+          <div class="flex gap-4">
+             <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">f</div>
+             <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">t</div>
+             <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">i</div>
+          </div>
+        </footer>
       </main>
-
-      <!-- Footer -->
-      <footer class="mt-16 flex flex-col md:flex-row items-center justify-between gap-8 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] px-6">
-        <nav class="flex items-center gap-8">
-          <a href="/about" class="hover:text-blue-600">About</a>
-          <a href="/contact" class="hover:text-blue-600">Help</a>
-          <a href="/contact" class="hover:text-blue-600">Contact</a>
-          <a href="/feedback" class="hover:text-blue-600">Blog</a>
-          <a href="/terms" class="hover:text-blue-600">ፖሊሲ</a>
-        </nav>
-        <p>© 2024 Smart-X Academy. All Rights Reserved.</p>
-        <div class="flex items-center gap-6">
-           <a href="#" class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-           <a href="#" class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg></a>
-           <a href="#" class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.332 3.608 1.308.975.975 1.246 2.242 1.308 3.607.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.332 2.633-1.308 3.608-.975.975-2.242 1.246-3.607 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.332-3.608-1.308-.975-.975-1.246-2.242-1.308-3.607-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.332-2.633 1.308-3.608.975-.975 2.242-1.246 3.607-1.308 1.266-.058 1.646-.07 4.85-.07zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.667.072 4.947c.2 4.353 2.62 6.784 6.975 6.984 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c4.351-.2 6.785-2.622 6.984-6.975.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.2-4.353-2.62-6.784-6.975-6.984-1.28-.058-1.688-.072-4.947-.072zM12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4.162 4.162 0 110-8.324 4.162 4.162 0 010 8.324zM18.406 4.406a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></a>
-        </div>
-      </footer>
     </div>
 
-    <!-- Background Decoration -->
-    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 opacity-50">
-       <div class="absolute top-1/4 -right-20 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px]"></div>
-       <div class="absolute bottom-1/4 -left-20 w-80 h-80 bg-orange-600/10 rounded-full blur-[100px]"></div>
-    </div>
+    <script type="module" src="/src/auth.ts"></script>
+  </body>
+</html>
+
 
     <script type="module" src="/src/auth.ts"></script>
   </body>

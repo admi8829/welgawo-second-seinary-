@@ -1,115 +1,164 @@
 import { 
   auth, 
   db, 
-  googleProvider, 
-  signInWithPopup, 
-  onAuthStateChanged 
-} from './lib/firebase';
-import { 
+  onAuthStateChanged
+} from './lib/firebase.ts';
+import {
+  signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword,
-  updateProfile 
+  updateProfile
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from 'firebase/firestore';
 
+let mode: 'signin' | 'signup' = 'signin';
+
+// Elements
+const tabSignIn = document.getElementById('tabSignIn') as HTMLButtonElement;
+const tabSignUp = document.getElementById('tabSignUp') as HTMLButtonElement;
+const signInBox = document.getElementById('signInBox') as HTMLElement;
+const signUpBox = document.getElementById('signUpBox') as HTMLElement;
+const signInForm = document.getElementById('signInForm') as HTMLFormElement;
+const signUpForm = document.getElementById('signUpForm') as HTMLFormElement;
+const switchSignIn = document.getElementById('switchSignIn') as HTMLButtonElement;
+const switchSignUp = document.getElementById('switchSignUp') as HTMLButtonElement;
+const photoInput = document.getElementById('photoInput') as HTMLInputElement;
+
+let selectedPhotoBase64 = '';
+
+// Check URL mode
 const urlParams = new URLSearchParams(window.location.search);
-let mode = urlParams.get('mode') === 'signup' ? 'signup' : 'signin';
-
-const authTitle = document.getElementById('authTitle') as HTMLElement;
-const authSubtitle = document.getElementById('authSubtitle') as HTMLElement;
-const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
-const toggleMode = document.getElementById('toggleMode') as HTMLButtonElement;
-const toggleText = document.getElementById('toggleText') as HTMLElement;
-const nameGroup = document.getElementById('nameGroup') as HTMLElement;
-const gradeGroup = document.getElementById('gradeGroup') as HTMLElement;
-const authForm = document.getElementById('authForm') as HTMLFormElement;
-const googleBtn = document.getElementById('googleBtn') as HTMLButtonElement;
+if (urlParams.get('mode') === 'signup') mode = 'signup';
 
 function updateUI() {
   if (mode === 'signup') {
-    authTitle.innerText = 'Create Account';
-    authSubtitle.innerText = 'Join the elite community of scholars.';
-    submitBtn.innerText = 'Create Account';
-    toggleText.innerText = 'Already have an account?';
-    toggleMode.innerText = 'Sign In';
-    nameGroup.classList.remove('hidden');
-    gradeGroup.classList.remove('hidden');
+    signInBox?.classList.add('hidden');
+    signUpBox?.classList.remove('hidden');
+    if (tabSignUp) tabSignUp.className = "text-xs font-black uppercase tracking-[0.2em] text-blue-600 border-b-2 border-blue-600 pb-2 transition-all";
+    if (tabSignIn) tabSignIn.className = "text-xs font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 transition-all pb-2";
   } else {
-    authTitle.innerText = 'Welcome Back';
-    authSubtitle.innerText = 'Continue your journey to excellence.';
-    submitBtn.innerText = 'Sign In';
-    toggleText.innerText = "Don't have an account?";
-    toggleMode.innerText = 'Create Account';
-    nameGroup.classList.add('hidden');
-    gradeGroup.classList.add('hidden');
+    signUpBox?.classList.add('hidden');
+    signInBox?.classList.remove('hidden');
+    if (tabSignIn) tabSignIn.className = "text-xs font-black uppercase tracking-[0.2em] text-blue-600 border-b-2 border-blue-600 pb-2 transition-all";
+    if (tabSignUp) tabSignUp.className = "text-xs font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 transition-all pb-2";
   }
 }
 
-updateUI();
-
-toggleMode.addEventListener('click', () => {
-  mode = mode === 'signup' ? 'signin' : 'signup';
-  updateUI();
-});
-
-async function syncUserProfile(user: any, name?: string, grade?: string) {
-  const userRef = doc(db, 'users', user.uid);
-  const userSnap = await getDoc(userRef);
-
-  if (!userSnap.exists()) {
-    await setDoc(userRef, {
-      uid: user.uid,
-      name: name || user.displayName || 'Student',
-      email: user.email,
-      photoURL: user.photoURL || '',
-      grade: grade || '12',
-      createdAt: serverTimestamp()
-    });
-  }
-}
-
-googleBtn.addEventListener('click', async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    await syncUserProfile(result.user);
-    window.location.href = '/';
-  } catch (error: any) {
-    alert('Google sign-in failed: ' + error.message);
-  }
-});
-
-authForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = (document.getElementById('emailInput') as HTMLInputElement).value;
-  const password = (document.getElementById('passwordInput') as HTMLInputElement).value;
-  const name = (document.getElementById('emailName') as HTMLInputElement).value;
-  const grade = (document.getElementById('gradeInput') as HTMLSelectElement).value;
-
-  submitBtn.disabled = true;
-  submitBtn.innerText = 'Processing...';
-
-  try {
-    if (mode === 'signup') {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(result.user, { displayName: name });
-      await syncUserProfile(result.user, name, grade);
-    } else {
-      await signInWithEmailAndPassword(auth, email, password);
+// Photo Handling
+if (photoInput) {
+  photoInput.addEventListener('change', (e) => {
+    const file = photoInput.files?.[0];
+    if (file) {
+      if (file.size > 1024 * 1024) { // 1MB Limit
+        alert("Image too large. Please select a file under 1MB.");
+        photoInput.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (re) => {
+        selectedPhotoBase64 = re.target?.result as string;
+      };
+      reader.readAsDataURL(file);
     }
-    window.location.href = '/';
-  } catch (error: any) {
-    alert('Auth error: ' + error.message);
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.innerText = mode === 'signup' ? 'Create Account' : 'Sign In';
-  }
-});
+  });
+}
+
+// Switches
+if (tabSignIn) tabSignIn.onclick = () => { mode = 'signin'; updateUI(); };
+if (tabSignUp) tabSignUp.onclick = () => { mode = 'signup'; updateUI(); };
+if (switchSignIn) switchSignIn.onclick = () => { mode = 'signin'; updateUI(); };
+if (switchSignUp) switchSignUp.onclick = () => { mode = 'signup'; updateUI(); };
+
+async function syncUserProfile(user: any, details: any) {
+  const userRef = doc(db, 'users', user.uid);
+  await setDoc(userRef, {
+    uid: user.uid,
+    name: details.name || 'Discovery Scholar',
+    email: user.email,
+    photoURL: details.photoURL || '',
+    grade: details.grade || '12',
+    schoolName: details.schoolName || '',
+    gender: details.gender || 'Other',
+    age: details.age || 18,
+    createdAt: serverTimestamp()
+  }, { merge: true });
+}
+
+// Create Account Submit
+if (signUpForm) {
+  signUpForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnSignUp') as HTMLButtonElement;
+    const name = (document.getElementById('nameInput') as HTMLInputElement).value;
+    const email = (document.getElementById('emailInput') as HTMLInputElement).value;
+    const password = (document.getElementById('passwordInput') as HTMLInputElement).value;
+    const confirm = (document.getElementById('confirmPasswordInput') as HTMLInputElement).value;
+    
+    if (password !== confirm) {
+      alert("የምስጢር ቃላት አይዛመዱም! (Passwords don't match)");
+      return;
+    }
+
+    const gender = (document.getElementById('genderInput') as HTMLSelectElement).value;
+    const age = parseInt((document.getElementById('ageInput') as HTMLInputElement).value) || 18;
+    const grade = (document.getElementById('gradeInput') as HTMLSelectElement).value;
+    const schoolName = (document.getElementById('schoolInput') as HTMLInputElement).value;
+
+    try {
+      btn.disabled = true;
+      btn.textContent = 'የመገለጫ ማመሳሰል...';
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      // Update profile with name and optionally photo
+      await updateProfile(result.user, { 
+        displayName: name, 
+        photoURL: selectedPhotoBase64 || undefined 
+      });
+      // Store extended data in Firestore
+      await syncUserProfile(result.user, { name, grade, gender, age, schoolName, photoURL: selectedPhotoBase64 });
+      window.location.href = '/profile';
+    } catch (error: any) {
+      if (error.code === 'auth/email-already-in-use') {
+        alert('ይህ ኢሜል ቀደም ብሎ ተመዝግቧል። እባክዎ ይግቡ። (Email already in use)');
+      } else {
+        alert('ምዝገባ አልተሳካም: ' + error.message);
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'ይመዝገቡ';
+    }
+  });
+}
+
+// Sign In Submit
+if (signInForm) {
+  signInForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnSignIn') as HTMLButtonElement;
+    const email = (document.getElementById('loginEmail') as HTMLInputElement).value;
+    const password = (document.getElementById('loginPassword') as HTMLInputElement).value;
+
+    try {
+      btn.disabled = true;
+      btn.textContent = 'በመግባት ላይ...';
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = '/profile';
+    } catch (error: any) {
+      alert('መግባት አልተሳካም: ' + error.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'ይግቡ';
+    }
+  });
+}
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // If already logged in and on auth page, go home
-    if (window.location.pathname.includes('auth.html')) {
-        // window.location.href = '/';
-    }
+    // If logged in, stay or redirect if needed
   }
 });
+
+updateUI();

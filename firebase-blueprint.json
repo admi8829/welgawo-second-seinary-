@@ -10,6 +10,10 @@
         "email": { "type": "string" },
         "photoURL": { "type": "string" },
         "grade": { "type": "string" },
+        "schoolName": { "type": "string" },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "age": { "type": "number" },
+        "bio": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["uid", "email"]

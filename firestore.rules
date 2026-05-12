@@ -25,7 +25,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasAll(['uid', 'email', 'name'])
         && request.resource.data.uid == userId;
       allow update: if isOwner(userId) 
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'grade', 'photoURL']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'grade', 'photoURL', 'schoolName', 'gender', 'age', 'bio']);
     }
 
     match /teachers/{teacherId} {

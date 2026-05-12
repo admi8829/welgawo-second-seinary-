@@ -226,15 +226,17 @@ export default {
       }
     }
 
-    // 8. Handle Clean URLs (e.g., /auth -> /auth.html)
-    const assets = ["/auth", "/about", "/contact", "/feedback", "/quiz", "/admin", "/terms", "/privacy"];
-    if (assets.includes(url.pathname)) {
-      const newUrl = new URL(url);
-      newUrl.pathname += ".html";
-      return env.ASSETS.fetch(new Request(newUrl, request));
+    // 8. Handle Clean URLs without loops
+    const assets = ["/auth", "/about", "/contact", "/feedback", "/quiz", "/admin", "/terms", "/privacy", "/profile"];
+    const path = url.pathname;
+    
+    if (assets.includes(path)) {
+      // Serve the .html file directly without redirecting the browser
+      const resourcePath = path + ".html";
+      return env.ASSETS.fetch(new URL(resourcePath + url.search, request.url));
     }
-
-    // 9. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
+    
+    // 9. Default asset delivery
     return env.ASSETS.fetch(request);
   },
 };

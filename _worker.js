@@ -137,7 +137,67 @@ export default {
       }
     }
 
-    // 7. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
+    if (url.pathname === "/api/admin/teacher-comments" && request.method === "GET") {
+      try {
+        if (env.DB) {
+          const results = await env.DB.prepare("SELECT * FROM teacher_feedback ORDER BY id DESC").all();
+          return new Response(JSON.stringify({ success: true, comments: results.results }), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        return new Response(JSON.stringify({ success: true, comments: [] }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // 7. Teacher API
+    if (url.pathname === "/api/teachers" && request.method === "GET") {
+      try {
+        if (env.DB) {
+          const results = await env.DB.prepare("SELECT * FROM teachers").all();
+          return new Response(JSON.stringify({ success: true, teachers: results.results }), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), { status: 500 });
+      }
+    }
+
+    if (url.pathname.startsWith("/api/teachers/") && url.pathname.endsWith("/like") && request.method === "POST") {
+      const teacherId = url.pathname.split("/")[3];
+      if (env.DB) {
+        await env.DB.prepare("UPDATE teachers SET likes = likes + 1 WHERE id = ?").bind(teacherId).run();
+      }
+      return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
+    }
+
+    if (url.pathname.startsWith("/api/teachers/") && url.pathname.endsWith("/comments")) {
+      const teacherId = url.pathname.split("/")[3];
+      if (request.method === "GET") {
+        if (env.DB) {
+          const results = await env.DB.prepare("SELECT * FROM teacher_feedback WHERE teacher_id = ? ORDER BY id DESC").bind(teacherId).all();
+          return new Response(JSON.stringify({ success: true, comments: results.results }), { headers: { "Content-Type": "application/json" } });
+        }
+      }
+      if (request.method === "POST") {
+        const body = await request.json();
+        if (env.DB) {
+          await env.DB.prepare("INSERT INTO teacher_feedback (teacher_id, student_name, comment) VALUES (?, ?, ?)")
+            .bind(teacherId, body.student_name, body.comment)
+            .run();
+        }
+        return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
+      }
+    }
+
+    // 8. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
     // ይህ የሚሰራው በ Cloudflare Pages ላይ ብቻ ነው
     return env.ASSETS.fetch(request);
   },

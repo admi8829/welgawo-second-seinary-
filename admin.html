@@ -28,7 +28,11 @@
           </button>
           <button onclick="switchTab('feedback')" class="w-full text-left p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 font-bold text-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-            Feedback
+            General Feedback
+          </button>
+          <button onclick="switchTab('teacherFeedback')" class="w-full text-left p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 font-bold text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"></path></svg>
+            Teacher Reviews
           </button>
           <a href="/add-question.html" class="block w-full text-left p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 font-bold text-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -74,6 +78,11 @@
           <!-- Feed cards injected here -->
         </section>
 
+        <!-- Teacher Feedback Tab -->
+        <section id="teacherFeedbackView" class="tab-view hidden grid gap-6">
+          <!-- Teacher feedback cards injected here -->
+        </section>
+
         <div id="loading" class="hidden py-20 text-center">
           <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p class="mt-4 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Accessing D1 Cluster...</p>
@@ -99,11 +108,41 @@
         
         if (currentTab === 'students') {
           await fetchStudents();
-        } else {
+        } else if (currentTab === 'feedback') {
           await fetchFeedback();
+        } else {
+          await fetchTeacherFeedback();
         }
         
         loading.classList.add('hidden');
+      }
+
+      async function fetchTeacherFeedback() {
+        const view = document.getElementById('teacherFeedbackView');
+        view.innerHTML = '';
+        try {
+          const res = await fetch('/api/admin/teacher-comments');
+          const data = await res.json();
+          if (data.comments && data.comments.length > 0) {
+            data.comments.forEach(f => {
+              const card = document.createElement('div');
+              card.className = 'bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-4';
+              card.innerHTML = `
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-black text-lg text-slate-900">${f.student_name}</h4>
+                    <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Teacher ID: ${f.teacher_id}</span>
+                  </div>
+                  <span class="text-[10px] mono text-slate-400 uppercase tracking-tighter">${f.created_at || 'Just Now'}</span>
+                </div>
+                <p class="text-slate-600 font-medium leading-relaxed italic border-l-4 border-slate-100 pl-6">"${f.comment}"</p>
+              `;
+              view.appendChild(card);
+            });
+          } else {
+            view.innerHTML = '<div class="bg-white p-20 rounded-[2.5rem] text-center font-bold text-slate-400">No Teacher Reviews Yet.</div>';
+          }
+        } catch (e) { console.error(e); }
       }
 
       async function fetchStudents() {

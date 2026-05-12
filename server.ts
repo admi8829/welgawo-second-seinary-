@@ -12,6 +12,12 @@ async function startServer() {
   const students: any[] = [];
   const quizQuestions: any[] = [];
   const feedback: any[] = [];
+  const teachers: any[] = [
+    { id: 1, name: "Dr. Abebe Kebede", subject: "Physics", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop", bio: "Former AAU professor specializing in Quantum Mechanics.", likes: 124 },
+    { id: 2, name: "Ms. Selamawit Tadesse", subject: "Mathematics", photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop", bio: "Expert in ESLCE exam preparation with 10 years experience.", likes: 89 },
+    { id: 3, name: "Mr. Dawit Yilma", subject: "English", photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop", bio: "Linguistics specialist focused on communicative English.", likes: 56 }
+  ];
+  const teacherFeedback: any[] = [];
 
   // Local simulation of _worker.js
   app.get("/hello", (req, res) => {
@@ -38,6 +44,33 @@ async function startServer() {
 
   app.get("/api/admin/feedback", (req, res) => {
     res.json({ success: true, feedback });
+  });
+
+  app.get("/api/admin/teacher-comments", (req, res) => {
+    res.json({ success: true, comments: teacherFeedback });
+  });
+  
+  app.get("/api/teachers", (req, res) => {
+    res.json({ success: true, teachers });
+  });
+
+  app.post("/api/teachers/:id/like", (req, res) => {
+    const teacher = teachers.find(t => t.id == req.params.id);
+    if (teacher) teacher.likes++;
+    res.json({ success: true });
+  });
+
+  app.get("/api/teachers/:id/comments", (req, res) => {
+    const comments = teacherFeedback.filter(f => f.teacher_id == req.params.id);
+    res.json({ success: true, comments });
+  });
+
+  app.post("/api/teachers/:id/comments", (req, res) => {
+    const body = req.body;
+    body.teacher_id = req.params.id;
+    body.created_at = new Date().toISOString();
+    teacherFeedback.push(body);
+    res.json({ success: true });
   });
 
   app.get("/api/quiz", (req, res) => {

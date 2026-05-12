@@ -46,12 +46,26 @@ your-repo/
 └── ...
 ```
 
+## New Features & Admin Tools
+
+- **Student Dashboard**: Accessible at `/admin.html`. Shows all registered students.
+- **Question Engine**: Accessible at `/add-question.html`. Use this to add new quiz questions to the database via a form.
+- **Sample Questions**: Use the SQL in `questions.sql` to populate your D1 database initially.
+
+## Important Routes
+
+- `/join-free.html` -> Registration Page
+- `/admin.html` -> Admin Dashboard (Students)
+- `/add-question.html` -> Admin Question Engine
+- `/about.html` -> Academy Information
+- `/contact.html` -> Contact & Support
+- `/quiz.html` -> Daily Quiz Page 
+
 ## How it works
 
-1. **index.html**: Contains your frontend UI. It uses a `fetch('/hello')` call to talk to the backend.
-2. **functions/hello.js**: A Cloudflare Pages Function. Any file in the `/functions` directory automatically becomes an API endpoint.
-   - `/functions/hello.js` -> `your-site.pages.dev/hello`
-   - `/functions/api/data.js` -> `your-site.pages.dev/api/data`
+1. **index.html**: Main landing page.
+2. **_worker.js**: Single worker handling routing and Cloudflare D1 integration.
+3. **Local Simulation**: `server.ts` uses Express to mimic the Cloudflare environment for development.
 
 ## Deployment
 

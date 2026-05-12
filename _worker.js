@@ -73,7 +73,29 @@ export default {
       }
     }
 
-    // 4. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
+    // 4. Add Question to Database
+    if (url.pathname === "/api/questions" && request.method === "POST") {
+      try {
+        const q = await request.json();
+        if (env.DB) {
+          await env.DB.prepare(
+            "INSERT INTO questions (question, options, answer, subject) VALUES (?, ?, ?, ?)"
+          )
+          .bind(q.question, q.options, q.answer, q.subject)
+          .run();
+        }
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // 5. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
     // ይህ የሚሰራው በ Cloudflare Pages ላይ ብቻ ነው
     return env.ASSETS.fetch(request);
   },

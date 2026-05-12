@@ -10,6 +10,7 @@ async function startServer() {
 
   // Local simulation of DB
   const students: any[] = [];
+  const quizQuestions: any[] = [];
 
   // Local simulation of _worker.js
   app.get("/hello", (req, res) => {
@@ -28,37 +29,38 @@ async function startServer() {
   });
 
   app.get("/api/quiz", (req, res) => {
-    const sampleQuestions = [
+    // Return both sample and any added questions during simulation
+    res.json({ success: true, questions: [
       {
         id: 1,
         question: "Which of the following is a scalar quantity?",
         options: JSON.stringify(["Velocity", "Force", "Acceleration", "Mass"]),
         answer: "Mass"
       },
-      {
-        id: 2,
-        question: "I ____ to the library every Wednesday.",
-        options: JSON.stringify(["go", "goes", "going", "gone"]),
-        answer: "go"
-      },
-      {
-        id: 3,
-        question: "If 2x + 5 = 15, then x is:",
-        options: JSON.stringify(["2", "5", "10", "7.5"]),
-        answer: "5"
-      },
-      {
-        id: 4,
-        question: "The chemical symbol for Gold is:",
-        options: JSON.stringify(["Ag", "Au", "Pb", "Fe"]),
-        answer: "Au"
-      }
-    ];
-    res.json({ success: true, questions: sampleQuestions });
+      ...quizQuestions
+    ] });
+  });
+
+  app.post("/api/questions", (req, res) => {
+    const q = req.body;
+    quizQuestions.push(q);
+    res.json({ success: true });
   });
 
   app.get("/quiz.html", (req, res) => {
     res.sendFile(path.join(process.cwd(), "quiz.html"));
+  });
+
+  app.get("/about.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "about.html"));
+  });
+
+  app.get("/contact.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "contact.html"));
+  });
+
+  app.get("/add-question.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "add-question.html"));
   });
 
   // Serve static files explicitly for simulation

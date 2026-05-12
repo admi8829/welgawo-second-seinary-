@@ -18,7 +18,7 @@ export default {
         // ማሳሰቢያ፡ env.DB በ Cloudflare dashboard ላይ መጠቃት አለበት
         if (env.DB) {
           await env.DB.prepare(
-            "INSERT INTO students (name, email, grade, phone) VALUES (?, ?, ?, ?)"
+            "INSERT INTO enrollments (name, email, grade, phone) VALUES (?, ?, ?, ?)"
           )
           .bind(student.name, student.email, student.grade, student.phone)
           .run();
@@ -39,7 +39,7 @@ export default {
     if (url.pathname === "/api/admin/students" && request.method === "GET") {
       try {
         if (env.DB) {
-          const results = await env.DB.prepare("SELECT * FROM students ORDER BY id DESC").all();
+          const results = await env.DB.prepare("SELECT * FROM enrollments ORDER BY id DESC").all();
           return new Response(JSON.stringify({ success: true, students: results.results }), {
             headers: { "Content-Type": "application/json" },
           });

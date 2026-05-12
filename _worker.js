@@ -3,13 +3,14 @@ export default {
     const url = new URL(request.url);
 
     // 1. መጀመሪያ API መሆኑን ቼክ እናደርጋለን
-    if (url.pathname === "/hello") {
-      return new Response(JSON.stringify({ message: "Hello from Cloudflare Worker!" }), {
+    if (url.pathname === "/api/health") {
+      return new Response(JSON.stringify({ status: "ok", provider: "Cloudflare" }), {
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    // 2. ተማሪዎችን ለመመዝገብ (Registration)
+    // 2. ተማሪዎችን ለመመዝገብ (Firebase ስለተጠቀምን ይህ የድሮ D1 ኮድ አያስፈልግም)
+    // ግን ለሪፈረንስ ተውኩት ወይም ሙሉ በሙሉ አጥፋው
     if (url.pathname === "/api/register" && request.method === "POST") {
       try {
         const student = await request.json();

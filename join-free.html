@@ -3,76 +3,141 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Join Smart X Academy | Registration</title>
+    <title>Enrollment | Smart X Academy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
       body { font-family: 'Inter', sans-serif; }
-      .glass {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(12px);
+      .brand-gradient {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      }
+      .form-glass {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
       }
     </style>
   </head>
-  <body class="bg-slate-50 min-h-screen flex flex-col items-center justify-center p-6">
+  <body class="bg-slate-50 min-h-screen">
     
-    <div class="max-w-xl w-full bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
-      <div class="h-2 bg-blue-600"></div>
-      <div class="p-10 space-y-10">
-        <div class="text-center space-y-2">
-          <div class="inline-flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic">X</div>
-            <span class="font-bold text-xl tracking-tight">SMART X ACADEMY</span>
+    <div class="flex flex-col lg:flex-row min-h-screen">
+      
+      <!-- Left Column: Branding & Benefits -->
+      <div class="lg:w-1/2 brand-gradient text-white p-12 lg:p-24 flex flex-col justify-between relative overflow-hidden">
+        <!-- Background Decoration -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] -mr-48 -mt-48"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px] -ml-32 -mb-32"></div>
+
+        <div class="relative z-10 space-y-12">
+          <a href="/" class="inline-flex items-center gap-3">
+            <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl italic shadow-2xl shadow-blue-500/20">X</div>
+            <span class="font-black text-2xl tracking-tighter uppercase">Smart X <span class="text-blue-500">Academy</span></span>
+          </a>
+
+          <div class="space-y-6">
+            <h1 class="text-5xl lg:text-7xl font-black leading-[1.05] tracking-tight">
+              Your Journey to <br/>
+              <span class="text-blue-500">Academic Mastery</span> <br/>
+              Starts Here.
+            </h1>
+            <p class="text-xl text-slate-400 max-w-lg font-medium leading-relaxed">
+              Join Ethiopia's most advanced digital learning platform. Designed for the high-achieving student.
+            </p>
           </div>
-          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">የተማሪዎች ምዝገባ</h2>
-          <p class="text-slate-500">ለመጀመር አስፈላጊ መረጃዎችን ከታች ይሙሉ።</p>
+
+          <div class="grid gap-8">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Expert-Led Curriculum</h4>
+                <p class="text-slate-500 text-sm">Lessons created by top Ethiopian scholars and ESLCE educators.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Adaptive Testing Hub</h4>
+                <p class="text-slate-500 text-sm">Interactive quizzes and mock exams that adapt to your skill level.</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <form id="registrationForm" class="space-y-6">
-          <div class="space-y-2">
-            <label class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Full Name (ሙሉ ስም)</label>
-            <input type="text" id="regName" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="Enter your full name">
-          </div>
+        <div class="relative z-10 pt-12 border-t border-white/5">
+          <p class="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Verified by 5,000+ Students nationwide</p>
+        </div>
+      </div>
+
+      <!-- Right Column: Registration Form -->
+      <div class="lg:w-1/2 p-8 lg:p-24 flex flex-col justify-center items-center bg-white">
+        <div class="max-w-md w-full space-y-12">
           
-          <div class="grid sm:grid-cols-2 gap-4">
+          <div id="formContainer" class="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div class="space-y-2">
-              <label class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Email Address</label>
-              <input type="email" id="regEmail" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="your@email.com">
+              <h2 class="text-4xl font-black text-slate-900 tracking-tight">Create your account</h2>
+              <p class="text-slate-500 font-medium font-medium">Please enter your details to begin your enrollment.</p>
             </div>
-            <div class="space-y-2">
-              <label class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Grade (ክፍል)</label>
-              <select id="regGrade" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer">
-                <option value="9">Grade 9</option>
-                <option value="10">Grade 10</option>
-                <option value="11">Grade 11</option>
-                <option value="12">Grade 12</option>
-              </select>
+
+            <form id="registrationForm" class="space-y-6">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Full Student Name</label>
+                <input type="text" id="regName" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl px-6 py-5 focus:border-blue-600 focus:bg-white outline-none transition-all font-semibold text-slate-900" placeholder="e.g. Abebe Bikila">
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Email Address</label>
+                  <input type="email" id="regEmail" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl px-6 py-5 focus:border-blue-600 focus:bg-white outline-none transition-all font-semibold text-slate-900" placeholder="name@school.com">
+                </div>
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Academic Grade</label>
+                  <select id="regGrade" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl px-6 py-5 focus:border-blue-600 focus:bg-white outline-none transition-all font-semibold text-slate-900 appearance-none cursor-pointer">
+                    <option value="9">Grade 9</option>
+                    <option value="10">Grade 10</option>
+                    <option value="11">Grade 11</option>
+                    <option value="12">Grade 12 (ESLCE)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Phone Number (Required)</label>
+                <div class="relative">
+                  <span class="absolute left-6 top-1/2 -translate-y-1/2 font-black text-blue-600">+251</span>
+                  <input type="tel" id="regPhone" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl pl-20 pr-6 py-5 focus:border-blue-600 focus:bg-white outline-none transition-all font-semibold text-slate-900" placeholder="911 22 33 44">
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-black py-5 rounded-3xl shadow-2xl shadow-blue-500/40 hover:bg-blue-700 active:scale-[0.98] transition-all text-lg tracking-tight">Complete Enrollment</button>
+              </div>
+
+              <p class="text-center text-xs text-slate-400 font-medium">
+                By clicking "Complete Enrollment", you agree to our <a href="#" class="text-blue-600 underline">Terms of Service</a> and <a href="#" class="text-blue-600 underline">Privacy Policy</a>.
+              </p>
+            </form>
+          </div>
+
+          <!-- Success Alert -->
+          <div id="successCard" class="hidden text-center space-y-8 animate-in zoom-in-95 duration-700">
+            <div class="w-24 h-24 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+              <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <div class="space-y-4">
+              <h3 class="text-4xl font-black text-slate-900 tracking-tight">Welcome Aboard!</h3>
+              <p class="text-slate-500 font-medium">Your registration is complete. One of our counselors will contact you via phone within 24 hours to finalize your scholarship access.</p>
+            </div>
+            <div class="pt-6">
+              <a href="/" class="inline-block bg-slate-900 text-white px-10 py-4 rounded-3xl font-black shadow-xl shadow-slate-200">Return to Portal</a>
             </div>
           </div>
 
-          <div class="space-y-2">
-            <label class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Phone Number (ስልክ ቁጥር)</label>
-            <div class="relative">
-              <span class="absolute left-5 top-1/2 -translate-y-1/2 font-bold text-slate-400">+251</span>
-              <input type="tel" id="regPhone" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-16 pr-5 py-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="912345678">
-            </div>
+          <div class="pt-8 text-center">
+             <a href="/" class="text-sm font-bold text-slate-400 hover:text-blue-600 transition-colors uppercase tracking-widest">Back to Homepage</a>
           </div>
-
-          <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl shadow-xl shadow-blue-100 hover:bg-blue-700 active:scale-[0.98] transition-all">አሁን ይመዝገቡ (Join Now)</button>
-          
-          <a href="/" class="block text-center text-slate-500 text-sm font-medium hover:text-slate-900 transition-colors">ወደ ዋናው ገጽ ተመለስ</a>
-        </form>
-
-        <!-- Success Alert -->
-        <div id="successCard" class="hidden text-center space-y-6 animate-in zoom-in-95 duration-500">
-          <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-2xl font-bold text-slate-900">በተሳካ ሁኔታ ተመዝግበዋል!</h3>
-            <p class="text-slate-500">አካዳሚያችንን ስለተቀላቀሉ እናመሰግናለን። በቅርቡ በስልክ ቁጥርዎ እናገኝዎታለን።</p>
-          </div>
-          <a href="/" class="inline-block bg-slate-900 text-white px-8 py-3 rounded-full font-bold">ወደ ዋናው ገጽ</a>
         </div>
       </div>
     </div>
@@ -81,11 +146,17 @@
       const regForm = document.getElementById('registrationForm');
       const submitBtn = document.getElementById('submitBtn');
       const successCard = document.getElementById('successCard');
+      const formContainer = document.getElementById('formContainer');
 
       regForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
-        submitBtn.textContent = 'በመመዝገብ ላይ...';
+        submitBtn.innerHTML = `
+          <div class="flex items-center justify-center gap-2">
+            <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            <span>Processing...</span>
+          </div>
+        `;
 
         const studentData = {
           name: document.getElementById('regName').value,
@@ -103,16 +174,16 @@
 
           const result = await response.json();
           if (result.success) {
-            regForm.classList.add('hidden');
+            formContainer.classList.add('hidden');
             successCard.classList.remove('hidden');
           } else {
-            alert('ስህተት ተፈጥሯል፦ ' + result.error);
+            alert('Registration Failed: ' + result.error);
           }
         } catch (err) {
-          alert('ከሰርቨር ጋር መገናኘት አልተቻለም።');
+          alert('Sync Error: Please check your internet connection.');
         } finally {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'አሁን ይመዝገቡ (Join Now)';
+          submitBtn.textContent = 'Complete Enrollment';
         }
       });
     </script>

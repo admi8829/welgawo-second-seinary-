@@ -35,7 +35,27 @@ export default {
       }
     }
 
-    // 3. Quiz Data Fetching
+    // 3. Admin Students Fetching
+    if (url.pathname === "/api/admin/students" && request.method === "GET") {
+      try {
+        if (env.DB) {
+          const results = await env.DB.prepare("SELECT * FROM students ORDER BY id DESC").all();
+          return new Response(JSON.stringify({ success: true, students: results.results }), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        return new Response(JSON.stringify({ success: true, students: [] }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // 4. Quiz Data Fetching
     if (url.pathname === "/api/quiz") {
       try {
         if (env.DB) {

@@ -24,7 +24,8 @@ CREATE TABLE teachers (
   subject TEXT NOT NULL,
   photo TEXT,
   bio TEXT,
-  likes INTEGER DEFAULT 0
+  likes INTEGER DEFAULT 0,
+  unlikes INTEGER DEFAULT 0
 );
 
 -- Detailed Teacher Feedback/Comments
@@ -37,7 +38,10 @@ CREATE TABLE teacher_feedback (
 );
 
 -- Sample Teachers
-INSERT INTO teachers (name, subject, photo, bio, likes) VALUES 
-('Dr. Abebe Kebede', 'Physics', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop', 'Former AAU professor specializing in Quantum Mechanics.', 124),
-('Ms. Selamawit Tadesse', 'Mathematics', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop', 'Expert in ESLCE exam preparation with 10 years experience.', 89),
-('Mr. Dawit Yilma', 'English', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop', 'Linguistics specialist focused on communicative English.', 56);
+INSERT INTO teachers (name, subject, photo, bio, likes, unlikes) VALUES 
+('Dr. Abebe Kebede', 'Physics', NULL, 'Former AAU professor specializing in Quantum Mechanics.', 124, 5),
+('Ms. Selamawit Tadesse', 'Mathematics', NULL, 'Expert in ESLCE exam preparation with 10 years experience.', 89, 2),
+('Mr. Dawit Yilma', 'English', NULL, 'Linguistics specialist focused on communicative English.', 56, 1),
+('Mr. Tilahun Gessesse', 'Biology', NULL, 'Passionate about genetics and ecology with a hands-on approach.', 110, 8),
+('Dr. Almaz Bekele', 'Chemistry', NULL, 'Makes organic chemistry fun through real-world experiments.', 95, 3),
+('Prof. Yosef Getachew', 'History', NULL, 'Brings Ethiopian history to life with captivating storytelling.', 150, 4);

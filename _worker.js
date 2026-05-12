@@ -178,6 +178,14 @@ export default {
       return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
     }
 
+    if (url.pathname.startsWith("/api/teachers/") && url.pathname.endsWith("/unlike") && request.method === "POST") {
+      const teacherId = url.pathname.split("/")[3];
+      if (env.DB) {
+        await env.DB.prepare("UPDATE teachers SET unlikes = unlikes + 1 WHERE id = ?").bind(teacherId).run();
+      }
+      return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
+    }
+
     if (url.pathname.startsWith("/api/teachers/") && url.pathname.endsWith("/comments")) {
       const teacherId = url.pathname.split("/")[3];
       if (request.method === "GET") {

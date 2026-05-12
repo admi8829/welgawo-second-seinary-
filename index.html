@@ -276,38 +276,16 @@
             <h2 class="text-4xl font-black text-slate-900 tracking-tight">Meet Our <span class="text-blue-600 italic">Faculty</span></h2>
             <p class="text-slate-500 max-w-xl font-medium">Smart X Academy is home to Ethiopia''s most dedicated educators. Hear what students have to say or share your own experience with our teachers.</p>
           </div>
-          <a href="/feedback.html" class="inline-flex items-center gap-3 bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold hover:bg-slate-900 transition-all shadow-xl shadow-blue-500/20">
-            More Feedback
+          <a href="/feedback.html" class="inline-flex items-center gap-3 bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold hover:bg-slate-900 transition-all shadow-xl shadow-blue-500/20 whitespace-nowrap">
+            All Teachers & Feedback
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
           </a>
         </div>
         
-        <div class="grid md:grid-cols-3 gap-8">
-          <div class="group bg-white p-10 rounded-[3rem] border border-slate-100 hover:shadow-2xl transition-all shadow-sm">
-            <div class="w-24 h-24 rounded-3xl overflow-hidden mb-8 border-4 border-slate-50">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" class="w-full h-full object-cover" alt="Teacher">
-            </div>
-            <h3 class="text-2xl font-black text-slate-900">Dr. Abebe Kebede</h3>
-            <p class="text-blue-600 font-bold text-xs uppercase tracking-widest mt-2 px-1">Physics Faculty Head</p>
-            <p class="text-slate-500 mt-6 text-sm font-medium leading-relaxed italic border-l-4 border-blue-50 pl-6">"His sessions on Circular Motion are legendary. We don't just memorize formulas; we see them in action."</p>
-          </div>
-          
-          <div class="group bg-white p-10 rounded-[3rem] border border-slate-100 hover:shadow-2xl transition-all shadow-sm">
-            <div class="w-24 h-24 rounded-3xl overflow-hidden mb-8 border-4 border-slate-50">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop" class="w-full h-full object-cover" alt="Teacher">
-            </div>
-            <h3 class="text-2xl font-black text-slate-900">Ms. Selamawit T.</h3>
-            <p class="text-blue-600 font-bold text-xs uppercase tracking-widest mt-2 px-1">Math Specialist</p>
-            <p class="text-slate-500 mt-6 text-sm font-medium leading-relaxed italic border-l-4 border-blue-50 pl-6">"Selamawit simplified Integration for me in just 3 videos. Her cheat-sheet for Grade 12 is a lifesaver."</p>
-          </div>
-
-          <div class="group bg-white p-10 rounded-[3rem] border border-slate-100 hover:shadow-2xl transition-all shadow-sm">
-            <div class="w-24 h-24 rounded-3xl overflow-hidden mb-8 border-4 border-slate-50">
-              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover" alt="Teacher">
-            </div>
-            <h3 class="text-2xl font-black text-slate-900">Mr. Dawit Yilma</h3>
-            <p class="text-blue-600 font-bold text-xs uppercase tracking-widest mt-2 px-1">Dept of English</p>
-            <p class="text-slate-500 mt-6 text-sm font-medium leading-relaxed italic border-l-4 border-blue-50 pl-6">"Interactive, engaging, and incredibly supportive. Dawit helps us find our voice and master communication."</p>
+        <div id="homeTeachersGrid" class="grid md:grid-cols-3 gap-8">
+          <!-- JS Inject -->
+          <div class="col-span-3 text-center py-10">
+            <div class="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
           </div>
         </div>
       </div>
@@ -339,7 +317,7 @@
             <li><a href="/about.html" class="hover:text-slate-900">About Us</a></li>
             <li><a href="/contact.html" class="hover:text-slate-900">Contact Support</a></li>
             <li><a href="/feedback.html" class="hover:text-slate-900">Student Feedback</a></li>
-            <li><a href="/add-question.html" class="hover:text-slate-900">Teacher Portal</a></li>
+            <li><a href="/admin.html" class="hover:text-slate-900 text-blue-600 font-bold">Admin Portal</a></li>
           </ul>
         </div>
       </div>
@@ -384,6 +362,37 @@
 
       recheckBtn.addEventListener('click', checkSystem);
       setTimeout(checkSystem, 1000);
+
+      // Load sample teachers for the homepage
+      async function loadHomeTeachers() {
+        const grid = document.getElementById('homeTeachersGrid');
+        try {
+          const res = await fetch('/api/teachers');
+          const data = await res.json();
+          if (data.success && data.teachers) {
+            grid.innerHTML = '';
+            // Just take the first 3 for home teaser
+            data.teachers.slice(0, 3).forEach(t => {
+              const card = document.createElement('div');
+              card.className = 'group bg-white p-10 rounded-[3rem] border border-slate-100 hover:shadow-2xl transition-all shadow-sm';
+              card.innerHTML = `
+                <div class="w-24 h-24 rounded-3xl overflow-hidden mb-8 border-4 border-slate-50 bg-slate-100 flex items-center justify-center">
+                  ${t.photo ? `<img src="${t.photo}" class="w-full h-full object-cover">` : 
+                  `<svg class="w-12 h-12 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
+                </div>
+                <h3 class="text-2xl font-black text-slate-900">${t.name}</h3>
+                <p class="text-blue-600 font-bold text-xs uppercase tracking-widest mt-2 px-1">${t.subject} Expert</p>
+                <p class="text-slate-500 mt-6 text-sm font-medium leading-relaxed italic border-l-4 border-blue-50 pl-6">"${t.bio}"</p>
+              `;
+              grid.appendChild(card);
+            });
+          }
+        } catch (e) {
+          grid.innerHTML = '<p class="text-center col-span-3 text-slate-400 font-bold">Could not load faculty right now. Try again later.</p>';
+        }
+      }
+
+      loadHomeTeachers();
     </script>
   </body>
 </html>

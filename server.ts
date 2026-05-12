@@ -117,6 +117,14 @@ async function startServer() {
     res.sendFile(path.join(process.cwd(), "add-question.html"));
   });
 
+  app.get("/terms.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "terms.html"));
+  });
+
+  app.get("/privacy.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "privacy.html"));
+  });
+
   app.get("/feedback.html", (req, res) => {
     res.sendFile(path.join(process.cwd(), "feedback.html"));
   });

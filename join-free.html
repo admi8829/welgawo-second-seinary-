@@ -304,8 +304,8 @@
       <div class="max-w-7xl mx-auto pt-20 mt-20 border-t border-slate-200 flex flex-col md:flex-row justify-between gap-8">
         <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest">© 2026 Smart X Academy Ethiopia. All Rights Reserved.</p>
         <div class="flex gap-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-          <a href="#" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
-          <a href="#" class="hover:text-slate-900 transition-colors">Terms of Service</a>
+          <a href="/privacy.html" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
+          <a href="/terms.html" class="hover:text-slate-900 transition-colors">Terms of Service</a>
         </div>
       </div>
     </footer>
@@ -342,6 +342,7 @@
 
           const result = await response.json();
           if (result.success) {
+            localStorage.setItem('smartx_user', studentData.name);
             formContainer.classList.add('hidden');
             successCard.classList.remove('hidden');
             successCard.scrollIntoView({ behavior: 'smooth', block: 'center' });

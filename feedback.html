@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Feedback | Smart X Academy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+    </style>
+  </head>
+  <body class="bg-slate-50 min-h-screen p-6">
+    
+    <div class="max-w-2xl mx-auto space-y-12">
+      <div class="flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic">X</div>
+          <span class="font-black text-xl tracking-tight">SMART X</span>
+        </a>
+        <a href="/" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors underline">Return Home</a>
+      </div>
+
+      <div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
+        <div class="premium-gradient h-2 bg-blue-600"></div>
+        <div class="p-12 space-y-8">
+          <div class="space-y-2">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Teacher Feedback</h1>
+            <p class="text-slate-500 font-medium">Your voice matters. Share your thoughts on our classes and teachers.</p>
+          </div>
+
+          <form id="feedbackForm" class="space-y-6">
+            <div class="space-y-2">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Your Full Name</label>
+              <input type="text" id="studentName" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 focus:border-blue-600 focus:bg-white transition-all outline-none font-bold" placeholder="Abebe Bikila">
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Subject / Teacher</label>
+              <select id="subject" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 focus:border-blue-600 focus:bg-white transition-all outline-none font-bold cursor-pointer">
+                <option value="General Support">General Academy Support</option>
+                <option value="Mathematics">Mathematics Faculty</option>
+                <option value="Physics">Physics Faculty</option>
+                <option value="Biology">Biology Faculty</option>
+                <option value="English">English Center</option>
+                <option value="ICT">ICT & Coding</option>
+              </select>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Your Comment</label>
+              <textarea id="comment" rows="5" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 focus:border-blue-600 focus:bg-white transition-all outline-none font-bold" placeholder="Write your feedback here..."></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl shadow-xl shadow-blue-500/30 hover:bg-slate-900 transition-all text-lg active:scale-[0.98]">
+              Submit Feedback
+            </button>
+          </form>
+
+          <div id="successMsg" class="hidden text-center space-y-6 py-10 animate-in zoom-in-95 duration-500">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 class="text-2xl font-black text-slate-900">Thank you!</h2>
+            <p class="text-slate-500">Your feedback has been sent directly to the faculty heads.</p>
+            <button onclick="location.reload()" class="font-bold text-blue-600 hover:underline">Send another comment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById('feedbackForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const successMsg = document.getElementById('successMsg');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        const payload = {
+          student_name: document.getElementById('studentName').value,
+          teacher_subject: document.getElementById('subject').value,
+          comment: document.getElementById('comment').value
+        };
+
+        try {
+          const res = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          
+          if (res.ok) {
+            form.classList.add('hidden');
+            successMsg.classList.remove('hidden');
+          }
+        } catch (err) {
+          alert('Error submitting feedback.');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Feedback';
+        }
+      });
+    </script>
+  </body>
+</html>

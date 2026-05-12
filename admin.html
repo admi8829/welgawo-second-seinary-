@@ -3,116 +3,167 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smart X Admin | Data Verification</title>
+    <title>Smart X Admin | Central Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
       body { font-family: 'Inter', sans-serif; }
       .mono { font-family: 'JetBrains Mono', monospace; }
     </style>
   </head>
-  <body class="bg-slate-50 min-h-screen p-8">
-    <div class="max-w-7xl mx-auto space-y-8">
-      
-      <div class="flex items-center justify-between">
+  <body class="bg-slate-50 min-h-screen">
+    
+    <div class="flex">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-slate-900 min-h-screen p-6 text-white space-y-12 fixed h-full">
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic tracking-tight shadow-md">X</div>
-          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight uppercase">Admin Dashboard</h1>
+          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic">X</div>
+          <span class="font-black text-xl tracking-tight">ADMIN HUB</span>
         </div>
-        <div class="flex items-center gap-4">
-          <button onclick="fetchStudents()" class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2">
-            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-            Refresh Data
-          </button>
-          <a href="/" class="text-sm text-slate-500 font-medium">View Website</a>
-        </div>
-      </div>
 
-      <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-        <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
-          <h2 class="font-bold text-lg">Registered Students (የተመዘገቡ ተማሪዎች)</h2>
-          <span id="countBadge" class="bg-blue-600 px-3 py-1 rounded-full text-xs font-bold">... Loading</span>
+        <nav class="space-y-2">
+          <button onclick="switchTab('students')" class="w-full text-left p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 font-bold text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            Students
+          </button>
+          <button onclick="switchTab('feedback')" class="w-full text-left p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 font-bold text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            Feedback
+          </button>
+          <a href="/add-question.html" class="block w-full text-left p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 font-bold text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Add Quiz Question
+          </a>
+        </nav>
+
+        <div class="pt-20">
+          <a href="/" class="text-xs text-slate-500 font-bold hover:text-white uppercase tracking-widest">Logout & Back to Site</a>
         </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 ml-64 p-12 space-y-8">
         
-        <div class="overflow-x-auto">
+        <header class="flex items-center justify-between">
+          <div>
+            <h1 id="pageTitle" class="text-4xl font-black text-slate-900 tracking-tight tracking-tight">Active Students</h1>
+            <p class="text-slate-400 font-bold uppercase text-xs tracking-widest mt-2">D1 Real-time Synchronization</p>
+          </div>
+          <button onclick="refreshData()" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold shadow-xl shadow-blue-100 hover:scale-105 active:scale-95 transition-all">Refresh Database</button>
+        </header>
+
+        <!-- Students Tab -->
+        <section id="studentsView" class="tab-view bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
           <table class="w-full text-left">
             <thead>
               <tr class="bg-slate-50 border-b border-slate-100">
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Name</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Email</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Grade</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Phone</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Reg Date</th>
+                <th class="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest">Student Header</th>
+                <th class="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest">Enrollment Details</th>
+                <th class="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest">Phone</th>
+                <th class="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest">Sync Time</th>
               </tr>
             </thead>
             <tbody id="studentList">
-              <!-- Data will be injected here -->
+              <!-- JS Injected -->
             </tbody>
           </table>
-          
-          <div id="loadingState" class="p-20 text-center space-y-4">
-            <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p class="text-slate-400 text-sm font-medium">Fetching students from D1 Database...</p>
-          </div>
+        </section>
 
-          <div id="emptyState" class="hidden p-20 text-center space-y-2">
-            <p class="text-slate-900 font-bold text-xl">No students found yet.</p>
-            <p class="text-slate-400 text-sm">When students register, they will appear here automatically.</p>
-          </div>
+        <!-- Feedback Tab -->
+        <section id="feedbackView" class="tab-view hidden grid gap-6">
+          <!-- Feed cards injected here -->
+        </section>
+
+        <div id="loading" class="hidden py-20 text-center">
+          <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p class="mt-4 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Accessing D1 Cluster...</p>
         </div>
-      </div>
 
-      <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 text-sm text-blue-800 space-y-2">
-        <p class="font-bold">Pro Tip for Cloudflare Admin:</p>
-        <p>ይህ ዳሽቦርድ በ Cloudflare D1 ዳታቤዝ ውስጥ ያሉትን መረጃዎች በቀጥታ የሚያወጣ ነው። መረጃው እዚህ ጋር ከታየ ዳታቤዙ በትክክል እየሰራ መሆኑን ያረጋግጣል።</p>
-      </div>
+      </main>
     </div>
 
     <script>
-      async function fetchStudents() {
-        const list = document.getElementById('studentList');
-        const countBadge = document.getElementById('countBadge');
-        const loading = document.getElementById('loadingState');
-        const empty = document.getElementById('emptyState');
+      let currentTab = 'students';
 
-        list.innerHTML = '';
-        loading.classList.remove('hidden');
-        empty.classList.add('hidden');
-        countBadge.textContent = 'Syncing...';
-
-        try {
-          const response = await fetch('/api/admin/students');
-          const data = await response.json();
-          
-          loading.classList.add('hidden');
-
-          if (!data.success || !data.students || data.students.length === 0) {
-            empty.classList.remove('hidden');
-            countBadge.textContent = '0 Total';
-            return;
-          }
-
-          countBadge.textContent = `${data.students.length} Total`;
-          
-          data.students.forEach(s => {
-            const row = document.createElement('tr');
-            row.className = 'border-b border-slate-50 hover:bg-slate-50 transition-colors';
-            row.innerHTML = `
-              <td class="px-6 py-4 font-bold text-slate-900">${s.name}</td>
-              <td class="px-6 py-4 text-slate-500">${s.email}</td>
-              <td class="px-6 py-4"><span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">Grade ${s.grade}</span></td>
-              <td class="px-6 py-4 font-medium text-slate-700">+251 ${s.phone}</td>
-              <td class="px-6 py-4 text-slate-400 text-xs mono">${s.created_at || 'N/A'}</td>
-            `;
-            list.appendChild(row);
-          });
-        } catch (err) {
-          loading.classList.add('hidden');
-          alert('Error loading students: ' + err.message);
-        }
+      function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-view').forEach(v => v.classList.add('hidden'));
+        document.getElementById(tab + 'View').classList.remove('hidden');
+        document.getElementById('pageTitle').textContent = tab.charAt(0).toUpperCase() + tab.slice(1);
+        refreshData();
       }
 
-      window.onload = fetchStudents;
+      async function refreshData() {
+        const loading = document.getElementById('loading');
+        loading.classList.remove('hidden');
+        
+        if (currentTab === 'students') {
+          await fetchStudents();
+        } else {
+          await fetchFeedback();
+        }
+        
+        loading.classList.add('hidden');
+      }
+
+      async function fetchStudents() {
+        const list = document.getElementById('studentList');
+        list.innerHTML = '';
+        try {
+          const res = await fetch('/api/admin/students');
+          const data = await res.json();
+          if (data.students && data.students.length > 0) {
+            data.students.forEach(s => {
+              const row = document.createElement('tr');
+              row.className = 'border-b border-slate-50 hover:bg-blue-50/30 transition-all';
+              row.innerHTML = `
+                <td class="px-8 py-6">
+                  <div class="font-black text-slate-900">${s.name}</div>
+                  <div class="text-xs text-slate-400 lowercase">${s.email}</div>
+                </td>
+                <td class="px-8 py-6">
+                  <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Grade ${s.grade}</span>
+                </td>
+                <td class="px-8 py-6 font-bold text-slate-600">+251 ${s.phone}</td>
+                <td class="px-8 py-6 text-xs mono text-slate-400 capitalize">${s.created_at || 'Syncing...'}</td>
+              `;
+              list.appendChild(row);
+            });
+          } else {
+            list.innerHTML = '<tr><td colspan="4" class="p-20 text-center text-slate-400 font-bold">No Students Registered Yet.</td></tr>';
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      async function fetchFeedback() {
+        const view = document.getElementById('feedbackView');
+        view.innerHTML = '';
+        try {
+          const res = await fetch('/api/admin/feedback');
+          const data = await res.json();
+          if (data.feedback && data.feedback.length > 0) {
+            data.feedback.forEach(f => {
+              const card = document.createElement('div');
+              card.className = 'bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-4';
+              card.innerHTML = `
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-black text-lg text-slate-900">${f.student_name}</h4>
+                    <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">To: ${f.teacher_subject}</span>
+                  </div>
+                  <span class="text-[10px] mono text-slate-400 uppercase tracking-tighter">${f.created_at || 'Just Now'}</span>
+                </div>
+                <p class="text-slate-600 font-medium leading-relaxed italic border-l-4 border-slate-100 pl-6">"${f.comment}"</p>
+              `;
+              view.appendChild(card);
+            });
+          } else {
+            view.innerHTML = '<div class="bg-white p-20 rounded-[2.5rem] text-center font-bold text-slate-400">No Feedback Received Yet.</div>';
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      window.onload = refreshData;
     </script>
   </body>
 </html>

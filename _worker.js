@@ -95,7 +95,49 @@ export default {
       }
     }
 
-    // 5. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
+    // 5. Submit Student Feedback
+    if (url.pathname === "/api/feedback" && request.method === "POST") {
+      try {
+        const fb = await request.json();
+        if (env.DB) {
+          await env.DB.prepare(
+            "INSERT INTO feedback (student_name, teacher_subject, comment) VALUES (?, ?, ?)"
+          )
+          .bind(fb.student_name, fb.teacher_subject, fb.comment)
+          .run();
+        }
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // 6. Fetch Feedback for Admin
+    if (url.pathname === "/api/admin/feedback" && request.method === "GET") {
+      try {
+        if (env.DB) {
+          const results = await env.DB.prepare("SELECT * FROM feedback ORDER BY id DESC").all();
+          return new Response(JSON.stringify({ success: true, feedback: results.results }), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        return new Response(JSON.stringify({ success: true, feedback: [] }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // 7. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
     // ይህ የሚሰራው በ Cloudflare Pages ላይ ብቻ ነው
     return env.ASSETS.fetch(request);
   },

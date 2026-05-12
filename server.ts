@@ -11,6 +11,7 @@ async function startServer() {
   // Local simulation of DB
   const students: any[] = [];
   const quizQuestions: any[] = [];
+  const feedback: any[] = [];
 
   // Local simulation of _worker.js
   app.get("/hello", (req, res) => {
@@ -26,6 +27,17 @@ async function startServer() {
 
   app.get("/api/admin/students", (req, res) => {
     res.json({ success: true, students });
+  });
+
+  app.post("/api/feedback", (req, res) => {
+    const fb = req.body;
+    fb.created_at = new Date().toISOString();
+    feedback.push(fb);
+    res.json({ success: true });
+  });
+
+  app.get("/api/admin/feedback", (req, res) => {
+    res.json({ success: true, feedback });
   });
 
   app.get("/api/quiz", (req, res) => {
@@ -61,6 +73,10 @@ async function startServer() {
 
   app.get("/add-question.html", (req, res) => {
     res.sendFile(path.join(process.cwd(), "add-question.html"));
+  });
+
+  app.get("/feedback.html", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "feedback.html"));
   });
 
   // Serve static files explicitly for simulation

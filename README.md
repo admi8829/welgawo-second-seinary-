@@ -49,6 +49,44 @@ CREATE TABLE IF NOT EXISTS questions (
 );
 ```
 
+### 4. `teachers` Table
+Stores information about teachers at the academy, including a bio and upvotes/downvotes.
+```sql
+CREATE TABLE IF NOT EXISTS teachers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  photo TEXT,
+  bio TEXT,
+  likes INTEGER DEFAULT 0,
+  unlikes INTEGER DEFAULT 0
+);
+```
+
+### 5. `feedback` Table
+General student feedback on the academy and specific subjects.
+```sql
+CREATE TABLE IF NOT EXISTS feedback (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_name TEXT NOT NULL,
+  teacher_subject TEXT NOT NULL,
+  comment TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### 6. `teacher_feedback` Table
+Comments left by users directly on a teacher profile. 
+```sql
+CREATE TABLE IF NOT EXISTS teacher_feedback (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  teacher_id INTEGER NOT NULL,
+  student_name TEXT,
+  comment TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
 ## How It Works
 
 1. **Registration**: When a user creates an account, a `POST` request is sent to `/api/register`. The server inserts this data into the `users` table and immediately logs the user in.
@@ -63,7 +101,7 @@ CREATE TABLE IF NOT EXISTS questions (
 
 ```text
 your-repo/
-├── _worker.js          <-- Cloudflare Worker (Logic & API)
+├── server.ts           <-- Backend Server (Logic & API via Express/SQLite)
 ├── index.html          <-- Home & Dashboard (UI)
 └── ...
 ```
@@ -72,7 +110,7 @@ your-repo/
 
 - **Student Dashboard**: Accessible at `/admin.html`. Shows all registered students.
 - **Question Engine**: Accessible at `/add-question.html`. Use this to add new quiz questions to the database via a form.
-- **Sample Questions**: Use the SQL in `questions.sql` to populate your D1 database initially.
+- **Sample Data**: Use the SQL in `questions.sql` to populate your SQLite database initially.
 
 ## Important Routes
 
@@ -86,8 +124,8 @@ your-repo/
 ## How it works
 
 1. **index.html**: Main landing page.
-2. **_worker.js**: Single worker handling routing and Cloudflare D1 integration.
-3. **Local Simulation**: `server.ts` uses Express to mimic the Cloudflare environment for development.
+2. **server.ts**: Uses an embedded SQLite database (`better-sqlite3`) to handle API endpoints for the Quiz, Authentication, Leaderboard, and Feedback pages.
+3. **AI Generation**: Integrates the `@google/genai` package for generating quizzes dynamically based on topic and grade.
 
 ## Deployment
 

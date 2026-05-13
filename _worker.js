@@ -1,4 +1,24 @@
-import { GoogleGenAI } from "@google/genai";
+// --- Pure Fetch Helper for Gemini API ---
+async function geminiRequest(apiKey, prompt, systemInstruction = "") {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+  if (systemInstruction) {
+    payload.system_instruction = { parts: [{ text: systemInstruction }] };
+  }
+  
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  
+  const data = await response.json();
+  if (data.error) throw new Error(data.error.message);
+  if (!data.candidates || !data.candidates[0]) throw new Error("No response from AI");
+  return data.candidates[0].content.parts[0].text;
+}
 
 export default {
   async fetch(request, env) {
@@ -93,14 +113,12 @@ export default {
             return jsonResponse({ success: false, message: "GEMINI_API_KEY missing in environment." }, 400);
           }
           const { message } = await request.json();
-          const genAI = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
-          const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
-            systemInstruction: "You are Smart-X Academy AI, a helpful tutor for Ethiopian high school students. Be encouraging, clear, and focused on educational success.",
-          });
-          const result = await model.generateContent(message);
-          const response = await result.response;
-          return jsonResponse({ success: true, text: response.text() });
+          const aiText = await geminiRequest(
+            env.GEMINI_API_KEY, 
+            message, 
+            "You are Smart-X Academy AI, a helpful tutor for Ethiopian high school students. Be encouraging, clear, and focused on educational success."
+          );
+          return jsonResponse({ success: true, text: aiText });
         }
 
         // --- 4. Quiz Logic ---
@@ -135,12 +153,9 @@ export default {
           Return ONLY a JSON array with objects containing: "question", "options" (array of 4 strings), and "answer" (string matching one of the options). 
           Avoid markdown formatting blocks.`;
 
-          const genAI = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
-          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-          const result = await model.generateContent(prompt);
-          const response = await result.response;
-          const text = response.text().replace(/```json/g, "").replace(/```/g, "").trim();
-          const questions = JSON.parse(text);
+          const aiText = await geminiRequest(env.GEMINI_API_KEY, prompt);
+          const cleanText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
+          const questions = JSON.parse(cleanText);
           
           const formatted = questions.map((q, i) => ({
             id: 2000 + i,

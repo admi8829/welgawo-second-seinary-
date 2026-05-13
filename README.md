@@ -75,18 +75,6 @@ CREATE TABLE IF NOT EXISTS feedback (
 );
 ```
 
-### 6. `teacher_feedback` Table
-Comments left by users directly on a teacher profile. 
-```sql
-CREATE TABLE IF NOT EXISTS teacher_feedback (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  teacher_id INTEGER NOT NULL,
-  student_name TEXT,
-  comment TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
 ## How It Works
 
 1. **Registration**: When a user creates an account, a `POST` request is sent to `/api/register`. The server inserts this data into the `users` table and immediately logs the user in.

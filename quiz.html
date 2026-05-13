@@ -256,16 +256,17 @@
             body: JSON.stringify({ topic, grade: currentGrade })
           });
           const data = await res.json();
-          selectionView.classList.add('hidden');
-          quizPortal.classList.remove('hidden');
-          subjectTitle.textContent = `Grade ${currentGrade} ${currentSubject} AI Sync`;
           
           if (data.success && data.questions && data.questions.length > 0) {
+            selectionView.classList.add('hidden');
+            quizPortal.classList.remove('hidden');
+            subjectTitle.textContent = `Grade ${currentGrade} ${currentSubject} AI Sync`;
             questions = data.questions;
             renderQuestion();
           } else {
-            alert('Failed to generate. AI might be overwhelmed.');
-            window.location.reload();
+            alert('Failed to generate: ' + (data.message || 'AI might be overwhelmed.'));
+            btn.textContent = 'Generate & Start';
+            btn.disabled = false;
           }
         } catch (e) {
             alert('GenAI Error: ' + e.message);

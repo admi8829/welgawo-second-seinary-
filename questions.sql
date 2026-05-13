@@ -27,12 +27,7 @@ VALUES
 (1, 'Physics', '12', 4, 5),
 (2, 'History', '10', 5, 5);
 
--- 5. Insert Sample Teacher Feedback
-INSERT INTO teacher_feedback (teacher_id, student_name, comment) 
-VALUES 
-(1, 'Abebe Bikila', 'Great physics teacher, explains concepts very clearly.');
-
--- 6. Insert General Feedback
+-- 5. Insert General Feedback
 INSERT INTO feedback (student_name, teacher_subject, comment) 
 VALUES 
 ('Sara Girma', 'Mathematics', 'The math resources are very helpful for my exams.');

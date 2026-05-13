@@ -49,14 +49,6 @@ db.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
-  CREATE TABLE IF NOT EXISTS teacher_feedback (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    teacher_id INTEGER NOT NULL,
-    student_name TEXT,
-    comment TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-
   CREATE TABLE IF NOT EXISTS quiz_results (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
@@ -172,6 +164,9 @@ async function startServer() {
   app.post("/api/generate_ai_quiz", async (req, res) => {
     const { topic, grade } = req.body;
     try {
+      if (!process.env.GEMINI_API_KEY) {
+        return res.status(400).json({ success: false, message: "Gemini API Key is missing. Please set GEMINI_API_KEY in Cloudflare Variable Secrets." });
+      }
       const { GoogleGenAI } = await import("@google/genai");
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Generate 3 multiple-choice questions for grade ${grade} high school students about the topic: "${topic}". 
@@ -214,11 +209,6 @@ async function startServer() {
     res.json({ success: true, leaderboard: results });
   });
 
-  app.get("/api/admin/teacher-comments", (req, res) => {
-    const comments = db.prepare('SELECT * FROM teacher_feedback').all();
-    res.json({ success: true, comments });
-  });
-
   app.get("/api/admin/feedback", (req, res) => {
     const feedback = db.prepare('SELECT * FROM feedback ORDER BY created_at DESC').all();
     res.json({ success: true, feedback });
@@ -236,17 +226,6 @@ async function startServer() {
 
   app.post("/api/teachers/:id/unlike", (req, res) => {
     db.prepare('UPDATE teachers SET unlikes = unlikes + 1 WHERE id = ?').run(req.params.id);
-    res.json({ success: true });
-  });
-
-  app.get("/api/teachers/:id/comments", (req, res) => {
-    const comments = db.prepare('SELECT * FROM teacher_feedback WHERE teacher_id = ? ORDER BY created_at DESC').all(req.params.id);
-    res.json({ success: true, comments });
-  });
-
-  app.post("/api/teachers/:id/comments", (req, res) => {
-    const { student_name, comment } = req.body;
-    db.prepare('INSERT INTO teacher_feedback (teacher_id, student_name, comment) VALUES (?, ?, ?)').run(req.params.id, student_name, comment);
     res.json({ success: true });
   });
 

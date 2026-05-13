@@ -120,7 +120,11 @@ if (signUpForm) {
       
       if (data.success) {
         localStorage.setItem('currentUser', JSON.stringify(data.user));
-        window.location.href = '/';
+        btn.textContent = 'Success! Redirecting...';
+        btn.classList.add('bg-green-600', 'hover:bg-green-700');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500);
       } else {
         alert(data.message);
       }

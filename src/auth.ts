@@ -95,6 +95,7 @@ if (signUpForm) {
     const btn = document.getElementById('btnSignUp') as HTMLButtonElement;
     const name = (document.getElementById('nameInput') as HTMLInputElement).value;
     const email = (document.getElementById('emailInput') as HTMLInputElement).value;
+    const phone = (document.getElementById('phoneInput') as HTMLInputElement).value;
     const password = (document.getElementById('passwordInput') as HTMLInputElement).value;
     const confirm = (document.getElementById('confirmPasswordInput') as HTMLInputElement).value;
     
@@ -114,7 +115,7 @@ if (signUpForm) {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, gender, age, grade, schoolName, photo: selectedPhotoBase64 })
+        body: JSON.stringify({ name, email, phone, password, gender, age, grade, schoolName, photo: selectedPhotoBase64 })
       });
       const data = await res.json();
       

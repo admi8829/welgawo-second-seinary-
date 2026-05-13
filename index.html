@@ -414,46 +414,163 @@
       }
     </script>
     <script>
-      const navAuth = document.getElementById('navAuth');
-      const userStr = localStorage.getItem('currentUser');
-      
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        navAuth.innerHTML = `
-          <div class="flex items-center gap-4">
-            <div class="text-right hidden sm:block">
-               <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Logged in as</p>
-               <p class="text-sm font-bold text-slate-900">${user.name || 'Student'}</p>
+      document.addEventListener('DOMContentLoaded', () => {
+        const navAuth = document.getElementById('navAuth');
+        const userStr = localStorage.getItem('currentUser');
+        
+        if (userStr && navAuth) {
+          const user = JSON.parse(userStr);
+          navAuth.innerHTML = `
+            <div class="flex items-center gap-4">
+              <div class="text-right hidden sm:block">
+                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Logged in as</p>
+                 <p class="text-xs font-bold text-slate-900">${user.name || 'Student'}</p>
+              </div>
+              <div class="relative group cursor-pointer">
+                 <button class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg shadow-blue-200 uppercase">
+                   ${(user.name || 'S').charAt(0)}
+                 </button>
+                 <div class="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all p-2 z-[100]">
+                   <a href="/profile.html" class="block p-3 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-xl transition-colors">My Profile</a>
+                   <button id="logoutBtn" class="w-full text-left p-3 text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors">Sign Out</button>
+                 </div>
+              </div>
             </div>
-            <div class="relative group cursor-pointer">
-               <button class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg shadow-blue-200 uppercase">
-                 ${(user.name || 'S').charAt(0)}
-               </button>
-               <div class="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all p-2 z-[100]">
-                 <a href="/profile.html" class="block p-3 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-xl transition-colors">My Profile</a>
-                 <button id="logoutBtn" class="w-full text-left p-3 text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors">Sign Out</button>
-               </div>
-            </div>
-          </div>
-        `;
-        document.getElementById('logoutBtn')?.addEventListener('click', () => {
-           localStorage.removeItem('currentUser');
-           window.location.reload();
-        });
-      }
+          `;
+          document.getElementById('logoutBtn')?.addEventListener('click', () => {
+             localStorage.removeItem('currentUser');
+             window.location.reload();
+          });
+        }
+      });
     </script>
-    <script>
-      const authDiv = document.getElementById('navAuth');
-      const currentUser = localStorage.getItem('currentUser');
-      if (currentUser) {
-        const user = JSON.parse(currentUser);
-        authDiv.innerHTML = `
-          <div class="flex items-center gap-4">
-            <span class="text-sm font-semibold text-slate-600 hidden sm:block">Hello, ${user.name}</span>
-            <button onclick="localStorage.removeItem('currentUser'); window.location.reload();" class="text-sm font-bold text-red-500 hover:text-red-700 uppercase tracking-widest transition-colors">Log Out</button>
+    
+    <!-- AI Chat Toggle -->
+    <button id="aiChatToggle" class="fixed bottom-8 right-8 w-16 h-16 bg-blue-600 text-white rounded-full shadow-2xl shadow-blue-400/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40 group">
+      <svg class="w-8 h-8 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+      <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-white rounded-full"></div>
+    </button>
+
+    <!-- AI Chat Modal -->
+    <div id="aiChatModal" class="fixed bottom-28 right-8 w-96 max-w-[calc(100vw-4rem)] h-[500px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col invisible opacity-0 translate-y-10 transition-all z-40">
+      <div class="bg-slate-900 p-6 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-xs font-black italic">X</div>
+          <div>
+            <p class="text-sm font-bold">Smart X AI Assistant</p>
+            <p class="text-[10px] text-blue-400 font-bold uppercase tracking-wider">Online & Thinking</p>
+          </div>
+        </div>
+        <button id="closeChat" class="text-slate-400 hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
+        <div class="flex gap-2">
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex-shrink-0 flex items-center justify-center text-blue-600">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path></svg>
+          </div>
+          <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm text-slate-700 font-medium border border-slate-100">
+            Hello! I am your AI study buddy. Ask me anything about your subjects or how to use the app!
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-white border-t border-slate-100 flex gap-2">
+        <input type="text" id="chatInput" placeholder="Ask AI..." class="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-600 font-medium">
+        <button id="sendChat" class="bg-blue-600 text-white p-2 rounded-xl hover:bg-slate-900 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <script type="module">
+      import { GoogleGenAI } from "@google/genai";
+      
+      const toggle = document.getElementById('aiChatToggle');
+      const modal = document.getElementById('aiChatModal');
+      const close = document.getElementById('closeChat');
+      const chatInput = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('sendChat');
+      const messagesContainer = document.getElementById('chatMessages');
+
+      let isOpen = false;
+      let ai = null;
+
+      toggle.addEventListener('click', () => {
+        isOpen = !isOpen;
+        if (isOpen) {
+          modal.classList.remove('invisible', 'opacity-0', 'translate-y-10');
+        } else {
+          modal.classList.add('invisible', 'opacity-0', 'translate-y-10');
+        }
+      });
+
+      close.addEventListener('click', () => {
+        isOpen = false;
+        modal.classList.add('invisible', 'opacity-0', 'translate-y-10');
+      });
+
+      async function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        // Add user message
+        const userDiv = document.createElement('div');
+        userDiv.className = 'flex flex-row-reverse gap-2';
+        userDiv.innerHTML = `
+          <div class="bg-blue-600 p-3 rounded-2xl rounded-tr-none shadow-md text-sm text-white font-medium">
+            ${text}
           </div>
         `;
+        messagesContainer.appendChild(userDiv);
+        chatInput.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Add loading state
+        const botId = 'bot-' + Date.now();
+        const botDiv = document.createElement('div');
+        botDiv.className = 'flex gap-2';
+        botDiv.innerHTML = `
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex-shrink-0 flex items-center justify-center text-blue-600">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path></svg>
+          </div>
+          <div id="${botId}" class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm text-slate-400 font-medium border border-slate-100 animate-pulse">
+            Thinking...
+          </div>
+        `;
+        messagesContainer.appendChild(botDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        try {
+          if (!ai) {
+             const keyRes = await fetch('/api/health'); // Just to triggers potential injection if needed, usually process.env.GEMINI_API_KEY works
+             ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+          }
+          
+          const response = await ai.models.generateContent({
+             model: "gemini-3-flash-preview",
+             contents: text,
+             config: {
+               systemInstruction: "You are Smart-X Academy AI, a helpful tutor for Ethiopian high school students. Be encouraging, clear, and focused on educational success."
+             }
+          });
+
+          const botMsg = document.getElementById(botId);
+          botMsg.classList.remove('animate-pulse', 'text-slate-400');
+          botMsg.classList.add('text-slate-700');
+          botMsg.innerText = response.text || "I'm sorry, I couldn't process that.";
+        } catch (err) {
+          const botMsg = document.getElementById(botId);
+          botMsg.innerText = 'Error: ' + err.message;
+          botMsg.classList.add('text-red-500');
+        }
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
+
+      sendBtn.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+      });
     </script>
   </body>
 </html>

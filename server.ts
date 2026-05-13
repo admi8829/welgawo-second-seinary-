@@ -14,11 +14,13 @@ db.exec(`
     name TEXT,
     email TEXT UNIQUE,
     password TEXT,
+    phone TEXT,
     gender TEXT,
     age INTEGER,
     grade TEXT,
     schoolName TEXT,
     photo TEXT,
+    is_admin BOOLEAN DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -131,12 +133,42 @@ async function startServer() {
     }
   });
 
-  app.get("/api/admin/students", (req, res) => {
+  app.post("/api/admin/bulk-questions", (req, res) => {
+    const { questions } = req.body;
     try {
-      const students = db.prepare('SELECT id, name, email, grade, schoolName, created_at, photo FROM users WHERE is_admin = 0 OR is_admin IS NULL ORDER BY created_at DESC').all();
-      res.json({ success: true, students });
-    } catch (e: any) {
-      res.status(500).json({ success: false, message: "Database Error: " + e.message });
+      const insert = db.prepare('INSERT INTO questions (question, options, answer, subject, grade) VALUES (?, ?, ?, ?, ?)');
+      const insertMany = db.transaction((qs) => {
+        for (const q of qs) insert.run(q.question, q.options, q.answer, q.subject, q.grade);
+      });
+      insertMany(questions);
+      res.json({ success: true });
+    } catch (e) {
+      res.status(500).json({ success: false, message: "Failed to save bulk questions" });
+    }
+  });
+
+  app.post("/api/quiz_results", (req, res) => {
+    const { userId, subject, grade, score, total } = req.body;
+    try {
+      db.prepare('INSERT INTO quiz_results (user_id, subject, grade, score, total) VALUES (?, ?, ?, ?, ?)').run(userId, subject, grade, score, total);
+      res.json({ success: true });
+    } catch (e) {
+      res.status(500).json({ success: false, message: "Failed to save results" });
+    }
+  });
+
+  app.get("/api/leaderboard", (req, res) => {
+    try {
+      const results = db.prepare(`
+        SELECT u.name, u.photo, SUM(q.score) as total_score 
+        FROM quiz_results q 
+        JOIN users u ON q.user_id = u.id 
+        GROUP BY u.id 
+        ORDER BY total_score DESC LIMIT 10
+      `).all();
+      res.json({ success: true, leaderboard: results });
+    } catch (e) {
+      res.status(500).json({ success: false, message: "Failed to load leaderboard" });
     }
   });
 
@@ -279,6 +311,14 @@ async function startServer() {
 
   app.get("/admin.html", (req, res) => {
     res.sendFile(path.join(process.cwd(), "admin.html"));
+  });
+
+  // Handle Clean URLs
+  const cleanAssets = ["/auth", "/about", "/contact", "/quiz", "/admin", "/terms", "/privacy", "/profile", "/leaderboard"];
+  cleanAssets.forEach(p => {
+    app.get(p, (req, res) => {
+      res.sendFile(path.join(process.cwd(), p + ".html"));
+    });
   });
 
   // Vite middleware for development

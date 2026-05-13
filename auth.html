@@ -107,10 +107,14 @@
             <h3 class="text-center text-xl font-display font-black text-slate-900 uppercase tracking-widest mb-10">Create Account</h3>
             <form id="signUpForm" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="nameInput" placeholder="Full Name" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm">
-                <input type="email" id="emailInput" placeholder="Email Address" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm">
-                <input type="password" id="passwordInput" placeholder="Password" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm">
-                <input type="password" id="confirmPasswordInput" placeholder="Confirm Password" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm">
+                <input type="text" id="nameInput" placeholder="Full Name" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm text-slate-800">
+                <input type="email" id="emailInput" placeholder="Email Address" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm text-slate-800">
+                <input type="text" id="phoneInput" placeholder="Phone Number" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm text-slate-800">
+                <input type="password" id="passwordInput" placeholder="Password" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm text-slate-800">
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <input type="password" id="confirmPasswordInput" placeholder="Confirm Password" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 transition-all font-medium text-sm text-slate-800">
+                 <input type="text" id="schoolInput" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 font-medium text-sm text-slate-800" placeholder="School Name">
               </div>
               
               <div class="grid grid-cols-3 gap-3">
@@ -128,8 +132,6 @@
                 </select>
               </div>
 
-              <input type="text" id="schoolInput" required class="w-full bg-[#f9fafb] border border-slate-100 rounded-xl py-3.5 px-6 outline-none focus:border-blue-500 font-medium text-sm" placeholder="School Name">
-              
               <div class="flex items-center gap-3">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Avatar</label>
                 <input type="file" id="photoInput" accept="image/*" class="w-full text-[10px] text-slate-400 file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">

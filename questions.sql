@@ -1,33 +1,18 @@
--- questions.sql (Examples of how to insert data into the Smart-X Academy DB)
+-- Smart-X Academy Database Initial Seed
+-- Table structures are handled by server.ts
 
--- 1. Insert Sample Users
-INSERT INTO users (name, email, password, gender, age, grade, schoolName) 
-VALUES 
-('Abebe Bikila', 'abebe@example.com', 'pass123', 'Male', 18, '12', 'Addis Ababa High School'),
-('Sara Girma', 'sara@example.com', 'pass123', 'Female', 16, '10', 'Bole Preparatory');
+-- 1. Insert Admin and Students
+INSERT INTO users (name, email, password, phone, is_admin) VALUES ('System Admin', 'admin@smartx.com', 'admin123', '0911223344', 1);
+INSERT INTO users (name, email, password, phone, gender, age, grade, schoolName) VALUES ('Abebe Bikila', 'abebe@example.com', 'pass123', '0922334455', 'Male', 18, '12', 'Addis Ababa High School');
 
 -- 2. Insert Sample Questions
-INSERT INTO questions (question, options, answer, subject, grade) 
-VALUES 
-('Which of the following is the capital city of Ethiopia?', '["Nairobi", "Mogadishu", "Addis Ababa", "Asmara"]', 'Addis Ababa', 'Geography', '12'),
-('Who was the Emperor of Ethiopia during the Battle of Adwa?', '["Menelik II", "Haile Selassie", "Tewodros II", "Yohannes IV"]', 'Menelik II', 'History', '12'),
-('What is the main component of the atmosphere?', '["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"]', 'Nitrogen', 'Chemistry', '12'),
-('Find the value of x in the equation: 3x - 7 = 11.', '["4", "5", "6", "7"]', '6', 'Mathematics', '12'),
-('If a car travels at 60 km/h, how far will it travel in 2.5 hours?', '["120 km", "150 km", "180 km", "200 km"]', '150 km', 'Physics', '10');
+INSERT INTO questions (question, options, answer, subject, grade) VALUES 
+('Which Ethiopian Emperor defeated the Italians at the Battle of Adwa?', '["Menelik II", "Haile Selassie", "Tewodros II", "Yohannes IV"]', 'Menelik II', 'History', '12'),
+('What is the value of gravitational acceleration on Earth approximately?', '["8.9 m/s²", "9.8 m/s²", "10.2 m/s²", "7.5 m/s²"]', '9.8 m/s²', 'Physics', '12'),
+('Which of these is a correct sentence in English?', '["He go to school.", "He goes to school.", "He going to school.", "He have gone to school."]', 'He goes to school.', 'English', '12'),
+('What is the derivative of x^2?', '["x", "2x", "x^3", "2"]', '2x', 'Mathematics', '12');
 
 -- 3. Insert Sample Teachers
-INSERT INTO teachers (name, subject, photo, bio, likes, unlikes) 
-VALUES 
-('Dr. Abebe Kebede', 'Physics', NULL, 'Former AAU professor specializing in Quantum Mechanics.', 124, 5),
-('Ms. Selamawit Tadesse', 'Mathematics', NULL, 'Expert in ESLCE exam preparation with 10 years experience.', 89, 2);
-
--- 4. Insert Sample Quiz Results
-INSERT INTO quiz_results (user_id, subject, grade, score, total) 
-VALUES 
-(1, 'Physics', '12', 4, 5),
-(2, 'History', '10', 5, 5);
-
--- 5. Insert General Feedback
-INSERT INTO feedback (student_name, teacher_subject, comment) 
-VALUES 
-('Sara Girma', 'Mathematics', 'The math resources are very helpful for my exams.');
+INSERT INTO teachers (name, subject, bio, likes) VALUES
+('Dr. Abebe Kebede', 'Physics', 'Specialist in Quantum Physics', 150),
+('Ms. Selamawit Tadesse', 'Mathematics', 'Calculus Expert', 120);

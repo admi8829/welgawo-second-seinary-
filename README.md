@@ -1,41 +1,63 @@
-# Cloudflare Pages + Functions Example
+# Smart-X Academy Documentation
 
-This is a simple template for a Cloudflare Pages project with Functions.
+## Database Setup Details (SQLite)
 
-## Cloudflare D1 Database Setup (REQUIRED for Registration)
+This project uses an embedded SQLite database (`database.sqlite`) via `better-sqlite3` to store information. The tables are automatically created when the `server.ts` starts.
 
-The registration form uses Cloudflare D1. To make it work in production:
+### 1. `users` Table
+Stores student registration and profile details.
+```sql
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  gender TEXT,
+  age INTEGER,
+  grade TEXT,
+  schoolName TEXT,
+  photo TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-1. Create a D1 database in Cloudflare:
-   ```bash
-   npx wrangler d1 create smart-x-db
-   ```
-2. Create the `students` table:
-   ```sql
-   CREATE TABLE students (
-     id INTEGER PRIMARY KEY AUTOINCREMENT,
-     name TEXT NOT NULL,
-     email TEXT NOT NULL,
-     grade TEXT NOT NULL,
-     phone TEXT NOT NULL,
-     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-   );
-   ```
+### 2. `quiz_results` Table
+Stores the score and performance of students after completing a quiz. Used to generate the leaderboard.
+```sql
+CREATE TABLE IF NOT EXISTS quiz_results (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  subject TEXT,
+  grade TEXT,
+  score INTEGER,
+  total INTEGER,
+  completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(user_id) REFERENCES users(id)
+);
+```
 
-3. Create the `questions` table (Optional for Quiz):
-   ```sql
-   CREATE TABLE questions (
-     id INTEGER PRIMARY KEY AUTOINCREMENT,
-     question TEXT NOT NULL,
-     options TEXT NOT NULL, -- JSON string like '["Opt1", "Opt2"]'
-     answer TEXT NOT NULL,
-     subject TEXT
-   );
-   ```
+### 3. `questions` Table
+Stores preset questions for quizzes.
+```sql
+CREATE TABLE IF NOT EXISTS questions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  subject TEXT,
+  grade TEXT,
+  question TEXT NOT NULL,
+  options TEXT NOT NULL,
+  answer TEXT NOT NULL
+);
+```
 
-4. Bind the database to your Pages project in `wrangler.toml` or the Cloudflare Dashboard:
-   - Go to **Pages** -> **Your Project** -> **Settings** -> **Functions** -> **D1 database bindings**.
-   - Bind `DB` to your `smart-x-db`.
+## How It Works
+
+1. **Registration**: When a user creates an account, a `POST` request is sent to `/api/register`. The server inserts this data into the `users` table and immediately logs the user in.
+2. **Quiz Page**: After successful registration, the app redirects the user to `/quiz.html`.
+3. **Fetching Quizzes**: The app makes a `GET` request to `/api/quiz` (or generates an AI quiz via `/api/generate_ai_quiz`). It fetches matching questions from the `questions` table.
+4. **Saving Scores**: At the end of the quiz, `POST /api/quiz_results` is called. It saves the student's score in the `quiz_results` table.
+5. **Leaderboard**: The `/leaderboard.html` page uses `GET /api/leaderboard` to aggregate `quiz_results.score` for each user and ranks them.
+
+---
 
 ## Folder Structure for GitHub
 

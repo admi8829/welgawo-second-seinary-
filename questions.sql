@@ -2,7 +2,7 @@
 -- Table structures are handled by server.ts automagically
 
 -- 1. Insert/Sync Admin
-INSERT OR REPLACE INTO users (id, name, email, password, phone, is_admin) VALUES (1, 'Academy Central Admin', 'admin@smartx.com', 'SmartX2026', '0900000000', 1);
+INSERT OR REPLACE INTO users (id, name, email, password, is_admin) VALUES (1, 'Academy Central Admin', 'admin@smartx.com', 'SmartX2026', 1);
 
 -- 2. Insert Sample Questions (Grade 12 Focus)
 INSERT OR REPLACE INTO questions (id, question, options, answer, subject, grade) VALUES 
@@ -17,7 +17,10 @@ INSERT OR REPLACE INTO questions (id, question, options, answer, subject, grade)
 (9, 'Who wrote the famous Amharic novel "Fiqir Eske Meqabir"?', '["Bealu Girma", "Hadis Alemayehu", "Tsegaye Gebre-Medhin", "Berhanu Zerihun"]', 'Hadis Alemayehu', 'Literature', '12'),
 (10, 'What is the SI unit of electric current?', '["Volt", "Ohm", "Ampere", "Watt"]', 'Ampere', 'Physics', '12'),
 (11, 'Which Ethiopian city is known as the "City of Harari"?', '["Dire Dawa", "Harar", "Jijiga", "Bahir Dar"]', 'Harar', 'History', '12'),
-(12, 'Simplify: cos²(x) + sin²(x)', '["0", "1", "sin(x)", "cos(x)"]', '1', 'Mathematics', '12');
+(12, 'Simplify: cos²(x) + sin²(x)', '["0", "1", "sin(x)", "cos(x)"]', '1', 'Mathematics', '12'),
+(13, 'The Axumite Obelisk that was returned from Italy in 2005 is known as?', '["Obelisk of Axum", "Stela 3", "Rome Obelisk", "The Victory Pillar"]', 'Obelisk of Axum', 'History', '12'),
+(14, 'What is the main component of natural gas?', '["Ethane", "Propane", "Methane", "Butane"]', 'Methane', 'Chemistry', '12'),
+(15, 'Which gas is most abundant in the Earth atmosphere?', '["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"]', 'Nitrogen', 'Geography', '12');
 
 -- 3. Insert Initial Teachers
 INSERT OR REPLACE INTO teachers (id, name, subject, bio, likes) VALUES

@@ -64,7 +64,7 @@ export default {
         // --- 1. Registration ---
         if (path === "/api/register" && method === "POST") {
           const body = await request.json();
-          const { name, email, phone, password, gender, age, grade, schoolName, photo = null } = body;
+          const { name, email, password, gender, age, grade, schoolName, photo = null } = body;
 
           const existing = await env.DB.prepare("SELECT id FROM users WHERE email = ?").bind(email).first();
           if (existing) {
@@ -72,9 +72,9 @@ export default {
           }
 
           const result = await env.DB.prepare(
-            "INSERT INTO users (name, email, phone, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO users (name, email, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
           )
-            .bind(name, email, phone, password, gender, parseInt(age) || 0, grade, schoolName, photo)
+            .bind(name, email, password, gender, parseInt(age) || 0, grade, schoolName, photo)
             .run();
 
           if (result.success) {
@@ -170,7 +170,15 @@ export default {
       }
     }
 
-    // Fallback to default asset serving
+    // --- Neural Static Routing ---
+    // Handles clean URLs like /auth or /quiz by serving the corresponding .html file
+    if (method === "GET" && !path.includes(".")) {
+      const targetPath = path === "/" ? "/index.html" : path + ".html";
+      const assetResponse = await env.ASSETS.fetch(new Request(new URL(targetPath, request.url), request));
+      if (assetResponse.status === 200) return assetResponse;
+    }
+
+    // Default: Fallback to Pages static assets
     return env.ASSETS.fetch(request);
   }
 };

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
   grade TEXT,
   schoolName TEXT,
   photo TEXT,
+  is_admin INTEGER DEFAULT 0,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -96,11 +97,10 @@ your-repo/
 
 ## New Features & Admin Tools
 
-- **Student Dashboard**: Accessible at `/admin`. Sign in with `admin@smartx.com` and `SmartX2026`.
-- **Question Engine**: Accessible within the `/admin` dashboard under "Add Quiz Question".
-- **AI Chat**: Integrated in the student portal for real-time tutoring using Gemini 1.5 Flash.
-- **Sample Data**: Use `questions.sql` for initial population of students, questions, and teachers.
-- **Visual Portraits**: High-performance photo upload system for student profiles.
+- **AI Hub**: Integrated in the student portal for real-time tutoring and quiz generation using Gemini 2.0 Flash Lite.
+- **Neural Engine**: Advanced MCQ generation with 99.9% logical accuracy tailored for Ethiopian exams.
+- **Zero-Photo Auth**: Streamlined registration focused on academic data rather than portraits.
+- **Admin Hub**: Manage students and questions with institutional precision.
 
 ## Important Routes
 

@@ -90,6 +90,18 @@
             <p class="text-slate-500">Add questions directly to the D1 Database.</p>
           </div>
 
+          <div class="space-y-4 bg-purple-50 p-6 rounded-2xl border border-purple-100">
+            <h3 class="font-bold text-purple-900 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Auto-Generate with AI
+            </h3>
+            <div class="flex gap-2">
+              <input type="text" id="aiTopic" class="flex-1 bg-white border border-purple-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-600 transition-all font-medium" placeholder="Enter any topic...">
+              <button type="button" id="aiGenerateBtn" class="bg-purple-600 text-white px-6 rounded-xl font-bold hover:bg-purple-700 transition-all disabled:opacity-50 whitespace-nowrap shadow-md shadow-purple-200">Generate</button>
+            </div>
+            <div id="aiError" class="hidden text-xs text-red-500 font-bold px-1"></div>
+          </div>
+
           <form id="questionForm" class="space-y-6">
             <div class="space-y-2">
               <label class="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Subject / Category</label>
@@ -266,6 +278,64 @@
       const form = document.getElementById('questionForm');
       const submitBtn = document.getElementById('submitBtn');
       const successMsg = document.getElementById('successMsg');
+      const aiGenerateBtn = document.getElementById('aiGenerateBtn');
+      const aiTopic = document.getElementById('aiTopic');
+      const aiError = document.getElementById('aiError');
+
+      if (aiGenerateBtn) {
+        aiGenerateBtn.addEventListener('click', async () => {
+          const topic = aiTopic.value.trim();
+          if (!topic) {
+            aiError.textContent = 'Please enter a topic first.';
+            aiError.classList.remove('hidden');
+            return;
+          }
+
+          aiError.classList.add('hidden');
+          aiGenerateBtn.disabled = true;
+          aiGenerateBtn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block align-middle mr-2"></div>Generating...';
+
+          try {
+            const response = await fetch('/api/generate-question', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ topic })
+            });
+            const data = await response.json();
+
+            if (data.success && data.data) {
+              const quiz = data.data;
+              document.getElementById('subject').value = Array.isArray(topic) ? topic[0] : topic;
+              document.getElementById('question').value = quiz.question || '';
+              
+              const opts = quiz.options || [];
+              if(opts.length >= 1) document.getElementById('optA').value = opts[0];
+              if(opts.length >= 2) document.getElementById('optB').value = opts[1];
+              if(opts.length >= 3) document.getElementById('optC').value = opts[2];
+              if(opts.length >= 4) document.getElementById('optD').value = opts[3];
+
+              // Set correct answer
+              const correct = quiz.correctAnswer;
+              let selectedKey = 'A';
+              if (correct === opts[1]) selectedKey = 'B';
+              else if (correct === opts[2]) selectedKey = 'C';
+              else if (correct === opts[3]) selectedKey = 'D';
+
+              document.getElementById('correctAnswer').value = selectedKey;
+              aiTopic.value = ''; // clear input
+            } else {
+              aiError.textContent = data.error || 'Failed to generate question.';
+              aiError.classList.remove('hidden');
+            }
+          } catch (err) {
+            aiError.textContent = 'Network or server error.';
+            aiError.classList.remove('hidden');
+          } finally {
+            aiGenerateBtn.disabled = false;
+            aiGenerateBtn.innerHTML = 'Generate';
+          }
+        });
+      }
 
       if(form) {
         form.addEventListener('submit', async (e) => {

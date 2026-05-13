@@ -101,6 +101,51 @@ async function startServer() {
     res.json({ success: true });
   });
 
+  app.post("/api/generate-question", async (req, res) => {
+    try {
+      const { topic } = req.body;
+      if (!topic) return res.status(400).json({ error: "Topic is required" });
+
+      const { GoogleGenAI, Type } = await import("@google/genai");
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: `Generate a multiple choice quiz question about the following topic: ${topic}. Provide 4 options and indicate the correct answer.`,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              question: {
+                type: Type.STRING,
+                description: "The quiz question text."
+              },
+              options: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING },
+                description: "Exactly 4 multiple choice options."
+              },
+              correctAnswer: {
+                type: Type.STRING,
+                description: "The exact text of the correct option."
+              }
+            },
+            required: ["question", "options", "correctAnswer"]
+          }
+        }
+      });
+
+      const text = response.text || "{}";
+      const data = JSON.parse(text);
+      
+      res.json({ success: true, data });
+    } catch (error: any) {
+      console.error("Error generating question:", error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   app.get("/quiz.html", (req, res) => {
     res.sendFile(path.join(process.cwd(), "quiz.html"));
   });

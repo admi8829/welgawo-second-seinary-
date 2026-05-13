@@ -3,147 +3,175 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Assessment Terminal | Smart-X Academy</title>
+    <title>Exam Terminal | Smart X Academy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
-      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
       .font-display { font-family: 'Outfit', sans-serif; }
       .quiz-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+      .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
     </style>
   </head>
-  <body class="bg-[#f8fafc] text-slate-800 min-h-screen">
+  <body class="bg-white text-slate-900 min-h-screen">
     
-    <div class="max-w-6xl mx-auto px-6 py-12 space-y-12">
-      <!-- Header -->
-      <header class="flex items-center justify-between bg-white px-8 py-5 rounded-3xl shadow-sm border border-slate-100">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl">X</div>
-          <div>
-            <h1 class="text-xl font-display font-black text-slate-900 tracking-tight">SMART-X ACADEMY</h1>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Educational Assessment</p>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">X</div>
+          <div class="flex flex-col">
+            <span class="font-display font-black text-lg leading-none tracking-tight text-slate-900 uppercase">Smart X</span>
+            <span class="font-display font-black text-lg leading-none tracking-tight text-slate-900 uppercase">Academy</span>
           </div>
         </div>
-        <a href="/" class="text-xs font-bold text-slate-400 hover:text-slate-600">Abort Session</a>
-      </header>
-
-      <!-- Selection View -->
-      <section id="selectionView" class="py-10 space-y-16">
-        <div class="text-center space-y-4">
-          <h2 class="text-5xl font-display font-black text-slate-900">Define Your <span class="text-blue-600">Trajectory</span></h2>
-          <p class="text-slate-500 font-medium">Select a grade and subject to begin your verified assessment sequence.</p>
-        </div>
-
-        <!-- Grade Selection -->
-        <div class="flex items-center justify-center gap-4">
-             <button id="gradeBtn9" onclick="setGrade('9')" class="grade-btn px-8 py-4 rounded-2xl font-bold text-sm bg-white border border-slate-200 text-slate-500 hover:border-blue-600 transition-all">Grade 9</button>
-             <button id="gradeBtn10" onclick="setGrade('10')" class="grade-btn px-8 py-4 rounded-2xl font-bold text-sm bg-white border border-slate-200 text-slate-500 hover:border-blue-600 transition-all">Grade 10</button>
-             <button id="gradeBtn11" onclick="setGrade('11')" class="grade-btn px-8 py-4 rounded-2xl font-bold text-sm bg-white border border-slate-200 text-slate-500 hover:border-blue-600 transition-all">Grade 11</button>
-             <button id="gradeBtn12" onclick="setGrade('12')" class="grade-btn px-8 py-4 rounded-2xl font-bold text-sm bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105">Grade 12</button>
-        </div>
-        
-        <!-- Subjects Grid -->
-        <div class="grid md:grid-cols-3 gap-8">
-           <button onclick="startQuiz('Physics')" class="group p-10 bg-white rounded-3xl text-left border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-600 transition-all">
-            <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-            </div>
-            <h4 class="text-2xl font-display font-black text-slate-900 mb-2">Physics</h4>
-            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Classical Assessment</p>
-          </button>
-
-          <button onclick="startQuiz('Math')" class="group p-10 bg-white rounded-3xl text-left border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-600 transition-all">
-             <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-               <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-             </div>
-             <h4 class="text-2xl font-display font-black text-slate-900 mb-2">Mathematics</h4>
-             <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Logic & Calculation</p>
-          </button>
-
-          <button onclick="startQuiz('English')" class="group p-10 bg-white rounded-3xl text-left border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-600 transition-all">
-             <div class="w-14 h-14 bg-blue-50 text-blue-400 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-blue-400 group-hover:text-white transition-colors">
-               <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 5h12M9 3v2m1.048 9.5a7 7 0 001.246-10.208A7 7 0 003 5.062M11 8h11m-11 8h11m-11 4h11m-11-12a7 7 0 011.246 10.208"></path></svg>
-             </div>
-             <h4 class="text-2xl font-display font-black text-slate-900 mb-2">English</h4>
-             <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Rhetoric & Grammar</p>
-          </button>
-        </div>
-
-        <!-- AI Generator -->
-        <div class="bg-blue-600 rounded-[3rem] p-12 text-white relative overflow-hidden">
-           <div class="relative z-10 max-w-2xl space-y-8">
-              <h3 class="text-4xl font-display font-black leading-tight italic uppercase">Generative Neural <br/> Assessment</h3>
-              <div class="flex flex-col md:flex-row gap-4 bg-white/10 p-3 rounded-2xl backdrop-blur-xl">
-                 <input type="text" id="aiTopicInput" placeholder="Enter specialized topic (e.g. Ethiopian Geography...)" class="flex-1 bg-transparent px-6 py-4 outline-none font-bold placeholder:text-white/50">
-                 <button onclick="startAIQuiz()" id="aiGenBtn" class="bg-white text-blue-600 px-10 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all active:scale-95 whitespace-nowrap">Deploy AI</button>
-              </div>
+        <div class="flex items-center gap-6">
+           <div id="quizTimer" class="hidden flex items-center gap-3 px-6 py-2 bg-slate-900 text-white rounded-full font-display font-black text-xs tracking-widest">
+              <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+              <span id="timerDisplay">00:00</span>
            </div>
-           <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+           <a href="/" class="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600">Abort Session</a>
         </div>
-      </section>
+      </div>
+    </nav>
 
-      <!-- Preview View -->
-      <section id="previewView" class="hidden animate-in fade-in slide-in-from-bottom-10 duration-700 max-w-4xl mx-auto py-12 space-y-12">
-        <div class="flex items-center justify-between">
-          <h2 class="text-4xl font-display font-black text-slate-900">Neural <span class="text-blue-600">Verification</span></h2>
-          <div class="flex gap-4">
-             <button onclick="location.reload()" class="px-6 py-3 font-bold text-xs text-slate-400 hover:text-slate-600">Discard</button>
-             <button onclick="commitAndStart()" class="bg-blue-600 text-white font-bold px-10 py-4 rounded-2xl shadow-lg shadow-blue-200">Start Session</button>
+    <main class="max-w-7xl mx-auto px-6 py-20 pb-32">
+      <!-- Selection View -->
+      <section id="selectionView" class="space-y-24">
+        <div class="max-w-3xl space-y-8">
+          <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em]">Academic Entrance</p>
+          <h2 class="text-6xl md:text-8xl font-display font-black text-slate-900 tracking-tighter leading-[0.9]">
+            Select Your <br/> <span class="text-blue-600">Trajectory.</span>
+          </h2>
+          <p class="text-xl text-slate-500 font-medium leading-relaxed">Choose your grade level and subject to initiate a verified assessment sequence. Powered by our neural engine.</p>
+        </div>
+
+        <div class="space-y-16">
+          <!-- Grade Selection -->
+          <div class="flex flex-wrap items-center gap-4">
+               <button id="gradeBtn9" onclick="setGrade('9')" class="grade-btn px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest bg-slate-50 text-slate-400 border border-slate-100 hover:border-blue-600 transition-all">Grade 09</button>
+               <button id="gradeBtn10" onclick="setGrade('10')" class="grade-btn px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest bg-slate-50 text-slate-400 border border-slate-100 hover:border-blue-600 transition-all">Grade 10</button>
+               <button id="gradeBtn11" onclick="setGrade('11')" class="grade-btn px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest bg-slate-50 text-slate-400 border border-slate-100 hover:border-blue-600 transition-all">Grade 11</button>
+               <button id="gradeBtn12" onclick="setGrade('12')" class="grade-btn px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest bg-blue-600 text-white shadow-3xl shadow-blue-200">Grade 12</button>
+          </div>
+          
+          <!-- Subject Grid -->
+          <div class="grid md:grid-cols-3 gap-8">
+             <button onclick="startQuiz('Physics')" class="group p-12 bg-white rounded-[3rem] text-left border border-slate-100 shadow-sm hover:shadow-3xl hover:border-blue-600 transition-all duration-500 hover:translate-y-[-8px]">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mb-10 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h4 class="text-3xl font-display font-black text-slate-900 mb-4 italic uppercase">Physics</h4>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed">Mechanical systems, quantum mechanics, and electrical protocols.</p>
+             </button>
+
+             <button onclick="startQuiz('Math')" class="group p-12 bg-white rounded-[3rem] text-left border border-slate-100 shadow-sm hover:shadow-3xl hover:border-blue-600 transition-all duration-500 hover:translate-y-[-8px]">
+                <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mb-10 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <h4 class="text-3xl font-display font-black text-slate-900 mb-4 italic uppercase">Mathematics</h4>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed">Derivatives, complex analysis, and geometric synthesis.</p>
+             </button>
+
+             <button onclick="startQuiz('English')" class="group p-12 bg-white rounded-[3rem] text-left border border-slate-100 shadow-sm hover:shadow-3xl hover:border-blue-600 transition-all duration-500 hover:translate-y-[-8px]">
+                <div class="w-16 h-16 bg-blue-50 text-blue-400 rounded-3xl flex items-center justify-center mb-10 group-hover:bg-blue-400 group-hover:text-white transition-colors">
+                   <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 5h12M9 3v2m1.048 9.5a7 7 0 001.246-10.208A7 7 0 003 5.062M11 8h11m-11 8h11m-11 4h11m-11-12a7 7 0 011.246 10.208"></path></svg>
+                </div>
+                <h4 class="text-3xl font-display font-black text-slate-900 mb-4 italic uppercase">English</h4>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed">Rhetoric, logical composition, and grammar architecture.</p>
+             </button>
+          </div>
+
+          <!-- AI Deployment -->
+          <div class="bg-slate-900 rounded-[4rem] p-16 md:p-24 text-white relative overflow-hidden group">
+             <div class="relative z-10 space-y-12">
+                <div class="space-y-4">
+                  <p class="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em]">Neural Engine</p>
+                  <h3 class="text-5xl md:text-7xl font-display font-black leading-none tracking-tighter italic uppercase">Generative <br/> Research Sync</h3>
+                </div>
+                <div class="flex flex-col md:flex-row gap-6 bg-white/5 p-4 rounded-[2.5rem] border border-white/10 backdrop-blur-3xl">
+                   <input type="text" id="aiTopicInput" placeholder="Specify core topic (e.g. Ethiopian History 19th Century)" class="flex-1 bg-transparent px-8 py-4 outline-none font-bold text-xl placeholder:text-white/20">
+                   <button onclick="startAIQuiz()" id="aiGenBtn" class="bg-white text-slate-900 px-12 py-5 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all active:scale-95">Deploy AI Node</button>
+                </div>
+             </div>
+             <div class="absolute top-0 right-0 w-[40%] h-[100%] bg-blue-600/10 blur-[120px] rounded-full"></div>
           </div>
         </div>
-        <div id="previewList" class="space-y-6"></div>
       </section>
 
       <!-- Quiz Interface -->
-      <section id="quizPortal" class="hidden animate-in fade-in zoom-in-95 duration-500">
-        <div class="max-w-3xl mx-auto space-y-12">
-          <div class="flex items-center justify-between px-2">
-             <span id="subjectTitle" class="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Session</span>
-             <span id="progressText" class="text-xs font-bold text-slate-400 uppercase tracking-widest">0 / 0</span>
-          </div>
-
-          <div id="questionCard" class="quiz-card bg-white p-12 md:p-20 rounded-[3rem] shadow-2xl border border-slate-50 relative">
-             <div class="space-y-12">
-               <div class="space-y-4">
-                  <span id="qIndex" class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Sequence 01</span>
-                  <h3 id="qText" class="text-3xl md:text-4xl font-display font-black text-slate-900 leading-tight">Question Loading...</h3>
-               </div>
-               <div id="optionsGrid" class="grid gap-4"></div>
-               <div class="pt-10 border-t border-slate-50 flex items-center justify-between">
-                  <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Smart-X Verified</p>
-                  <button id="nextBtn" disabled class="bg-slate-900 disabled:opacity-20 text-white font-bold px-12 py-5 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">Next Entry</button>
-               </div>
+      <section id="quizPortal" class="hidden animate-in fade-in slide-in-from-bottom-20 duration-1000">
+        <div class="max-w-4xl mx-auto space-y-20">
+          <!-- Session Intel -->
+          <div class="flex items-center justify-between border-b border-slate-100 pb-12">
+             <div class="space-y-2">
+                <p id="subjectTitle" class="text-xs font-black text-blue-600 uppercase tracking-widest italic">Physics Level 12</p>
+                <h3 class="text-4xl font-display font-black text-slate-900 italic uppercase">Sequence <span id="qIndex">01</span></h3>
+             </div>
+             <div class="text-right space-y-2">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Progress</p>
+                <p id="progressText" class="text-2xl font-display font-black text-slate-900 italic">01 / 10</p>
              </div>
           </div>
 
-          <div class="h-2 bg-slate-100 rounded-full mx-10 overflow-hidden">
-             <div id="progressBar" class="h-full bg-blue-600 transition-all duration-700" style="width: 0%"></div>
+          <!-- Question Module -->
+          <div id="questionCard" class="quiz-card bg-white p-12 md:p-24 rounded-[4rem] shadow-3xl border border-slate-50 relative overflow-hidden">
+             <div class="relative z-10 space-y-16">
+               <h3 id="qText" class="text-4xl md:text-5xl font-display font-black text-slate-900 leading-[1.1] tracking-tight">Question Synchronizing...</h3>
+               
+               <div id="optionsGrid" class="grid gap-6">
+                 <!-- Options Loaded via JS -->
+               </div>
+
+               <!-- Controls -->
+               <div class="pt-16 border-t border-slate-100 flex items-center justify-between">
+                  <button id="prevBtn" onclick="prevQuestion()" class="px-10 py-4 font-black text-[10px] uppercase tracking-widest text-slate-300 hover:text-slate-900 transition-colors">Previous Entry</button>
+                  <div class="flex gap-4">
+                    <button id="finishBtn" onclick="finishQuiz()" class="hidden px-10 py-5 bg-red-50 text-red-600 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-red-600 hover:text-white transition-all">Finish Session</button>
+                    <button id="nextBtn" disabled class="bg-slate-900 disabled:opacity-20 text-white font-black py-5 px-16 rounded-2xl shadow-3xl shadow-slate-200 hover:bg-blue-600 transition-all uppercase tracking-widest text-[10px] active:scale-95">Next Node</button>
+                  </div>
+               </div>
+             </div>
+             <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-50/30 rounded-full blur-3xl"></div>
+          </div>
+
+          <!-- Progress Visualization -->
+          <div class="h-1 bg-slate-50 rounded-full overflow-hidden shadow-sm">
+             <div id="progressBar" class="h-full bg-blue-600 transition-all duration-1000" style="width: 0%"></div>
           </div>
         </div>
       </section>
 
-      <!-- Results Terminal -->
-      <section id="resultsTerminal" class="hidden animate-in zoom-in-95 duration-700 text-center space-y-12 bg-white p-16 rounded-[4rem] max-w-2xl mx-auto shadow-2xl border border-slate-100">
-        <div class="w-24 h-24 bg-blue-600 text-white rounded-3xl flex items-center justify-center mx-auto shadow-xl font-black text-4xl">X</div>
-        <div class="space-y-4">
-          <h2 class="text-5xl font-display font-black text-slate-900">Sync Complete</h2>
-          <p class="text-slate-500 font-medium">Your intellectual performance has been synthesized.</p>
+      <!-- Results Summary -->
+      <section id="resultsTerminal" class="hidden animate-in zoom-in-95 duration-1000 text-center space-y-20 max-w-2xl mx-auto py-20">
+        <div class="space-y-8">
+           <div class="w-32 h-32 bg-slate-900 text-white rounded-[2.5rem] flex items-center justify-center mx-auto shadow-3xl font-display font-black text-5xl italic group">
+              <span class="group-hover:rotate-12 transition-transform">X</span>
+           </div>
+           <div class="space-y-4">
+              <h2 class="text-6xl font-display font-black text-slate-900 tracking-tighter italic uppercase">Sync Complete.</h2>
+              <p class="text-xl text-slate-500 font-medium leading-relaxed italic capitalize">Your intellectual performance has been recorded within the Smart X network.</p>
+           </div>
         </div>
-        <div class="bg-slate-50 p-12 rounded-[3.5rem]">
-           <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.5em] mb-4">Final Score</p>
-           <p id="finalScore" class="text-8xl font-display font-black text-blue-600 leading-none">0/0</p>
+
+        <div class="bg-blue-600 p-20 rounded-[5rem] shadow-3xl shadow-blue-200 text-white transform hover:scale-[1.02] transition-transform">
+           <p class="text-[11px] font-black text-white/60 uppercase tracking-[0.5em] mb-8 italic">Final Score Synthesis</p>
+           <p id="finalScore" class="text-[10rem] font-display font-black leading-none tracking-tighter italic">00/00</p>
+           <div id="leaderboardForm" class="mt-20 space-y-8">
+              <input type="text" id="leaderboardName" placeholder="ENTER SCHOLAR NAME" class="w-full bg-white/10 rounded-[2rem] px-8 py-6 text-center font-display font-black text-3xl text-white placeholder:text-white/20 border border-white/20 outline-none focus:border-white transition-all uppercase italic">
+              <button onclick="postToLeaderboard()" class="w-full bg-white text-slate-900 font-black py-7 rounded-[2rem] hover:bg-slate-100 shadow-3xl transition-all uppercase tracking-[0.3em] text-xs">Propagate to Global Ledger</button>
+           </div>
         </div>
-        <div id="leaderboardForm" class="space-y-6 max-w-sm mx-auto">
-           <input type="text" id="leaderboardName" placeholder="Enter Your Name" class="w-full bg-slate-100 rounded-2xl px-6 py-4 text-center font-bold text-xl text-slate-900 placeholder:text-slate-300 outline-none focus:ring-2 ring-blue-600/20">
-           <button onclick="postToLeaderboard()" class="w-full bg-slate-900 text-white font-bold px-10 py-5 rounded-2xl hover:bg-slate-800 transition-all uppercase tracking-widest text-xs">Post to Leaderboard</button>
-        </div>
-        <div class="flex gap-4 justify-center pt-8">
-           <button onclick="location.reload()" class="bg-white border border-slate-200 text-slate-900 font-bold px-10 py-4 rounded-2xl hover:bg-slate-50 transition-all">Try Again</button>
-           <a href="/leaderboard" class="bg-blue-100 text-blue-600 font-bold px-10 py-4 rounded-2xl hover:bg-blue-200 transition-all">Rankings</a>
+
+        <div class="flex items-center justify-center gap-10 pt-10">
+           <button onclick="location.reload()" class="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors">Start New Session</button>
+           <a href="/leaderboard" class="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:text-slate-900 transition-colors flex items-center gap-2">
+              <span>View Leaderboard</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+           </a>
         </div>
       </section>
-
-    </div>
+    </main>
 
     <script type="module">
       let questions = [];
@@ -152,12 +180,13 @@
       let selected = null;
       let currentSubject = '';
       let currentGrade = '12';
+      let userAnswers = []; // Store answers to allow back navigation
+      let startTime = null;
+      let timerInterval = null;
 
       const selectionView = document.getElementById('selectionView');
-      const previewView = document.getElementById('previewView');
       const quizPortal = document.getElementById('quizPortal');
       const resultsTerminal = document.getElementById('resultsTerminal');
-      const previewList = document.getElementById('previewList');
       const subjectTitle = document.getElementById('subjectTitle');
       const progressText = document.getElementById('progressText');
       const progressBar = document.getElementById('progressBar');
@@ -165,16 +194,31 @@
       const optionsGrid = document.getElementById('optionsGrid');
       const qIndex = document.getElementById('qIndex');
       const nextBtn = document.getElementById('nextBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const finishBtn = document.getElementById('finishBtn');
+      const quizTimer = document.getElementById('quizTimer');
+      const timerDisplay = document.getElementById('timerDisplay');
 
       window.setGrade = (grade) => {
         currentGrade = grade;
         document.querySelectorAll('.grade-btn').forEach(b => {
-           b.className = "grade-btn px-8 py-4 rounded-2xl font-bold text-sm bg-white border border-slate-200 text-slate-500 hover:border-blue-600 transition-all";
+           b.className = "grade-btn px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest bg-slate-50 text-slate-400 border border-slate-100 hover:border-blue-600 transition-all";
         });
         const btn = document.getElementById('gradeBtn' + grade);
         if(btn) {
-           btn.className = "grade-btn px-8 py-4 rounded-2xl font-bold text-sm bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105";
+           btn.className = "grade-btn px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest bg-blue-600 text-white shadow-3xl shadow-blue-200";
         }
+      }
+
+      function startTimer() {
+        startTime = Date.now();
+        quizTimer.classList.remove('hidden');
+        timerInterval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - startTime) / 1000);
+          const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+          const secs = (elapsed % 60).toString().padStart(2, '0');
+          timerDisplay.textContent = `${mins}:${secs}`;
+        }, 1000);
       }
 
       window.startQuiz = async (subject) => {
@@ -188,6 +232,10 @@
           const data = await res.json();
           if (data.success) {
             questions = data.questions;
+            userAnswers = new Array(questions.length).fill(null);
+            currentIndex = 0;
+            score = 0;
+            startTimer();
             renderQuestion();
           }
         } catch (e) { alert('Sync Failure: ' + e.message); }
@@ -195,9 +243,10 @@
 
       window.startAIQuiz = async () => {
         const topic = document.getElementById('aiTopicInput').value;
-        if (!topic) return alert("Please specify a topic.");
+        if (!topic) return alert("Please specify a research topic.");
         const btn = document.getElementById('aiGenBtn');
-        btn.textContent = 'Synthesizing...';
+        const originalText = btn.textContent;
+        btn.textContent = 'SYNTHESIZING...';
         btn.disabled = true;
         
         currentSubject = topic;
@@ -210,117 +259,103 @@
           const data = await res.json();
           if (data.success && data.questions?.length > 0) {
             questions = data.questions;
-            renderPreview();
+            userAnswers = new Array(questions.length).fill(null);
+            currentIndex = 0;
+            score = 0;
             selectionView.classList.add('hidden');
-            previewView.classList.remove('hidden');
-          } else { throw new Error(data.message || "Neuro-link failed."); }
+            quizPortal.classList.remove('hidden');
+            subjectTitle.textContent = `AI SESSION: ${currentSubject.toUpperCase()}`;
+            startTimer();
+            renderQuestion();
+          } else { throw new Error(data.message || "Neuro-link timeout."); }
         } catch (e) {
-            alert('AI Generation Error: ' + e.message);
-            btn.textContent = 'Deploy AI';
+            alert('AI Synthesis Failure: ' + e.message);
+            btn.textContent = originalText;
             btn.disabled = false;
         }
       };
 
-      function renderPreview() {
-        previewList.innerHTML = '';
-        questions.forEach((q, idx) => {
-          const card = document.createElement('div');
-          card.className = 'bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6';
-          const options = JSON.parse(q.options);
-          card.innerHTML = `
-            <div class="flex items-start gap-4">
-              <span class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold text-xs flex-shrink-0">${idx+1}</span>
-              <div class="flex-1 space-y-4">
-                <input type="text" value="${q.question}" data-idx="${idx}" class="q-input w-full bg-slate-50 border-none rounded-xl px-4 py-3 font-bold text-slate-800 text-lg outline-none focus:ring-2 ring-blue-600/20">
-                <div class="grid md:grid-cols-2 gap-3">
-                   ${options.map((opt, oIdx) => `
-                     <div class="flex items-center gap-2">
-                       <input type="text" value="${opt}" data-qidx="${idx}" data-oidx="${oIdx}" class="opt-input flex-1 bg-slate-50 rounded-lg px-3 py-2 text-xs font-bold text-slate-500 outline-none border-slate-100">
-                     </div>
-                   `).join('')}
-                </div>
-              </div>
-            </div>
-          `;
-          previewList.appendChild(card);
-        });
-      }
-
-      window.commitAndStart = () => {
-        questions.forEach((q, idx) => {
-          const oldAnswer = q.answer;
-          const qInput = document.querySelector(`.q-input[data-idx="${idx}"]`);
-          if (qInput) q.question = qInput.value;
-          const opts = JSON.parse(q.options);
-          const optInputs = document.querySelectorAll(`.opt-input[data-qidx="${idx}"]`);
-          optInputs.forEach(oi => {
-            const oIdx = parseInt(oi.dataset.oidx);
-            const wasAnswer = (opts[oIdx] === oldAnswer);
-            opts[oIdx] = oi.value;
-            if (wasAnswer) q.answer = oi.value;
-          });
-          q.options = JSON.stringify(opts);
-        });
-        previewView.classList.add('hidden');
-        quizPortal.classList.remove('hidden');
-        subjectTitle.textContent = `AI SESSION: ${currentSubject.toUpperCase()}`;
-        renderQuestion();
-      }
-
       function renderQuestion() {
-        if (!questions.length) return (location.reload());
+        if (!questions.length) return;
         const q = questions[currentIndex];
         qText.textContent = q.question;
-        qIndex.textContent = `QUESTION ${currentIndex + 1}`;
-        progressText.textContent = `${currentIndex + 1} / ${questions.length}`;
+        qIndex.textContent = (currentIndex + 1).toString().padStart(2, '0');
+        progressText.textContent = `${(currentIndex + 1).toString().padStart(2, '0')} / ${questions.length.toString().padStart(2, '0')}`;
         optionsGrid.innerHTML = '';
-        selected = null;
-        nextBtn.disabled = true;
+        selected = userAnswers[currentIndex];
+        
+        // Prev button visibility
+        prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+        
+        // Toggle Next/Finish
+        if (currentIndex === questions.length - 1) {
+           nextBtn.classList.add('hidden');
+           finishBtn.classList.remove('hidden');
+        } else {
+           nextBtn.classList.remove('hidden');
+           finishBtn.classList.add('hidden');
+        }
+
         const options = JSON.parse(q.options);
         options.forEach(opt => {
           const btn = document.createElement('button');
-          btn.className = 'w-full text-left p-6 bg-slate-50 rounded-2xl font-bold text-slate-600 border border-slate-100 hover:bg-slate-100 hover:border-slate-200 transition-all flex items-center justify-between group';
+          btn.className = 'w-full text-left p-8 bg-slate-50 rounded-[2rem] font-bold text-slate-800 border border-slate-100 hover:bg-slate-100 hover:border-slate-300 transition-all flex items-center justify-between group transform active:scale-[0.98]';
+          
+          const isSelected = (selected === opt);
+          if (isSelected) {
+            btn.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+            btn.classList.remove('bg-slate-50', 'text-slate-800', 'border-slate-100', 'hover:bg-slate-100');
+          }
+
           btn.innerHTML = `
-            <span class="text-lg">${opt}</span>
-            <div class="w-6 h-6 border-2 border-slate-200 rounded-full group-hover:border-blue-600 transition-colors flex items-center justify-center">
-              <div class="w-3 h-3 bg-blue-600 rounded-full opacity-0 transform scale-0 transition-all"></div>
+            <span class="text-xl md:text-2xl font-display italic uppercase">${opt}</span>
+            <div class="w-8 h-8 rounded-full border-2 ${isSelected ? 'border-white' : 'border-slate-200 group-hover:border-blue-600'} transition-colors flex items-center justify-center">
+              <div class="w-4 h-4 bg-white rounded-full ${isSelected ? 'opacity-100' : 'opacity-0'} transition-opacity"></div>
             </div>
           `;
           btn.onclick = () => {
-             Array.from(optionsGrid.children).forEach(c => {
-               c.classList.remove('bg-blue-50', 'border-blue-200', 'text-blue-700');
-               const dot = c.querySelector('div div');
-               dot.classList.add('opacity-0', 'scale-0');
-               dot.classList.remove('opacity-100', 'scale-100');
-             });
-             btn.classList.add('bg-blue-50', 'border-blue-200', 'text-blue-700');
-             const dot = btn.querySelector('div div');
-             dot.classList.remove('opacity-0', 'scale-0');
-             dot.classList.add('opacity-100', 'scale-100');
+             userAnswers[currentIndex] = opt;
              selected = opt;
+             renderQuestion();
              nextBtn.disabled = false;
           };
           optionsGrid.appendChild(btn);
         });
-        progressBar.style.width = `${(currentIndex / questions.length) * 100}%`;
+
+        // Enable next button if already selected
+        nextBtn.disabled = !selected;
+        progressBar.style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
       }
 
-      nextBtn.onclick = () => {
-         if (selected === questions[currentIndex].answer) score++;
-         currentIndex++;
-         if (currentIndex < questions.length) renderQuestion();
-         else finishQuiz();
+      window.prevQuestion = () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          renderQuestion();
+        }
       };
 
-      function finishQuiz() {
+      nextBtn.onclick = () => {
+         currentIndex++;
+         renderQuestion();
+      };
+
+      window.finishQuiz = () => {
+        clearInterval(timerInterval);
+        // Calculate final score
+        score = 0;
+        questions.forEach((q, idx) => {
+          if (userAnswers[idx] === q.answer) score++;
+        });
+
         quizPortal.classList.add('hidden');
         resultsTerminal.classList.remove('hidden');
+        quizTimer.classList.add('hidden');
         document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
       }
 
       window.postToLeaderboard = async () => {
         const name = document.getElementById('leaderboardName').value;
-        if(!name) return alert("Please enter your name.");
+        if(!name) return alert("ENTER SCHOLAR NAME TO PROPAGATE SCORE.");
         try {
           const res = await fetch('/api/quiz_results', {
             method: 'POST',
@@ -329,10 +364,10 @@
           });
           const data = await res.json();
           if(data.success) {
-            alert("Score saved successfully!");
+            alert("SCORE PROPAGATED TO GLOBAL LEDGER.");
             location.href = '/leaderboard';
           }
-        } catch (e) { console.error('Save Fail:', e); }
+        } catch (e) { alert('Network Failure: ' + e.message); }
       }
       
       window.setGrade('12');

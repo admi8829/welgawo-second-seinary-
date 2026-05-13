@@ -3,35 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Universal Charter | Smart-X Academy</title>
+    <title>Universal Charter | Smart X Academy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
-      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
       .font-display { font-family: 'Outfit', sans-serif; }
     </style>
   </head>
-  <body class="bg-[#f8fafc] text-slate-800">
-    <div class="max-w-4xl mx-auto px-6 py-24 space-y-16">
-      <header class="text-center space-y-4">
-        <h1 class="text-6xl font-display font-black text-slate-900 leading-none uppercase italic">Universal <span class="text-blue-600">Charter</span></h1>
-        <p class="text-slate-400 font-sans uppercase tracking-[0.4em] text-[10px] font-black italic">Engagement Framework v2.5</p>
+  <body class="bg-white text-slate-900">
+    
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">X</div>
+          <div class="flex flex-col">
+            <span class="font-display font-black text-lg leading-none tracking-tight text-slate-900 uppercase">Smart X</span>
+            <span class="font-display font-black text-lg leading-none tracking-tight text-slate-900 uppercase">Academy</span>
+          </div>
+        </a>
+        <a href="/" class="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600">Mainframe Return</a>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-24 pb-48 space-y-32">
+      <header class="text-center space-y-10 max-w-4xl mx-auto">
+        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em]">Legal Framework</p>
+        <h1 class="text-7xl md:text-9xl font-display font-black text-slate-900 leading-[0.8] tracking-tighter italic uppercase">
+          Universal <br/> <span class="text-blue-600">Charter.</span>
+        </h1>
+        <p class="text-2xl text-slate-500 font-medium leading-relaxed italic capitalize">Engagement framework and engagement protocols v2.5.</p>
       </header>
 
-      <section class="bg-white p-16 rounded-[4rem] border border-slate-100 shadow-2xl space-y-12 text-slate-500 leading-relaxed font-medium">
-         <div class="space-y-6">
-            <h2 class="text-2xl font-display font-black text-slate-900 italic uppercase">1. Deployment Rights</h2>
-            <p>Scholars are granted rights to deploy Smart-X assessments for personal advancement. Extraction of neural datasets for commercial use is prohibited.</p>
+      <section class="max-w-4xl mx-auto bg-slate-900 p-16 md:p-24 rounded-[4rem] text-white space-y-20 relative overflow-hidden">
+         <div class="relative z-10 space-y-8">
+            <h2 class="text-4xl font-display font-black italic uppercase text-blue-500">1. Deployment Rights</h2>
+            <p class="text-slate-400 text-lg leading-relaxed font-medium">Scholars are granted rights to deploy Smart X assessments for personal advancement. Extraction of neural datasets for commercial exploitation or mass distribution is strictly prohibited under the Nexus protocols.</p>
          </div>
-         <div class="space-y-6">
-            <h2 class="text-2xl font-display font-black text-slate-900 italic uppercase">2. Global Ledger Integrity</h2>
-            <p>Manipulation of results or leaderboard propagation will result in node exclusion from the Smart-X network.</p>
+         <div class="relative z-10 space-y-8">
+            <h2 class="text-4xl font-display font-black italic uppercase text-blue-500">2. Ledger Integrity</h2>
+            <p class="text-slate-400 text-lg leading-relaxed font-medium">Manipulation of results or leaderboard propagation using unauthorized scripts will result in immediate node exclusion from the Smart X network and reset of all recorded performance units.</p>
          </div>
+         <div class="absolute -top-20 -left-20 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px]"></div>
       </section>
 
-      <div class="text-center">
-         <a href="/" class="text-blue-600 font-black uppercase tracking-[0.3em] text-[10px] hover:text-slate-900 transition-colors">Accept Charter & Return</a>
+      <div class="text-center italic">
+         <a href="/" class="text-blue-600 font-black uppercase tracking-[0.3em] text-[10px] hover:text-slate-900 transition-colors">Accept Charter & Sync Return</a>
       </div>
-    </div>
+    </main>
+
   </body>
 </html>

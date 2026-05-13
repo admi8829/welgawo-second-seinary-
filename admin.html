@@ -13,6 +13,22 @@
   </head>
   <body class="bg-slate-50 min-h-screen">
     
+    <!-- Admin Login Overlay -->
+    <div id="adminLoginOverlay" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-6 transition-all duration-300">
+      <div class="bg-white rounded-[2rem] p-10 max-w-md w-full shadow-2xl">
+        <div class="flex items-center justify-center gap-2 mb-8">
+          <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic">X</div>
+          <span class="font-black text-2xl tracking-tight text-slate-900">ADMIN LOGIN</span>
+        </div>
+        <form id="adminLoginForm" class="space-y-4">
+          <input type="email" id="adminEmail" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-600 font-medium" placeholder="Admin Email">
+          <input type="password" id="adminPassword" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-600 font-medium" placeholder="Password">
+          <p id="adminLoginError" class="text-red-500 text-xs font-bold hidden"></p>
+          <button type="submit" id="adminLoginBtn" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-slate-900 transition-all">Sign In to Dashboard</button>
+        </form>
+      </div>
+    </div>
+
     <div class="flex">
       <!-- Sidebar -->
       <aside class="w-64 bg-slate-900 min-h-screen p-6 text-white space-y-12 fixed h-full">
@@ -260,7 +276,49 @@
         } catch (e) { console.error(e); }
       }
 
-      window.onload = refreshData;
+      // Admin Auth Logic
+      const adminLoginForm = document.getElementById('adminLoginForm');
+      const adminLoginOverlay = document.getElementById('adminLoginOverlay');
+      const adminLoginError = document.getElementById('adminLoginError');
+      const adminLoginBtn = document.getElementById('adminLoginBtn');
+
+      if (sessionStorage.getItem('adminAuth')) {
+        adminLoginOverlay.classList.add('hidden');
+        refreshData();
+      }
+
+      adminLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('adminEmail').value;
+        const password = document.getElementById('adminPassword').value;
+        adminLoginBtn.textContent = 'Verifying...';
+        adminLoginBtn.disabled = true;
+        adminLoginError.classList.add('hidden');
+
+        try {
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (data.success) {
+            sessionStorage.setItem('adminAuth', 'true');
+            adminLoginOverlay.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => adminLoginOverlay.classList.add('hidden'), 300);
+            refreshData();
+          } else {
+            adminLoginError.textContent = data.message || 'Invalid credentials.';
+            adminLoginError.classList.remove('hidden');
+          }
+        } catch (err) {
+          adminLoginError.textContent = 'Server connection error.';
+          adminLoginError.classList.remove('hidden');
+        } finally {
+          adminLoginBtn.textContent = 'Sign In to Dashboard';
+          adminLoginBtn.disabled = false;
+        }
+      });
 
       // Question Form Logic
       const form = document.getElementById('questionForm');

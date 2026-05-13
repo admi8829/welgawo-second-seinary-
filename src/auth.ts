@@ -120,7 +120,7 @@ if (signUpForm) {
       
       if (data.success) {
         localStorage.setItem('currentUser', JSON.stringify(data.user));
-        window.location.href = '/quiz.html';
+        window.location.href = '/';
       } else {
         alert(data.message);
       }
@@ -153,7 +153,7 @@ if (signInForm) {
       
       if (data.success) {
         localStorage.setItem('currentUser', JSON.stringify(data.user));
-        window.location.href = '/quiz.html';
+        window.location.href = '/';
       } else {
         alert(data.message);
       }

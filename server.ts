@@ -68,6 +68,17 @@ db.exec(`
   );
 `);
 
+try {
+  db.exec('ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT 0');
+} catch (e) {}
+
+try {
+  const existingAdmin = db.prepare('SELECT * FROM users WHERE email = ?').get('admin@smartx.com');
+  if (!existingAdmin) {
+    db.prepare('INSERT INTO users (name, email, password, is_admin) VALUES (?, ?, ?, ?)').run('System Admin', 'admin@smartx.com', 'admin123', 1);
+  }
+} catch (e) {}
+
 // Try inserting initial sample data if empty
 try {
   const tCount = db.prepare('SELECT COUNT(*) as c FROM teachers').get() as { c: number };
@@ -115,6 +126,25 @@ async function startServer() {
       res.json({ success: true, user: { id: user.id, name: user.name, email: user.email, grade: user.grade, photo: user.photo } });
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
+  });
+
+  app.post("/api/admin/login", (req, res) => {
+    const { email, password } = req.body;
+    const user = db.prepare('SELECT * FROM users WHERE email = ? AND password = ? AND is_admin = 1').get(email, password) as any;
+    if (user) {
+      res.json({ success: true, admin: { id: user.id, name: user.name, email: user.email } });
+    } else {
+      res.status(401).json({ success: false, message: "Invalid admin credentials" });
+    }
+  });
+
+  app.get("/api/admin/students", (req, res) => {
+    try {
+      const students = db.prepare('SELECT id, name, email, grade, schoolName, created_at, photo FROM users WHERE is_admin = 0 OR is_admin IS NULL ORDER BY created_at DESC').all();
+      res.json({ success: true, students });
+    } catch (e: any) {
+      res.status(500).json({ success: false, message: "Database Error: " + e.message });
     }
   });
 
@@ -187,6 +217,11 @@ async function startServer() {
   app.get("/api/admin/teacher-comments", (req, res) => {
     const comments = db.prepare('SELECT * FROM teacher_feedback').all();
     res.json({ success: true, comments });
+  });
+
+  app.get("/api/admin/feedback", (req, res) => {
+    const feedback = db.prepare('SELECT * FROM feedback ORDER BY created_at DESC').all();
+    res.json({ success: true, feedback });
   });
   
   app.get("/api/teachers", (req, res) => {

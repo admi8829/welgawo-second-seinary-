@@ -1,58 +1,79 @@
-# Smart-X Academy Documentation
+# Cloudflare Pages + Functions Example
 
-## Database Setup Details (SQLite)
+This is a simple template for a Cloudflare Pages project with Functions.
 
-The project uses an embedded SQLite database (`smartx.db`) via `better-sqlite3`. Tables are initialized on server start.
+## Cloudflare D1 Database Setup (REQUIRED for Registration)
 
-### 1. `questions` Table
-Stores curriculum questions.
-```sql
-CREATE TABLE IF NOT EXISTS questions (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  question TEXT NOT NULL,
-  options TEXT NOT NULL,
-  answer TEXT NOT NULL,
-  subject TEXT,
-  grade TEXT DEFAULT '12'
-);
+The registration form uses Cloudflare D1. To make it work in production:
+
+1. Create a D1 database in Cloudflare:
+   ```bash
+   npx wrangler d1 create smart-x-db
+   ```
+2. Create the `students` table:
+   ```sql
+   CREATE TABLE students (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     name TEXT NOT NULL,
+     email TEXT NOT NULL,
+     grade TEXT NOT NULL,
+     phone TEXT NOT NULL,
+     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+   );
+   ```
+
+3. Create the `questions` table (Optional for Quiz):
+   ```sql
+   CREATE TABLE questions (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     question TEXT NOT NULL,
+     options TEXT NOT NULL, -- JSON string like '["Opt1", "Opt2"]'
+     answer TEXT NOT NULL,
+     subject TEXT
+   );
+   ```
+
+4. Bind the database to your Pages project in `wrangler.toml` or the Cloudflare Dashboard:
+   - Go to **Pages** -> **Your Project** -> **Settings** -> **Functions** -> **D1 database bindings**.
+   - Bind `DB` to your `smart-x-db`.
+
+## Folder Structure for GitHub
+
+```text
+your-repo/
+├── _worker.js          <-- Cloudflare Worker (Logic & API)
+├── index.html          <-- Home & Dashboard (UI)
+└── ...
 ```
 
-### 2. `quiz_results` Table
-Stores session performance for the global leaderboard.
-```sql
-CREATE TABLE IF NOT EXISTS quiz_results (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_name TEXT,
-  subject TEXT,
-  grade TEXT,
-  score INTEGER,
-  total INTEGER,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
+## New Features & Admin Tools
 
-## How It Works
+- **Student Dashboard**: Accessible at `/admin.html`. Shows all registered students.
+- **Question Engine**: Accessible at `/add-question.html`. Use this to add new quiz questions to the database via a form.
+- **Sample Questions**: Use the SQL in `questions.sql` to populate your D1 database initially.
 
-1. **Academic Entrance**: Scholars access the `quiz.html` terminal without authentication barriers.
-2. **Assessment Engine**: Quizzes are deployed from the verified archive or synthesized in real-time via Gemini AI.
-3. **Score Propagation**: Final scores are transmitted to the `quiz_results` ledger for ranking.
-4. **Global Leaderboard**: Ranks scholars based on cumulative performance.
+## Important Routes
 
-## Folder Structure
+- `/join-free.html` -> Registration Page
+- `/admin.html` -> Admin Dashboard (Students)
+- `/add-question.html` -> Admin Question Engine
+- `/about.html` -> Academy Information
+- `/contact.html` -> Contact & Support
+- `/quiz.html` -> Daily Quiz Page 
 
-- `index.html`: Home & Dashboard
-- `quiz.html`: Assessment Terminal
-- `leaderboard.html`: Global Leaderboard
-- `about.html`: Our Vision
-- `contact.html`: Support Hub
-- `privacy.html`: Privacy Policy
-- `terms.html`: Terms of Service
-- `books.html`: Resource Library
-- `feedback.html`: Student Feedback
-- `profile.html`: Scholar Profile
+## How it works
 
-## New Features
+1. **index.html**: Main landing page.
+2. **_worker.js**: Single worker handling routing and Cloudflare D1 integration.
+3. **Local Simulation**: `server.ts` uses Express to mimic the Cloudflare environment for development.
 
-- **AI Hub**: AI-powered tutoring and quiz generation.
-- **Academic UI**: Clean, professional, and accessible design.
-- **Zero-Barrier Access**: Immediate deployment without registration protocols.
+## Deployment
+
+1. Push your code to GitHub.
+2. Go to the [Cloudflare Dashboard](https://dash.cloudflare.com/).
+3. Select **Workers & Pages** -> **Pages** -> **Connect to Git**.
+4. Select your repository.
+5. For **Build settings**:
+   - If you have no build step (straight HTML), leave everything default.
+   - If using Vite, use `npm run build` and `dist` as the output directory.
+6. Click **Save and Deploy**.

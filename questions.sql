@@ -1,21 +1,56 @@
--- Smart-X Academy Database Final Seed
--- Focus exclusively on Questions dataset
--- Schema handled by server.ts
+-- sample_questions.sql
+-- Run this in your Cloudflare D1 Console
 
--- 1. Insert Sample Questions (Grade 12 & 10 Focus)
-INSERT OR REPLACE INTO questions (id, question, options, answer, subject, grade) VALUES 
-(1, 'Which Ethiopian Emperor defeated the Italians at the Battle of Adwa?', '["Menelik II", "Haile Selassie", "Tewodros II", "Yohannes IV"]', 'Menelik II', 'History', '12'),
-(2, 'What is the value of gravitational acceleration on Earth approximately?', '["8.9 m/s²", "9.8 m/s²", "10.2 m/s²", "7.5 m/s²"]', '9.8 m/s²', 'Physics', '12'),
-(3, 'Which of these is a correct sentence in English?', '["He go to school.", "He goes to school.", "He going to school.", "He have gone to school."]', 'He goes to school.', 'English', '12'),
-(4, 'What is the derivative of f(x) = x³?', '["3x", "3x²", "x²", "x³-1"]', '3x²', 'Mathematics', '12'),
-(5, 'What is the chemical symbol for Gold?', '["Ag", "Fe", "Au", "Pb"]', 'Au', 'Chemistry', '12'),
-(6, 'The "Blue Nile" originates in which Ethiopian lake?', '["Lake Abaya", "Lake Tana", "Lake Ziway", "Lake Hawassa"]', 'Lake Tana', 'Geography', '12'),
-(7, 'Which part of the cell is known as the powerhouse?', '["Nucleus", "Ribosome", "Mitochondria", "Golgi Body"]', 'Mitochondria', 'Biology', '12'),
-(8, 'Find the slope of a line passing through (2,3) and (4,7).', '["1", "2", "3", "4"]', '2', 'Mathematics', '12'),
-(9, 'Who wrote the famous Amharic novel "Fiqir Eske Meqabir"?', '["Bealu Girma", "Hadis Alemayehu", "Tsegaye Gebre-Medhin", "Berhanu Zerihun"]', 'Hadis Alemayehu', 'Literature', '12'),
-(10, 'What is the SI unit of electric current?', '["Volt", "Ohm", "Ampere", "Watt"]', 'Ampere', 'Physics', '12'),
-(11, 'Which Ethiopian city is known as the "City of Harari"?', '["Dire Dawa", "Harar", "Jijiga", "Bahir Dar"]', 'Harar', 'History', '12'),
-(12, 'Simplify: cos²(x) + sin²(x)', '["0", "1", "sin(x)", "cos(x)"]', '1', 'Mathematics', '12'),
-(13, 'The Axumite Obelisk that was returned from Italy in 2005 is known as?', '["Obelisk of Axum", "Stela 3", "Rome Obelisk", "The Victory Pillar"]', 'Obelisk of Axum', 'History', '12'),
-(14, 'What is the main component of natural gas?', '["Ethane", "Propane", "Methane", "Butane"]', 'Methane', 'Chemistry', '12'),
-(15, 'Which gas is most abundant in the Earth atmosphere?', '["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"]', 'Nitrogen', 'Geography', '12');
+CREATE TABLE IF NOT EXISTS enrollments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  grade TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO questions (question, options, answer, subject) VALUES 
+('Which of the following is the capital city of Ethiopia?', '["Nairobi", "Mogadishu", "Addis Ababa", "Asmara"]', 'Addis Ababa', 'Geography'),
+('Who was the Emperor of Ethiopia during the Battle of Adwa?', '["Menelik II", "Haile Selassie", "Tewodros II", "Yohannes IV"]', 'Menelik II', 'History'),
+('What is the main component of the atmosphere?', '["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"]', 'Nitrogen', 'Chemistry'),
+('If a car travels at 60 km/h, how far will it travel in 2.5 hours?', '["120 km", "150 km", "180 km", "200 km"]', '150 km', 'Physics'),
+('Find the value of x in the equation: 3x - 7 = 11.', '["4", "5", "6", "7"]', '6', 'Mathematics');
+
+-- Feedback Table
+CREATE TABLE feedback (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_name TEXT NOT NULL,
+  teacher_subject TEXT NOT NULL,
+  comment TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Teacher Profiles
+CREATE TABLE teachers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  photo TEXT,
+  bio TEXT,
+  likes INTEGER DEFAULT 0,
+  unlikes INTEGER DEFAULT 0
+);
+
+-- Detailed Teacher Feedback/Comments
+CREATE TABLE teacher_feedback (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  teacher_id INTEGER NOT NULL,
+  student_name TEXT,
+  comment TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Sample Teachers
+INSERT INTO teachers (name, subject, photo, bio, likes, unlikes) VALUES 
+('Dr. Abebe Kebede', 'Physics', NULL, 'Former AAU professor specializing in Quantum Mechanics.', 124, 5),
+('Ms. Selamawit Tadesse', 'Mathematics', NULL, 'Expert in ESLCE exam preparation with 10 years experience.', 89, 2),
+('Mr. Dawit Yilma', 'English', NULL, 'Linguistics specialist focused on communicative English.', 56, 1),
+('Mr. Tilahun Gessesse', 'Biology', NULL, 'Passionate about genetics and ecology with a hands-on approach.', 110, 8),
+('Dr. Almaz Bekele', 'Chemistry', NULL, 'Makes organic chemistry fun through real-world experiments.', 95, 3),
+('Prof. Yosef Getachew', 'History', NULL, 'Brings Ethiopian history to life with captivating storytelling.', 150, 4);

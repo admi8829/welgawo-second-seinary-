@@ -3,144 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About Nexus | Smart X Academy</title>
+    <title>About Us | Smart X Academy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-      body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-      .font-display { font-family: 'Outfit', sans-serif; }
+      body { font-family: 'Inter', sans-serif; }
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+      }
     </style>
   </head>
-  <body class="bg-white text-slate-900">
+  <body class="bg-slate-50 text-slate-900 leading-relaxed min-h-screen">
     
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+    <nav class="sticky top-0 z-50 glass border-b border-slate-200 px-6 py-4">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <a href="/" class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">X</div>
-          <div class="flex flex-col">
-            <span class="font-display font-black text-lg leading-none tracking-tight text-slate-900 uppercase">Smart X</span>
-            <span class="font-display font-black text-lg leading-none tracking-tight text-slate-900 uppercase">Academy</span>
-          </div>
+        <a href="/" class="flex items-center gap-2">
+          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl italic shadow-lg">X</div>
+          <span class="font-extrabold text-xl tracking-tight text-slate-900">SMART <span class="text-blue-600">X</span> ACADEMY</span>
         </a>
-        <div class="hidden lg:flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
-          <a href="/about" class="hover:text-blue-600 transition-colors">About</a>
-          <a href="/#features" class="hover:text-blue-600 transition-colors">Features</a>
-          <a href="/leaderboard" class="flex items-center gap-2 hover:text-blue-600 transition-colors">
-            👑 <span class="text-amber-500">Leaderboard</span>
-          </a>
-          <a href="/books" class="hover:text-blue-600 transition-colors">Books</a>
-          <a href="/quiz" class="flex items-center gap-2 text-blue-600 group">
-             <span class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
-             <span>Quiz / Exams</span>
-          </a>
-          <div class="w-px h-4 bg-slate-200"></div>
-          <a href="/feedback" class="hover:text-blue-600 transition-colors">Feedback</a>
-          <a href="/contact" class="hover:text-blue-600 transition-colors">Contact</a>
-        </div>
         <div class="flex items-center gap-4">
-          <a href="/profile" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 hover:border-blue-600 transition-all group">
-             <svg class="w-5 h-5 text-slate-400 group-hover:text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
-          </a>
-          <a href="/quiz" class="hidden sm:block bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl active:scale-95">Entry Portal</a>
+          <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Home</a>
+          <a href="/join-free.html" class="bg-slate-900 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-blue-600 transition-all duration-300">Join Free</a>
         </div>
       </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-24 pb-48 space-y-32">
-      <header class="text-center space-y-10 max-w-4xl mx-auto">
-        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em]">About Our Academy</p>
-        <h1 class="text-7xl md:text-9xl font-display font-black text-slate-900 leading-[0.8] tracking-tighter uppercase">
-          Empowering <br/> <span class="text-blue-600">Students.</span>
-        </h1>
-        <p class="text-2xl text-slate-500 font-medium leading-relaxed capitalize">Smart X Academy is a modern educational platform dedicated to elevating Ethiopian scholarship through interactive learning and accurate exam preparation.</p>
-      </header>
+    <!-- Content -->
+    <main class="max-w-4xl mx-auto px-6 py-20 space-y-16">
+      <div class="text-center space-y-4">
+        <h1 class="text-5xl font-extrabold tracking-tight text-slate-900">Empowering Ethiopia's <span class="text-blue-600 italic">Future</span>.</h1>
+        <p class="text-xl text-slate-500 max-w-2xl mx-auto font-medium">Smart X Academy is more than a platform. It's a revolution in how Ethiopian students learn, excel, and achieve their dreams.</p>
+      </div>
 
-      <section class="grid md:grid-cols-2 gap-12">
-         <div class="bg-slate-900 p-16 rounded-[4rem] text-white space-y-8 relative overflow-hidden group">
-            <div class="relative z-10 space-y-6">
-              <h3 class="text-4xl font-display font-black uppercase underline decoration-blue-600 decoration-4 underline-offset-8">Our Mission</h3>
-              <p class="text-slate-400 text-lg leading-relaxed font-medium">To democratize elite-level academic preparation, breaking down traditional barriers to excellence through accessible digital learning pathways and realistic exam simulations.</p>
-            </div>
-            <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-600/20 rounded-full blur-[100px] group-hover:scale-110 transition-transform duration-1000"></div>
-         </div>
-         <div class="bg-white p-16 rounded-[4rem] border border-slate-100 shadow-3xl space-y-8 relative overflow-hidden group">
-            <div class="relative z-10 space-y-6">
-              <h3 class="text-4xl font-display font-black text-slate-900 uppercase underline decoration-blue-600/30 decoration-4 underline-offset-8">The Strategy</h3>
-              <p class="text-slate-500 text-lg leading-relaxed font-medium">By integrating modern technology with established curriculum standards, we provide assessments that evolve alongside the student's intellectual capacity to ensure absolute readiness.</p>
-            </div>
-            <div class="absolute -top-20 -left-20 w-80 h-80 bg-blue-50/50 rounded-full blur-[100px] group-hover:scale-110 transition-transform duration-1000"></div>
-         </div>
-      </section>
+      <div class="aspect-video rounded-[3rem] overflow-hidden shadow-2xl relative border-8 border-white">
+        <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover" alt="Ethiopian Education" />
+        <div class="absolute inset-0 bg-blue-600/10 mix-blend-overlay"></div>
+      </div>
 
-      <section class="max-w-4xl mx-auto text-center space-y-16">
-         <div class="space-y-4">
-             <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.5em]">Built In</p>
-             <h4 class="text-4xl font-display font-black text-slate-900 uppercase">Addis Ababa, Ethiopia</h4>
-         </div>
-         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div class="p-8 bg-slate-50 rounded-3xl space-y-2">
-               <h5 class="text-3xl font-display font-black text-blue-600">G9-12</h5>
-               <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Grade Coverage</p>
-            </div>
-            <div class="p-8 bg-slate-50 rounded-3xl space-y-2">
-               <h5 class="text-3xl font-display font-black text-blue-600">5k+</h5>
-               <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Practice Questions</p>
-            </div>
-            <div class="p-8 bg-slate-50 rounded-3xl space-y-2">
-               <h5 class="text-3xl font-display font-black text-blue-600">100%</h5>
-               <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Curriculum Output</p>
-            </div>
-            <div class="p-8 bg-slate-50 rounded-3xl space-y-2">
-               <h5 class="text-3xl font-display font-black text-blue-600">24/7</h5>
-               <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Platform Access</p>
-            </div>
-         </div>
-      </section>
+      <div class="grid md:grid-cols-2 gap-12 pt-10">
+        <div class="space-y-4">
+          <h2 class="text-2xl font-bold text-slate-900">Our Mission</h2>
+          <p class="text-slate-600 leading-relaxed">
+            To provide every Ethiopian student from Grade 9 to 12 with access to high-quality, digital-first education regardless of their location. We aim to break the barriers of traditional classroom learning by integrating expert scholarship with modern technology.
+          </p>
+        </div>
+        <div class="space-y-4">
+          <h2 class="text-2xl font-bold text-slate-900">Our Vision</h2>
+          <p class="text-slate-600 leading-relaxed">
+            We envision a future where technology bridges the educational gap in Ethiopia, producing a generation of critical thinkers and innovators ready to take on national and global challenges.
+          </p>
+        </div>
+        <div class="space-y-4">
+          <h2 class="text-2xl font-bold text-slate-900">Why Digital?</h2>
+          <p class="text-slate-600 leading-relaxed">
+            In a fast-growing nation like Ethiopia, digital education offers the scalability and flexibility needed to support our 12 million+ students. Smart X Academy provides localized, relevant content that aligns perfectly with the national curriculum.
+          </p>
+        </div>
+        <div class="space-y-4">
+          <h2 class="text-2xl font-bold text-slate-900">The "X" Factor</h2>
+          <p class="text-slate-600 leading-relaxed">
+            The 'X' in Smart X stands for Excellence. It's the extra mile we go in our video lessons, the precision of our mock exams, and the dedication of our tutors who are among the highest achievers in the nation.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 rounded-[2.5rem] p-12 text-center space-y-8 text-white relative overflow-hidden">
+        <div class="relative z-10 space-y-4">
+          <h3 class="text-3xl font-bold">Ready to Start Your Journey?</h3>
+          <p class="text-slate-400">Join thousands of students across Ethiopia today.</p>
+          <div class="pt-4">
+            <a href="/join-free.html" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold transition-all transform hover:-translate-y-1">Get Started Today</a>
+          </div>
+        </div>
+        <!-- Decorative blob -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600 rounded-full blur-[100px] opacity-20 -mr-32 -mt-32"></div>
+      </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white pt-32 pb-16 px-8">
-      <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-16 border-b border-slate-100 pb-20 mb-12">
-        <div class="md:col-span-2 space-y-8">
-          <div class="flex items-center gap-3">
-             <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">X</div>
-             <span class="font-display font-black text-xl tracking-tight uppercase">Smart X Academy</span>
-          </div>
-          <p class="text-slate-500 max-w-sm leading-relaxed text-sm font-medium">Educating Ethiopia's next generation with technology, passion, and local expertise. Join the revolution today.</p>
-          <div class="flex gap-4">
-             <div class="w-10 h-10 bg-slate-50 rounded-full border border-slate-100"></div>
-             <div class="w-10 h-10 bg-slate-50 rounded-full border border-slate-100"></div>
-             <div class="w-10 h-10 bg-slate-50 rounded-full border border-slate-100"></div>
-          </div>
-        </div>
-        
-        <div class="space-y-8">
-           <h5 class="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em]">Resources</h5>
-           <ul class="space-y-4 text-sm font-semibold text-slate-400">
-              <li><a href="/books" class="hover:text-blue-600 transition-colors">Study Guides</a></li>
-              <li><a href="/quiz" class="hover:text-blue-600 transition-colors">Exam Papers</a></li>
-              <li><a href="#" class="hover:text-blue-600 transition-colors">Video Library</a></li>
-           </ul>
-        </div>
-
-        <div class="space-y-8">
-           <h5 class="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em]">Academy</h5>
-           <ul class="space-y-4 text-sm font-semibold text-slate-400">
-              <li><a href="/about" class="hover:text-blue-600 transition-colors">About Us</a></li>
-              <li><a href="/contact" class="hover:text-blue-600 transition-colors">Contact Support</a></li>
-              <li><a href="/feedback" class="hover:text-blue-600 transition-colors">Send Feedback</a></li>
-           </ul>
-        </div>
-      </div>
-
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-         <p class="text-slate-400 text-[10px] font-bold">© 2026 Smart X Academy. Built for Ethiopian Students.</p>
-         <div class="flex gap-10 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-            <a href="/privacy" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
-            <a href="/terms" class="hover:text-slate-900 transition-colors">Terms of Service</a>
-         </div>
-      </div>
+    <footer class="py-10 border-t border-slate-200 text-center">
+      <p class="text-slate-400 text-sm">© 2026 Smart X Academy. Dedicated to Ethiopian Excellence.</p>
     </footer>
 
   </body>

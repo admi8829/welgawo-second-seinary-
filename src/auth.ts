@@ -9,9 +9,6 @@ const signInForm = document.getElementById('signInForm') as HTMLFormElement;
 const signUpForm = document.getElementById('signUpForm') as HTMLFormElement;
 const switchSignIn = document.getElementById('switchSignIn') as HTMLButtonElement;
 const switchSignUp = document.getElementById('switchSignUp') as HTMLButtonElement;
-const photoInput = document.getElementById('photoInput') as HTMLInputElement;
-
-let selectedPhotoBase64 = '';
 
 // Check URL mode
 const urlParams = new URLSearchParams(window.location.search);
@@ -66,26 +63,6 @@ function updateUI() {
 // Ensure UI updates on resize to handle hidden/visible boxes correctly
 window.addEventListener('resize', updateUI);
 
-// Photo Handling
-if (photoInput) {
-  photoInput.addEventListener('change', (e) => {
-    const file = photoInput.files?.[0];
-    if (file) {
-      if (file.size > 1.5 * 1024 * 1024) { // 1.5MB Limit
-        showStatus('error', 'Profile Size Error', 'The selected portrait is too large (max 1.5MB).');
-        photoInput.value = '';
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (re) => {
-        selectedPhotoBase64 = re.target?.result as string;
-        showStatus('success', 'Portrait Loaded', 'Your scholar photo has been processed successfully.');
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-}
-
 // Switches
 if (tabSignIn) tabSignIn.onclick = () => { mode = 'signin'; updateUI(); };
 if (tabSignUp) tabSignUp.onclick = () => { mode = 'signup'; updateUI(); };
@@ -119,7 +96,7 @@ if (signUpForm) {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, password, gender, age, grade, schoolName, photo: selectedPhotoBase64 })
+        body: JSON.stringify({ name, email, phone, password, gender, age, grade, schoolName })
       });
       const data = await res.json();
       

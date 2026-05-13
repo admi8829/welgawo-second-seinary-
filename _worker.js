@@ -1,12 +1,16 @@
 // --- Pure Fetch Helper for Gemini API ---
 async function geminiRequest(apiKey, prompt, systemInstruction = "") {
-  // Use v1 instead of v1beta and ensure model name is correct
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  // Use v1beta for better model compatibility and experimental features
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview-02-05:generateContent?key=${apiKey}`;
   const payload = {
     contents: [{ parts: [{ text: prompt }] }]
   };
+  
   if (systemInstruction) {
-    payload.system_instruction = { parts: [{ text: systemInstruction }] };
+    // system_instruction must be a Content object (role is often optional in REST)
+    payload.system_instruction = {
+      parts: [{ text: systemInstruction }]
+    };
   }
   
   const response = await fetch(url, {
@@ -20,7 +24,7 @@ async function geminiRequest(apiKey, prompt, systemInstruction = "") {
     console.error("Gemini API Error:", data.error);
     throw new Error(data.error.message);
   }
-  if (!data.candidates || !data.candidates[0]) throw new Error("No response from AI candidates");
+  if (!data.candidates || !data.candidates[0]) throw new Error("Neural response was intercepted or empty.");
   return data.candidates[0].content.parts[0].text;
 }
 
@@ -60,7 +64,7 @@ export default {
         // --- 1. Registration ---
         if (path === "/api/register" && method === "POST") {
           const body = await request.json();
-          const { name, email, phone, password, gender, age, grade, schoolName, photo } = body;
+          const { name, email, phone, password, gender, age, grade, schoolName, photo = null } = body;
 
           const existing = await env.DB.prepare("SELECT id FROM users WHERE email = ?").bind(email).first();
           if (existing) {
@@ -118,8 +122,14 @@ export default {
           No markdown blocks. Avoid difficult language.`;
 
           const aiText = await geminiRequest(env.GEMINI_API_KEY, prompt);
-          const cleanText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
-          const questions = JSON.parse(cleanText);
+          
+          // Robust JSON extraction
+          let jsonStr = aiText;
+          const jsonMatch = aiText.match(/\[\s*\{.*\}\s*\]/s);
+          if (jsonMatch) jsonStr = jsonMatch[0];
+          else jsonStr = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
+          
+          const questions = JSON.parse(jsonStr);
           
           const formatted = questions.map((q, i) => ({
             id: 2000 + i,
@@ -158,13 +168,6 @@ export default {
       } catch (e) {
         return jsonResponse({ success: false, message: e.message }, 500);
       }
-    }
-
-    // --- Elegant Static Asset Routing ---
-    // If it's a clean URL and not an API call, try to append .html
-    if (method === "GET" && !path.includes(".") && path !== "/") {
-      const assetResponse = await env.ASSETS.fetch(new Request(new URL(path + ".html", request.url), request));
-      if (assetResponse.status === 200) return assetResponse;
     }
 
     // Fallback to default asset serving

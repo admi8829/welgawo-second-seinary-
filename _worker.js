@@ -225,6 +225,99 @@ export default {
       }
     }
 
+    if (url.pathname === "/api/generate-question" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const topic = body.topic;
+        
+        if (!topic) {
+          return new Response(JSON.stringify({ success: false, error: "Topic is required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+        }
+
+        if (!env.GEMINI_API_KEY) {
+          return new Response(JSON.stringify({ success: false, error: "GEMINI_API_KEY is not set in Cloudflare Variables." }), { status: 500, headers: { "Content-Type": "application/json" } });
+        }
+
+        const prompt = `Generate a multiple choice quiz question about the following topic: ${topic}. Provide 4 options and indicate the correct answer. Provide the response as JSON with this exact schema: {"question": "...", "options": ["...", "...", "...", "..."], "correctAnswer": "..."}`;
+
+        const geminiRes = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + env.GEMINI_API_KEY, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          })
+        });
+
+        if (!geminiRes.ok) {
+          const errText = await geminiRes.text();
+          return new Response(JSON.stringify({ success: false, error: "Gemini API error: " + errText }), { status: 500, headers: { "Content-Type": "application/json" } });
+        }
+
+        const data = await geminiRes.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+        const parsed = JSON.parse(text);
+
+        return new Response(JSON.stringify({ success: true, data: parsed }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    if (url.pathname === "/api/generate-question" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const topic = body.topic;
+        
+        if (!topic) {
+          return new Response(JSON.stringify({ success: false, error: "Topic is required" }), { status: 400 });
+        }
+
+        const apiKey = env.GEMINI_API_KEY;
+        if (!apiKey) {
+           return new Response(JSON.stringify({ success: false, error: "GEMINI_API_KEY is not configured in Cloudflare environment" }), { status: 500 });
+        }
+
+        const prompt = `Generate a multiple choice quiz question about the following topic: ${topic}. Provide 4 options and indicate the correct answer. Provide the response as JSON using the following schema: {"type": "object", "properties": {"question": {"type": "string"}, "options": {"type": "array", "items": {"type": "string"}, "description": "Exactly 4 items"}, "correctAnswer": {"type": "string"}}, "required": ["question", "options", "correctAnswer"]}`;
+
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          })
+        });
+
+        if (!geminiRes.ok) {
+           const errText = await geminiRes.text();
+           throw new Error(`Gemini API error: ${errText}`);
+        }
+
+        const geminiData = await geminiRes.json();
+        const text = geminiData.candidates[0].content.parts[0].text;
+        const parsedData = JSON.parse(text);
+
+        return new Response(JSON.stringify({ success: true, data: parsedData }), {
+          headers: { "Content-Type": "application/json" }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+    }
+
     // 8. API ካልሆነ የ index.html ፋይሉን እንዲያሳይ ለ Cloudflare እንነግረዋለን
     // ይህ የሚሰራው በ Cloudflare Pages ላይ ብቻ ነው
     return env.ASSETS.fetch(request);

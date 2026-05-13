@@ -301,9 +301,16 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ topic })
             });
-            const data = await response.json();
+            
+            const textResponse = await response.text();
+            let data;
+            try {
+              data = JSON.parse(textResponse);
+            } catch (e) {
+              throw new Error(`Server returned non-JSON response (Status ${response.status}): ` + textResponse.substring(0, 100));
+            }
 
-            if (data.success && data.data) {
+            if (response.ok && data.success && data.data) {
               const quiz = data.data;
               document.getElementById('subject').value = Array.isArray(topic) ? topic[0] : topic;
               document.getElementById('question').value = quiz.question || '';

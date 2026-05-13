@@ -96,10 +96,11 @@ your-repo/
 
 ## New Features & Admin Tools
 
-- **Student Dashboard**: Accessible at `/admin`. Sign in with `admin@smartx.com` and `admin123`.
+- **Student Dashboard**: Accessible at `/admin`. Sign in with `admin@smartx.com` and `SmartX2026`.
 - **Question Engine**: Accessible within the `/admin` dashboard under "Add Quiz Question".
-- **AI Chat**: Integrated in the student portal for real-time tutoring.
-- **Sample Data**: Use `questions.sql` for initial population.
+- **AI Chat**: Integrated in the student portal for real-time tutoring using Gemini 1.5 Flash.
+- **Sample Data**: Use `questions.sql` for initial population of students, questions, and teachers.
+- **Visual Portraits**: High-performance photo upload system for student profiles.
 
 ## Important Routes
 

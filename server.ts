@@ -104,13 +104,30 @@ async function startServer() {
 
   app.post("/api/register", (req, res) => {
     const { name, email, phone, password, gender, age, grade, schoolName, photo } = req.body;
+    
+    if (!email || !password || !name) {
+      return res.status(400).json({ success: false, message: 'Identity missing required fields: Name, Email, or Password.' });
+    }
+
     try {
+      const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+      if (existing) {
+        return res.status(400).json({ success: false, message: 'This academic identity already exists. Please sign in.' });
+      }
+
       const stmt = db.prepare('INSERT INTO users (name, email, phone, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
       const info = stmt.run(name, email, phone, password, gender, age, grade, schoolName, photo);
-      res.json({ success: true, user: { id: info.lastInsertRowid, name, email, phone, grade, schoolName, photo } });
-    } catch (e) {
-      console.error(e);
-      res.status(400).json({ success: false, message: 'Registration failed. Email might already exist.' });
+      
+      if (info.changes > 0) {
+        const user = db.prepare('SELECT id, name, email, phone, grade, schoolName, photo, is_admin FROM users WHERE id = ?').get(info.lastInsertRowid);
+        console.log(`[Registration] Success: ${email} (ID: ${info.lastInsertRowid})`);
+        res.json({ success: true, user });
+      } else {
+        res.status(500).json({ success: false, message: 'Database refused the entry. No data saved.' });
+      }
+    } catch (e: any) {
+      console.error('[Registration Error]', e);
+      res.status(500).json({ success: false, message: 'D1 DB Error: ' + e.message });
     }
   });
 
@@ -191,19 +208,19 @@ async function startServer() {
     const { topic, grade } = req.body;
     try {
       if (!process.env.GEMINI_API_KEY) {
-        return res.status(400).json({ success: false, message: "Gemini API Key is missing. Please set GEMINI_API_KEY in Cloudflare Variable Secrets." });
+        return res.status(400).json({ success: false, message: "Gemini API Key is missing. Please set GEMINI_API_KEY." });
       }
+      
+      const prompt = `Generate exactly 10 multiple choice questions for a Grade ${grade || '12'} student on the topic: "${topic}". 
+      Return ONLY a JSON array with objects containing: "question", "options" (array of 4 strings), and "answer" (string matching one of the options). 
+      Ensure the difficulty is appropriate for the grade level. Avoid markdown formatting blocks.`;
+
       const { GoogleGenAI } = await import("@google/genai");
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Generate 3 multiple-choice questions for grade ${grade} high school students about the topic: "${topic}". 
-      Respond ONLY in raw valid JSON format as an array of objects. Each object must have "question" (string), "options" (array of 4 strings), and "answer" (string).`;
-      
-      const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
-        contents: prompt
-      });
-      
-      const text = response.text || "[]";
+      const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text() || "[]";
       // Clean markdown if exists
       const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
       const questions = JSON.parse(cleaned);
@@ -273,15 +290,14 @@ async function startServer() {
         return res.status(400).json({ success: false, message: "Gemini API Key is missing." });
       }
       const { GoogleGenAI } = await import("@google/genai");
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
+      const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const model = genAI.getGenerativeModel({ 
         model: 'gemini-1.5-flash',
-        contents: message,
-        config: {
-          systemInstruction: "You are Smart-X Academy AI, a helpful tutor for Ethiopian high school students. Be encouraging, clear, and focused on educational success. Keep responses relatively concise."
-        }
+        systemInstruction: "You are Smart-X Academy AI, a helpful tutor for Ethiopian high school students. Be encouraging, clear, and focused on educational success. Keep responses relatively concise."
       });
-      res.json({ success: true, text: response.text });
+      const result = await model.generateContent(message);
+      const response = await result.response;
+      res.json({ success: true, text: response.text() });
     } catch (e: any) {
       console.error(e);
       res.status(500).json({ success: false, message: e.message });

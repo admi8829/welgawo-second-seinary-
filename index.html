@@ -413,16 +413,23 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text })
           });
+
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.message || `Portal Error (${res.status})`);
+          }
+
           const data = await res.json();
 
           const botMsg = document.getElementById(botId);
           botMsg.classList.remove('animate-pulse', 'text-slate-400');
           botMsg.classList.add('text-slate-700');
-          botMsg.innerText = data.text || "I'm sorry, I couldn't process that.";
+          botMsg.innerText = data.text || "I'm sorry, my neural link is weak. Please try again.";
         } catch (err) {
           const botMsg = document.getElementById(botId);
-          botMsg.innerText = 'Error: ' + err.message;
-          botMsg.classList.add('text-red-500');
+          botMsg.classList.remove('animate-pulse', 'text-slate-400');
+          botMsg.innerText = 'Neural Error: ' + err.message;
+          botMsg.classList.add('text-red-500', 'font-bold');
         }
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }

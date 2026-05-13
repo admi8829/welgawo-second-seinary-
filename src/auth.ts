@@ -17,21 +17,50 @@ let selectedPhotoBase64 = '';
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('mode') === 'signup') mode = 'signup';
 
+// Status Messenger
+const statusMessage = document.getElementById('statusMessage');
+const statusIcon = document.getElementById('statusIcon');
+const statusTitle = document.getElementById('statusTitle');
+const statusDesc = document.getElementById('statusDesc');
+
+function showStatus(type: 'success' | 'error', title: string, desc: string) {
+  if (!statusMessage || !statusIcon || !statusTitle || !statusDesc) return;
+  
+  statusMessage.classList.remove('hidden', 'bg-green-50', 'border-green-100', 'bg-red-50', 'border-red-100');
+  statusIcon.classList.remove('bg-green-500', 'text-white', 'bg-red-500', 'text-white');
+  
+  if (type === 'success') {
+    statusMessage.classList.add('bg-green-50', 'border-green-100');
+    statusIcon.classList.add('bg-green-500', 'text-white');
+    statusIcon.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`;
+  } else {
+    statusMessage.classList.add('bg-red-50', 'border-red-100');
+    statusIcon.classList.add('bg-red-500', 'text-white');
+    statusIcon.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+  }
+  
+  statusTitle.textContent = title;
+  statusDesc.textContent = desc;
+  statusMessage.classList.remove('hidden');
+}
+
 function updateUI() {
-  const activeTab = "flex-1 py-8 text-xs font-black uppercase tracking-widest text-blue-600 border-b-2 border-blue-600 transition-all";
-  const inactiveTab = "flex-1 py-8 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent transition-all";
+  const activeBtn = "px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest bg-white shadow-sm text-slate-900 transition-all";
+  const inactiveBtn = "px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-all";
 
   if (mode === 'signup') {
     signInBox?.classList.add('hidden');
     signUpBox?.classList.remove('hidden');
-    if (tabSignUp) tabSignUp.className = activeTab;
-    if (tabSignIn) tabSignIn.className = inactiveTab;
+    if (tabSignUp) tabSignUp.className = activeBtn;
+    if (tabSignIn) tabSignIn.className = inactiveBtn;
   } else {
     signUpBox?.classList.add('hidden');
     signInBox?.classList.remove('hidden');
-    if (tabSignIn) tabSignIn.className = activeTab;
-    if (tabSignUp) tabSignUp.className = inactiveTab;
+    if (tabSignIn) tabSignIn.className = activeBtn;
+    if (tabSignUp) tabSignUp.className = inactiveBtn;
   }
+  // Clear status on switch
+  statusMessage?.classList.add('hidden');
 }
 
 // Ensure UI updates on resize to handle hidden/visible boxes correctly
@@ -42,14 +71,15 @@ if (photoInput) {
   photoInput.addEventListener('change', (e) => {
     const file = photoInput.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) { // 1MB Limit
-        alert("Image too large. Please select a file under 1MB.");
+      if (file.size > 1.5 * 1024 * 1024) { // 1.5MB Limit
+        showStatus('error', 'Profile Size Error', 'The selected portrait is too large (max 1.5MB).');
         photoInput.value = '';
         return;
       }
       const reader = new FileReader();
       reader.onload = (re) => {
         selectedPhotoBase64 = re.target?.result as string;
+        showStatus('success', 'Portrait Loaded', 'Your scholar photo has been processed successfully.');
       };
       reader.readAsDataURL(file);
     }
@@ -74,7 +104,7 @@ if (signUpForm) {
     const confirm = (document.getElementById('confirmPasswordInput') as HTMLInputElement).value;
     
     if (password !== confirm) {
-      alert("Passwords don't match!");
+      showStatus('error', 'Password Mismatch', 'Your confirmation password does not match.');
       return;
     }
 
@@ -85,7 +115,7 @@ if (signUpForm) {
 
     try {
       btn.disabled = true;
-      btn.textContent = 'Registering...';
+      btn.textContent = 'Establishing Identity...';
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -95,20 +125,21 @@ if (signUpForm) {
       
       if (data.success) {
         localStorage.setItem('currentUser', JSON.stringify(data.user));
-        btn.textContent = 'Success! Redirecting...';
+        showStatus('success', 'Academy Join Successful', 'Redirecting you to your intelligence dashboard...');
+        btn.textContent = 'Identity Confirmed';
         btn.classList.add('bg-green-600', 'hover:bg-green-700');
         setTimeout(() => {
           window.location.href = '/';
-        }, 1500);
+        }, 2000);
       } else {
-        alert(data.message);
+        showStatus('error', 'Registration Refused', data.message || 'The academy could not confirm your registration at this time.');
         btn.disabled = false;
-        btn.textContent = 'Register';
+        btn.textContent = 'Establish Student Identity';
       }
     } catch (error: any) {
-      alert('Registration failed: ' + error.message);
+      showStatus('error', 'System Connection Error', 'Failed to communicate with our servers: ' + error.message);
       btn.disabled = false;
-      btn.textContent = 'Register';
+      btn.textContent = 'Establish Student Identity';
     }
   });
 }

@@ -46,107 +46,208 @@
       </header>
 
       <!-- Main Interactive Board -->
-      <main class="bg-white rounded-[3.5rem] shadow-[0_30px_100px_rgba(0,0,0,0.04)] border border-slate-50 overflow-hidden min-h-[750px] flex flex-col">
+      <main class="bg-white rounded-[3.5rem] shadow-[0_40px_120px_rgba(30,58,138,0.08)] border border-slate-50 overflow-hidden min-h-[850px] flex flex-col">
         
-        <div class="grid lg:grid-cols-2 gap-8 items-start">
-        <!-- Brand Side -->
-        <div class="hidden lg:flex flex-col h-full bg-slate-900 rounded-[3rem] p-16 text-white space-y-12 relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full -mr-48 -mt-48"></div>
-          <div class="absolute bottom-0 left-0 w-64 h-64 bg-orange-600/10 blur-[120px] rounded-full -ml-32 -mb-32"></div>
-          
-          <div class="relative z-10 space-y-4">
-             <h2 class="text-5xl font-display font-black leading-tight italic uppercase tracking-tight">The Future of <br/> <span class="text-blue-500">Ethiopian</span> Excellence.</h2>
-             <p class="text-slate-400 font-medium max-w-md leading-relaxed">Join thousands of students across the nation mastering their curriculum through AI-powered education.</p>
-          </div>
+        <div class="grid lg:grid-cols-5 h-full flex-1">
+          <!-- Side Panel (2/5) -->
+          <div class="hidden lg:flex lg:col-span-2 flex-col bg-slate-900 p-16 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/30 blur-[120px] rounded-full -mr-48 -mt-48"></div>
+            <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-orange-600/20 blur-[100px] rounded-full -ml-32 -mb-32"></div>
+            
+            <div class="relative z-10 flex-1 flex flex-col justify-between">
+              <div class="space-y-8">
+                <div class="space-y-4">
+                  <span class="inline-block px-4 py-1.5 bg-blue-500/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 border border-blue-500/30">Academic Excellence</span>
+                  <h2 class="text-6xl font-display font-black leading-[1.05] italic uppercase tracking-tighter">Reach Your <br/> <span class="text-blue-500">Full</span> Potential.</h2>
+                  <p class="text-slate-400 font-medium text-lg max-w-sm leading-relaxed">The most advanced AI learning platform tailored for the Ethiopian curriculum (G9-G12).</p>
+                </div>
 
-          <div class="relative z-10 grid grid-cols-2 gap-4">
-            <div class="bg-white/5 border border-white/10 p-6 rounded-3xl">
-              <p class="text-3xl font-display font-black text-blue-400">12K+</p>
-              <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">Scholars Active</p>
+                <div class="space-y-6">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-blue-400">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                      <p class="font-bold text-sm">ESLCE Preparedness</p>
+                      <p class="text-xs text-slate-500">Access 450+ high-yield mock exam questions.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-orange-400">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <div>
+                      <p class="font-bold text-sm">Instant AI Tutoring</p>
+                      <p class="text-xs text-slate-500">Get detailed explanations for complex topics.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-20">
+                <div class="bg-white/5 border border-white/10 p-8 rounded-[2.5rem] backdrop-blur-md">
+                   <div class="flex -space-x-3 mb-4">
+                     <img class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-800" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+                     <img class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-800" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Leila" alt="User">
+                     <img class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-800" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Arthur" alt="User">
+                     <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[10px] font-bold">+500</div>
+                   </div>
+                   <p class="text-sm font-medium text-slate-300">"Smart-X transformed how I study for my national exams. The AI tutor is like having a private professor."</p>
+                </div>
+              </div>
             </div>
-            <div class="bg-white/5 border border-white/10 p-6 rounded-3xl">
-              <p class="text-3xl font-display font-black text-orange-400">98%</p>
-              <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">Success Rate</p>
-            </div>
-          </div>
-          
-          <div class="relative z-10 pt-10">
-             <img src="https://img.freepik.com/free-vector/learning-concept-illustration_114360-6186.jpg" class="w-full rounded-[2.5rem] opacity-80" alt="Learn">
-          </div>
-        </div>
-
-        <!-- Auth Side -->
-        <div class="bg-white rounded-[3rem] shadow-2xl border border-slate-50 overflow-hidden min-h-[700px] flex flex-col">
-          <div class="flex border-b border-slate-50">
-            <button id="tabSignIn" class="flex-1 py-8 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent transition-all">Sign In</button>
-            <button id="tabSignUp" class="flex-1 py-8 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent transition-all">Register</button>
           </div>
 
-          <div class="p-10 lg:p-14 flex-1">
-            <!-- Sign In Form -->
-            <div id="signInBox" class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-               <div class="text-center space-y-2">
-                 <h3 class="text-3xl font-display font-black text-slate-900 uppercase italic">Welcome Back</h3>
-                 <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Access your learning dashboard</p>
+          <!-- Auth Form Area (3/5) -->
+          <div class="lg:col-span-3 flex flex-col p-8 md:p-20 relative">
+            
+            <!-- Tab Switcher -->
+            <div class="flex items-center justify-between mb-16">
+               <div class="bg-slate-100 p-1.5 rounded-2xl flex items-center">
+                 <button id="tabSignIn" class="px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all">Sign In</button>
+                 <button id="tabSignUp" class="px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all">Register</button>
                </div>
+               <a href="/" class="text-xs font-black text-slate-400 hover:text-slate-900 transition-colors uppercase tracking-widest flex items-center gap-2">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                 Back
+               </a>
+            </div>
+
+            <!-- Login Area -->
+            <div id="signInBox" class="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+               <div class="space-y-3">
+                 <h3 class="text-4xl font-display font-black text-slate-900 uppercase italic leading-none">Welcome Back.</h3>
+                 <p class="text-slate-500 font-medium lowercase tracking-tight">Enter your credentials to access your academic dashboard.</p>
+               </div>
+               
                <form id="signInForm" class="space-y-6">
                  <div class="space-y-4">
-                   <input type="email" id="loginEmail" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 outline-none focus:ring-4 focus:ring-blue-50 font-medium transition-all" placeholder="Email Address">
-                   <input type="password" id="loginPassword" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 outline-none focus:ring-4 focus:ring-blue-50 font-medium transition-all" placeholder="Password">
+                   <div class="relative group">
+                     <label class="absolute left-6 top-3 text-[10px] font-black text-slate-400 uppercase tracking-widest group-focus-within:text-blue-600 transition-colors">Email Address</label>
+                     <input type="email" id="loginEmail" required class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-100 focus:bg-white rounded-[1.5rem] pt-8 pb-4 px-6 outline-none font-bold text-slate-800 transition-all" placeholder="name@email.com">
+                   </div>
+                   <div class="relative group">
+                     <label class="absolute left-6 top-3 text-[10px] font-black text-slate-400 uppercase tracking-widest group-focus-within:text-blue-600 transition-colors">Security Password</label>
+                     <input type="password" id="loginPassword" required class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-100 focus:bg-white rounded-[1.5rem] pt-8 pb-4 px-6 outline-none font-bold text-slate-800 transition-all" placeholder="••••••••">
+                   </div>
                  </div>
-                 <button type="submit" id="btnSignIn" class="w-full bg-blue-600 text-white font-black py-5 rounded-3xl shadow-2xl shadow-blue-100 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-sm">Sign In</button>
-                 <p class="text-center text-xs font-black text-slate-400 uppercase tracking-widest">New Student? <button type="button" id="switchSignUp" class="text-blue-600">Create Account</button></p>
+                 
+                 <div class="flex items-center justify-between px-2">
+                   <label class="flex items-center gap-2 cursor-pointer group">
+                     <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-200 text-blue-600 focus:ring-blue-500 transition-all">
+                     <span class="text-xs font-bold text-slate-500 group-hover:text-slate-700 transition-colors">Keep me signed in</span>
+                   </label>
+                   <a href="#" class="text-xs font-bold text-blue-600 hover:underline">Forgot?</a>
+                 </div>
+
+                 <button type="submit" id="btnSignIn" class="w-full bg-slate-900 text-white font-black py-6 rounded-[1.5rem] shadow-2xl shadow-slate-200 hover:bg-blue-600 hover:scale-[1.02] active:scale-98 transition-all uppercase tracking-[0.2em] text-sm">
+                   Sign into Dashboard
+                 </button>
                </form>
+
+               <div class="relative py-4">
+                 <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                 <div class="relative flex justify-center text-xs uppercase font-black tracking-widest"><span class="bg-white px-4 text-slate-300 text-[10px]">Alternative Access</span></div>
+               </div>
+
+               <button class="w-full flex items-center justify-center gap-4 border-2 border-slate-100 bg-white py-5 rounded-[1.5rem] hover:bg-slate-50 transition-all active:scale-98">
+                 <img src="https://www.gstatic.com/images/branding/product/1x/gsa_48dp.png" class="w-6 h-6" alt="Google">
+                 <span class="text-sm font-bold text-slate-700">Continue with Scholar Account</span>
+               </button>
             </div>
 
-            <!-- Sign Up Form -->
-            <div id="signUpBox" class="hidden space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div class="text-center space-y-2">
-                <h3 class="text-3xl font-display font-black text-slate-900 uppercase italic">Join Academy</h3>
-                <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Create your scholar profile</p>
+            <!-- Sign Up Area -->
+            <div id="signUpBox" class="hidden space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+              <div class="space-y-3">
+                <h3 class="text-4xl font-display font-black text-slate-900 uppercase italic leading-none">Join the Academy.</h3>
+                <p class="text-slate-500 font-medium lowercase tracking-tight">Create your high-performance student profile today.</p>
               </div>
-              <form id="signUpForm" class="space-y-4">
+
+              <form id="signUpForm" class="space-y-5">
                 <div class="grid grid-cols-2 gap-4">
-                  <input type="text" id="nameInput" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none focus:ring-4 focus:ring-orange-50 font-medium" placeholder="Full Name">
-                  <input type="email" id="emailInput" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none focus:ring-4 focus:ring-orange-50 font-medium" placeholder="Email">
+                  <div class="relative group">
+                    <label class="absolute left-6 top-3 text-[10px] font-black text-slate-400 uppercase tracking-widest group-focus-within:text-orange-500 transition-colors">Full Name</label>
+                    <input type="text" id="nameInput" required class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-8 pb-4 px-6 outline-none font-bold text-slate-800 transition-all text-sm" placeholder="e.g. Abebe Kebede">
+                  </div>
+                  <div class="relative group">
+                    <label class="absolute left-6 top-3 text-[10px] font-black text-slate-400 uppercase tracking-widest group-focus-within:text-orange-500 transition-colors">Email Address</label>
+                    <input type="email" id="emailInput" required class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-8 pb-4 px-6 outline-none font-bold text-slate-800 transition-all text-sm" placeholder="name@study.com">
+                  </div>
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
-                  <input type="text" id="phoneInput" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none focus:ring-4 focus:ring-orange-50 font-medium" placeholder="Phone Number">
-                  <input type="text" id="schoolInput" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none focus:ring-4 focus:ring-orange-50 font-medium" placeholder="School Name">
+                  <div class="relative group">
+                    <label class="absolute left-6 top-3 text-[10px] font-black text-slate-400 uppercase tracking-widest group-focus-within:text-orange-500 transition-colors">Phone Number</label>
+                    <input type="text" id="phoneInput" required class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-8 pb-4 px-6 outline-none font-bold text-slate-800 transition-all text-sm" placeholder="+251 9...">
+                  </div>
+                  <div class="relative group">
+                    <label class="absolute left-6 top-3 text-[10px] font-black text-slate-400 uppercase tracking-widest group-focus-within:text-orange-500 transition-colors">School / Institution</label>
+                    <input type="text" id="schoolInput" required class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-8 pb-4 px-6 outline-none font-bold text-slate-800 transition-all text-sm" placeholder="Academy Name">
+                  </div>
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
-                  <input type="password" id="passwordInput" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none focus:ring-4 focus:ring-orange-50 font-medium" placeholder="Password">
-                  <input type="password" id="confirmPasswordInput" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none focus:ring-4 focus:ring-orange-50 font-medium" placeholder="Confirm">
+                  <div class="relative group">
+                    <label class="absolute left-6 top-3 text-[10px] font-black text-slate-400 uppercase tracking-widest group-focus-within:text-orange-500 transition-colors">Password</label>
+                    <input type="password" id="passwordInput" required class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-8 pb-4 px-6 outline-none font-bold text-slate-800 transition-all text-sm" placeholder="••••••••">
+                  </div>
+                  <div class="relative group">
+                    <label class="absolute left-6 top-3 text-[10px] font-black text-slate-400 uppercase tracking-widest group-focus-within:text-orange-500 transition-colors">Confirm Password</label>
+                    <input type="password" id="confirmPasswordInput" required class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-8 pb-4 px-6 outline-none font-bold text-slate-800 transition-all text-sm" placeholder="••••••••">
+                  </div>
                 </div>
+
                 <div class="grid grid-cols-3 gap-3">
-                  <select id="genderInput" class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none font-bold text-xs">
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>
-                  <input type="number" id="ageInput" required value="18" class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none font-bold text-xs" placeholder="Age">
-                  <select id="gradeInput" class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 outline-none font-bold text-xs">
-                    <option value="9">G 9</option>
-                    <option value="10">G 10</option>
-                    <option value="11">G 11</option>
-                    <option value="12" selected>G 12</option>
-                  </select>
-                </div>
-                <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-300">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"></path></svg>
+                  <div class="relative">
+                    <label class="absolute left-5 top-2.5 text-[8px] font-black text-slate-400 uppercase tracking-widest transition-colors">Gender</label>
+                    <select id="genderInput" class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-7 pb-3 px-5 outline-none font-bold text-slate-800 transition-all text-xs appearance-none">
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
                   </div>
-                  <div class="flex-1">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Avatar Photo</p>
-                    <input type="file" id="photoInput" accept="image/*" class="text-[10px] text-slate-500 file:hidden">
+                  <div class="relative">
+                    <label class="absolute left-5 top-2.5 text-[8px] font-black text-slate-400 uppercase tracking-widest transition-colors">Current Age</label>
+                    <input type="number" id="ageInput" required value="18" class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-7 pb-3 px-5 outline-none font-bold text-slate-800 transition-all text-xs">
+                  </div>
+                  <div class="relative">
+                    <label class="absolute left-5 top-2.5 text-[8px] font-black text-slate-400 uppercase tracking-widest transition-colors">Grade Level</label>
+                    <select id="gradeInput" class="w-full bg-slate-50 border-2 border-transparent focus:border-orange-100 focus:bg-white rounded-[1.2rem] pt-7 pb-3 px-5 outline-none font-bold text-slate-800 transition-all text-xs appearance-none">
+                      <option value="9">Grade 9</option>
+                      <option value="10">Grade 10</option>
+                      <option value="11">Grade 11</option>
+                      <option value="12" selected>Grade 12</option>
+                    </select>
                   </div>
                 </div>
-                <button type="submit" id="btnSignUp" class="w-full bg-orange-600 text-white font-black py-5 rounded-3xl shadow-2xl shadow-orange-100 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-sm">Create Profile</button>
-                <p class="text-center text-xs font-black text-slate-400 uppercase tracking-widest">Already Registered? <button type="button" id="switchSignIn" class="text-orange-600">Sign In</button></p>
+
+                <div class="flex items-center gap-6 bg-slate-900 rounded-[1.5rem] p-5 border border-white/5 shadow-xl relative overflow-hidden group/photo">
+                  <div class="absolute inset-0 bg-gradient-to-r from-orange-600/10 to-blue-600/10 opacity-0 group-hover/photo:opacity-100 transition-opacity"></div>
+                  <div class="relative z-10 w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-slate-300 border border-white/10">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                  </div>
+                  <div class="relative z-10 flex-1">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-1">Scholar Portrait</p>
+                    <input type="file" id="photoInput" accept="image/*" class="text-xs text-slate-500 font-medium file:cursor-pointer file:bg-transparent file:border-0 file:text-blue-400 file:font-black file:text-[10px] file:uppercase file:tracking-widest">
+                  </div>
+                </div>
+
+                <button type="submit" id="btnSignUp" class="w-full bg-orange-600 text-white font-black py-6 rounded-[1.5rem] shadow-2xl shadow-orange-100 hover:bg-orange-700 hover:scale-[1.02] active:scale-98 transition-all uppercase tracking-[0.2em] text-sm">
+                   Establish Student Identity
+                </button>
               </form>
             </div>
+            
+            <!-- Dynamic Status Messenger -->
+            <div id="statusMessage" class="mt-8 hidden p-5 rounded-2xl border flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
+               <div id="statusIcon" class="w-10 h-10 rounded-xl flex items-center justify-center"></div>
+               <div>
+                  <p id="statusTitle" class="text-xs font-black uppercase tracking-widest"></p>
+                  <p id="statusDesc" class="text-[11px] font-medium text-slate-500"></p>
+               </div>
+            </div>
+
           </div>
         </div>
-      </div>
 
         <!-- Footer -->
         <footer class="border-t border-slate-50 px-12 py-8 flex flex-col md:flex-row items-center justify-between gap-6">

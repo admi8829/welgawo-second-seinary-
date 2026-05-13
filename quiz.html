@@ -22,20 +22,59 @@
           <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic tracking-tight shadow-md">X</div>
           <h1 class="text-xl font-extrabold text-slate-900 tracking-tight uppercase">DAILY QUIZ</h1>
         </div>
-        <a href="/" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">Exit Quiz</a>
+        <div class="flex items-center gap-4">
+          <div id="timerDisplay" class="hidden font-mono text-lg font-bold text-red-600 bg-red-50 border border-red-200 px-3 py-1 rounded-lg">00:00</div>
+          <a href="/" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">Exit Quiz</a>
+        </div>
       </div>
 
       <!-- Topic Setup -->
-      <div id="topicSetup" class="bg-white p-12 rounded-[2.5rem] shadow-xl border border-slate-100 text-center space-y-6">
-        <h2 class="text-3xl font-extrabold text-slate-900">Create Custom Daily Quiz</h2>
-        <p class="text-slate-500 font-medium">Want to test your knowledge on a specific topic? Let our AI generate a custom question for you!</p>
-        <div class="flex gap-4 max-w-md mx-auto">
-          <input type="text" id="customTopic" placeholder="E.g., Ethiopian History, Calculus..." class="flex-1 px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600">
-          <button id="generateQuizBtn" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-purple-200 hover:bg-purple-700 transition">Generate</button>
+      <div id="topicSetup" class="bg-white p-12 rounded-[2.5rem] shadow-xl border border-slate-100 text-center space-y-8">
+        <div class="space-y-4">
+          <h2 class="text-3xl font-extrabold text-slate-900">Create Custom AI Quiz</h2>
+          <p class="text-slate-500 font-medium">Want to test your knowledge on a specific topic? Configure your challenge below!</p>
         </div>
-        <div class="pt-4 border-t border-slate-100">
-          <p class="text-slate-500 font-medium mb-4">Or take today's standard quiz:</p>
-          <button id="standardQuizBtn" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">Start Standard Quiz</button>
+        
+        <div class="max-w-md mx-auto space-y-4 text-left">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-2">Topic</label>
+            <input type="text" id="customTopic" placeholder="E.g., Ethiopian History, Calculus..." class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">Questions</label>
+              <select id="questionCount" class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white">
+                <option value="3">3 Questions</option>
+                <option value="5" selected>5 Questions</option>
+                <option value="10">10 Questions</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">Difficulty</label>
+              <select id="quizDifficulty" class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+          </div>
+          <div>
+             <label class="block text-sm font-bold text-slate-700 mb-2">Time Limit (Minutes)</label>
+             <select id="timeLimit" class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white">
+               <option value="0">No Time Limit</option>
+               <option value="1">1 Minute</option>
+               <option value="3">3 Minutes</option>
+               <option value="5">5 Minutes</option>
+             </select>
+          </div>
+          <button id="generateQuizBtn" class="w-full bg-purple-600 text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-purple-200 hover:bg-purple-700 transition flex items-center justify-center gap-2">
+             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+             Generate & Start
+          </button>
+        </div>
+        <div class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4">
+          <p class="text-slate-500 font-medium text-sm">Or take today's standard quiz:</p>
+          <button id="standardQuizBtn" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold shadow-md shadow-blue-200 hover:bg-blue-700 transition text-sm">Standard Quiz</button>
         </div>
       </div>
 
@@ -125,8 +164,40 @@
         }
       }
 
+      let timerInterval;
+
+      function startTimer(minutes) {
+        if (!minutes || minutes <= 0) return;
+        const timerDisplay = document.getElementById('timerDisplay');
+        timerDisplay.classList.remove('hidden');
+        
+        let seconds = minutes * 60;
+        
+        function updateDisplay() {
+          const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+          const s = (seconds % 60).toString().padStart(2, '0');
+          timerDisplay.textContent = `${m}:${s}`;
+        }
+        
+        updateDisplay();
+        
+        timerInterval = setInterval(() => {
+          seconds--;
+          updateDisplay();
+          if (seconds <= 0) {
+            clearInterval(timerInterval);
+            alert("Time's up!");
+            showResults();
+          }
+        }, 1000);
+      }
+
       async function generateCustomQuiz() {
         const topic = customTopic.value.trim();
+        const count = document.getElementById('questionCount').value;
+        const difficulty = document.getElementById('quizDifficulty').value;
+        const timeLimit = parseInt(document.getElementById('timeLimit').value, 10);
+        
         if (!topic) return alert('Please enter a topic first.');
         
         topicSetup.classList.add('hidden');
@@ -136,7 +207,7 @@
           const response = await fetch('/api/generate-question', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ topic })
+            body: JSON.stringify({ topic, count, difficulty })
           });
           
           const textResponse = await response.text();
@@ -148,17 +219,20 @@
           }
           
           if (response.ok && data.success && data.data) {
-            const quiz = data.data;
+            const generatedQuizArray = data.data; // array of quiz objects
+            
             // Format to match standard format
-            currentQuestions = [{
-              id: 'custom-1',
+            currentQuestions = generatedQuizArray.map((quiz, i) => ({
+              id: `custom-${i}`,
               question: quiz.question,
               options: JSON.stringify(quiz.options),
               answer: quiz.correctAnswer
-            }];
+            }));
+            
             loadingView.classList.add('hidden');
             quizView.classList.remove('hidden');
             renderQuestion();
+            if (timeLimit > 0) startTimer(timeLimit);
           } else {
             alert('Failed to generate question: ' + (data.error || 'Unknown error'));
             topicSetup.classList.remove('hidden');
@@ -229,6 +303,8 @@
       };
 
       function showResults() {
+        if (timerInterval) clearInterval(timerInterval);
+        document.getElementById('timerDisplay').classList.add('hidden');
         quizView.classList.add('hidden');
         resultView.classList.remove('hidden');
         scoreDisplay.textContent = `${score} / ${currentQuestions.length}`;

@@ -103,7 +103,9 @@ async function startServer() {
 
   app.post("/api/generate-question", async (req, res) => {
     try {
-      const { topic } = req.body;
+      const { topic, difficulty = "medium" } = req.body;
+      const count = parseInt(req.body.count) || 1;
+      
       if (!topic) return res.status(400).json({ error: "Topic is required" });
 
       const { GoogleGenAI, Type } = await import("@google/genai");
@@ -111,32 +113,35 @@ async function startServer() {
       
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: `Generate a multiple choice quiz question about the following topic: ${topic}. Provide 4 options and indicate the correct answer.`,
+        contents: `Generate exactly ${count} multiple choice quiz questions about the following topic: ${topic}. The difficulty level should be ${difficulty}. Provide 4 options for each question and indicate the correct answer.`,
         config: {
           responseMimeType: "application/json",
           responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              question: {
-                type: Type.STRING,
-                description: "The quiz question text."
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                question: {
+                  type: Type.STRING,
+                  description: "The quiz question text."
+                },
+                options: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING },
+                  description: "Exactly 4 multiple choice options."
+                },
+                correctAnswer: {
+                  type: Type.STRING,
+                  description: "The exact text of the correct option."
+                }
               },
-              options: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING },
-                description: "Exactly 4 multiple choice options."
-              },
-              correctAnswer: {
-                type: Type.STRING,
-                description: "The exact text of the correct option."
-              }
-            },
-            required: ["question", "options", "correctAnswer"]
+              required: ["question", "options", "correctAnswer"]
+            }
           }
         }
       });
 
-      const text = response.text || "{}";
+      const text = response.text || "[]";
       const data = JSON.parse(text);
       
       res.json({ success: true, data });

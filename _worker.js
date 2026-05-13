@@ -1,7 +1,7 @@
 // --- Pure Fetch Helper for Gemini API ---
 async function geminiRequest(apiKey, prompt, systemInstruction = "") {
   // Use v1beta for better model compatibility and experimental features
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview-02-05:generateContent?key=${apiKey}`;
   const payload = {
     contents: [{ parts: [{ text: prompt }] }]
   };
@@ -61,42 +61,6 @@ export default {
       }
 
       try {
-        // --- 1. Registration ---
-        if (path === "/api/register" && method === "POST") {
-          const body = await request.json();
-          const { name, email, password, gender, age, grade, schoolName, photo = null } = body;
-
-          const existing = await env.DB.prepare("SELECT id FROM users WHERE email = ?").bind(email).first();
-          if (existing) {
-            return jsonResponse({ success: false, message: "Identification already exists." }, 400);
-          }
-
-          const result = await env.DB.prepare(
-            "INSERT INTO users (name, email, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-          )
-            .bind(name, email, password, gender, parseInt(age) || 0, grade, schoolName, photo)
-            .run();
-
-          if (result.success) {
-            const user = await env.DB.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
-            return jsonResponse({ success: true, user });
-          }
-          return jsonResponse({ success: false, message: "Database refusal." }, 500);
-        }
-
-        // --- 2. Login ---
-        if (path === "/api/login" && method === "POST") {
-          const { email, password } = await request.json();
-          const user = await env.DB.prepare("SELECT * FROM users WHERE email = ? AND password = ?")
-            .bind(email, password)
-            .first();
-
-          if (user) {
-             return jsonResponse({ success: true, user: { ...user, isAdmin: !!user.is_admin } });
-          }
-          return jsonResponse({ success: false, message: "Invalid credentials." }, 401);
-        }
-
         // --- 3. AI Chat ---
         if (path === "/api/chat" && method === "POST") {
           const { message } = await request.json();
@@ -142,27 +106,22 @@ export default {
 
         // --- 6. Results & Leaderboard ---
         if (path === "/api/quiz_results" && method === "POST") {
-          const { userId, subject, grade, score, total } = await request.json();
-          await env.DB.prepare("INSERT INTO quiz_results (user_id, subject, grade, score, total) VALUES (?, ?, ?, ?, ?)")
-            .bind(userId, subject, grade, score, total)
+          const { name, subject, grade, score, total } = await request.json();
+          await env.DB.prepare("INSERT INTO quiz_results (user_name, subject, grade, score, total) VALUES (?, ?, ?, ?, ?)")
+            .bind(name || 'Guest Scholar', subject, grade, score, total)
             .run();
           return jsonResponse({ success: true });
         }
 
         if (path === "/api/leaderboard" && method === "GET") {
           const { results } = await env.DB.prepare(`
-            SELECT u.name, u.photo, SUM(q.score) as total_score 
-            FROM quiz_results q 
-            JOIN users u ON q.user_id = u.id 
-            GROUP BY u.id 
-            ORDER BY total_score DESC LIMIT 10
+            SELECT user_name as name, SUM(score) as total_score 
+            FROM quiz_results 
+            GROUP BY user_name
+            ORDER BY total_score DESC 
+            LIMIT 10
           `).all();
           return jsonResponse({ success: true, leaderboard: results });
-        }
-
-        if (path === "/api/teachers" && method === "GET") {
-          const { results } = await env.DB.prepare("SELECT * FROM teachers").all();
-          return jsonResponse({ success: true, teachers: results });
         }
 
       } catch (e) {
@@ -171,7 +130,6 @@ export default {
     }
 
     // --- Neural Static Routing ---
-    // Handles clean URLs like /auth or /quiz by serving the corresponding .html file
     if (method === "GET" && !path.includes(".")) {
       const targetPath = path === "/" ? "/index.html" : path + ".html";
       const assetResponse = await env.ASSETS.fetch(new Request(new URL(targetPath, request.url), request));

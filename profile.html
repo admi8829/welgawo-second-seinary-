@@ -3,216 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Profile | Smart X Academy</title>
+    <title>Scholar Profile | Smart-X Academy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
-      body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #050505; color: white; }
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
       .font-display { font-family: 'Outfit', sans-serif; }
-      .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
     </style>
   </head>
-  <body class="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 font-sans overflow-x-hidden">
-    <!-- Dynamic Cinematic Background -->
-    <div class="fixed inset-0 pointer-events-none -z-10 bg-[#050505]">
-      <div class="absolute top-0 left-0 w-full h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
-      <div class="absolute top-[-10%] left-[-5%] w-[60%] h-[70%] bg-blue-600/10 rounded-full blur-[150px] animate-pulse"></div>
-      <div class="absolute bottom-[-10%] right-[-5%] w-[60%] h-[70%] bg-indigo-600/10 rounded-full blur-[150px] animate-pulse" style="animation-delay: 2s"></div>
+  <body class="bg-[#f8fafc] text-slate-800">
+    <div class="max-w-4xl mx-auto px-6 py-20 space-y-16">
+      <header class="text-center space-y-4">
+        <a href="/" class="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] hover:text-blue-600 transition-colors">Mainframe Dash</a>
+        <h1 class="text-6xl font-display font-black text-slate-900 leading-none">Scholar <span class="text-blue-600 italic">Ident</span></h1>
+        <p class="text-slate-500 font-medium leading-relaxed italic">Verified performance data for the academic year 2024/25.</p>
+      </header>
+
+      <div class="bg-white p-16 rounded-[4rem] shadow-2xl border border-slate-100 grid md:grid-cols-2 gap-12">
+         <div class="space-y-8">
+            <div class="w-32 h-32 bg-slate-100 rounded-[2.5rem] flex items-center justify-center border-4 border-white shadow-xl">
+               <svg class="w-16 h-16 text-slate-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
+            </div>
+            <div class="space-y-2">
+               <h3 class="text-4xl font-display font-black text-slate-900 italic uppercase">Guest Scholar</h3>
+               <p class="text-xs font-bold text-slate-400 uppercase tracking-widest italic">Temporary Node Connection</p>
+            </div>
+         </div>
+         <div class="grid grid-cols-2 gap-6">
+            <div class="bg-slate-50 p-8 rounded-3xl space-y-2">
+               <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Rank</p>
+               <p class="text-3xl font-display font-black text-slate-900 italic">N/A</p>
+            </div>
+            <div class="bg-slate-50 p-8 rounded-3xl space-y-2">
+               <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sessions</p>
+               <p class="text-3xl font-display font-black text-slate-900 italic">00</p>
+            </div>
+         </div>
+      </div>
     </div>
-
-    <!-- Main Command Center Layout -->
-    <div class="flex flex-col lg:flex-row h-screen overflow-hidden">
-      
-      <!-- Side Navigation (Minimalist) -->
-      <aside class="w-full lg:w-32 border-b lg:border-r border-white/5 flex lg:flex-col items-center py-6 lg:py-12 justify-between bg-black/20 backdrop-blur-3xl relative z-50 px-6 lg:px-0">
-        <a href="/" class="group">
-          <div class="w-10 h-10 lg:w-14 lg:h-14 bg-white text-black rounded-2xl flex items-center justify-center font-display font-black text-2xl shadow-2xl group-hover:scale-110 transition-all">X</div>
-        </a>
-        
-        <div class="flex lg:flex-col gap-8 lg:gap-10">
-          <a href="/quiz" class="text-zinc-600 hover:text-white transition-colors group p-2">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0012 18.75c-1.03 0-1.9-.4-2.59-1.177L8.861 17z"></path></svg>
-          </a>
-          <a href="/feedback" class="text-zinc-600 hover:text-white transition-colors p-2">
-             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
-          </a>
-          <a href="/profile" class="text-blue-500 transition-colors p-2 bg-blue-500/10 rounded-xl">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-          </a>
-        </div>
-
-        <button id="logoutBtn" class="text-zinc-700 hover:text-red-500 transition-colors p-2">
-          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-        </button>
-      </aside>
-
-      <!-- Main Content Area (Scrollable) -->
-      <main class="flex-1 overflow-y-auto p-6 lg:p-16 space-y-16">
-        <!-- Hero Section -->
-        <section class="flex flex-col lg:flex-row items-center lg:items-end gap-12 text-center lg:text-left">
-          <div id="userAvatar" class="w-48 h-48 lg:w-64 lg:h-64 rounded-[4.5rem] bg-zinc-900 border-2 border-white/5 shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden flex items-center justify-center font-display font-black text-8xl relative group">
-            S
-          </div>
-          
-          <div class="space-y-6 flex-1">
-            <div class="flex flex-wrap justify-center lg:justify-start gap-3">
-              <span class="px-4 py-1.5 bg-blue-600/10 text-blue-400 border border-blue-500/20 rounded-full text-[10px] font-black uppercase tracking-widest">Grade <span id="userGrade">12</span> scholar</span>
-              <span class="px-4 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">Top 1% Academy Rank</span>
-            </div>
-            <h1 id="userName" class="text-6xl lg:text-9xl font-display font-black tracking-tighter text-white leading-none">Student</h1>
-            <div class="flex flex-col lg:flex-row items-center gap-4 lg:gap-10">
-               <p id="userEmail" class="text-zinc-500 font-medium text-xl italic truncate max-w-sm">email@domain.com</p>
-               <div class="hidden lg:block h-8 w-px bg-white/10"></div>
-               <p id="userSchool" class="text-zinc-400 font-bold text-xl tracking-tight uppercase">Smart X Academy</p>
-            </div>
-            <p id="userBio" class="text-xl lg:text-2xl text-zinc-500 max-w-3xl leading-relaxed font-medium">Loading academy biography...</p>
-          </div>
-        </section>
-
-        <!-- Bento Intelligence Grid -->
-        <div class="grid lg:grid-cols-3 gap-8">
-          <!-- Main Stats -->
-          <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
-             <div class="glass p-12 rounded-[4rem] space-y-6 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <svg class="w-32 h-32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
-                <p class="text-[10px] font-black text-zinc-600 uppercase tracking-[.4em]">Quizzes Solved</p>
-                <div class="flex items-end gap-3">
-                  <p class="text-8xl font-display font-black leading-none" id="quizCount">0</p>
-                  <p class="text-blue-500 font-bold pb-2">+12% Velocity</p>
-                </div>
-                <div class="w-full h-2 bg-zinc-900 rounded-full overflow-hidden">
-                   <div class="w-2/3 h-full bg-blue-600"></div>
-                </div>
-             </div>
-
-             <div class="glass p-12 rounded-[4rem] space-y-6 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <svg class="w-32 h-32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <p class="text-[10px] font-black text-zinc-600 uppercase tracking-[.4em]">Neural Accuracy</p>
-                <div class="flex items-end gap-3">
-                  <p class="text-8xl font-display font-black leading-none" id="avgScore">0%</p>
-                  <p class="text-emerald-500 font-bold pb-2">Mastery</p>
-                </div>
-                <div class="flex gap-1.5 pt-4">
-                   <div class="h-1.5 flex-1 bg-emerald-500 rounded-full"></div>
-                   <div class="h-1.5 flex-1 bg-emerald-500 rounded-full"></div>
-                   <div class="h-1.5 flex-1 bg-emerald-500/20 rounded-full"></div>
-                   <div class="h-1.5 flex-1 bg-emerald-500/20 rounded-full"></div>
-                </div>
-             </div>
-          </div>
-
-          <!-- Score Card -->
-          <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-12 rounded-[4rem] shadow-[0_40px_100px_rgba(37,99,235,0.3)] space-y-12 relative overflow-hidden flex flex-col justify-between">
-             <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-             <div class="space-y-2">
-                <p class="text-[10px] font-black text-white/50 uppercase tracking-[.4em]">Global Rank</p>
-                <p class="text-7xl lg:text-8xl font-display font-black text-white leading-none">#124</p>
-             </div>
-             <div class="space-y-4">
-                <p class="text-[10px] font-black text-white/60 uppercase tracking-widest">350 XP UNTIL PROMOTION</p>
-                <div class="w-full h-2 bg-black/20 rounded-full">
-                  <div class="w-3/4 h-full bg-white rounded-full"></div>
-                </div>
-                <p class="text-xs font-bold text-white">Elite Scholar Certification Pending</p>
-             </div>
-          </div>
-        </div>
-
-        <div class="grid lg:grid-cols-[1fr_380px] gap-12">
-          <!-- Activity Ledger -->
-          <section class="space-y-10">
-            <h2 class="text-4xl font-display font-black tracking-tight">Academic Ledger</h2>
-            <div id="activityLogs" class="space-y-4">
-               <div class="glass p-12 rounded-[3.5rem] text-center border-dashed border-white/10">
-                 <p class="text-zinc-600 font-medium italic">No ledger entries detected in neural link.</p>
-               </div>
-            </div>
-          </section>
-
-          <!-- Side Modules -->
-          <aside class="space-y-12">
-            <!-- Badges -->
-            <div class="glass p-10 rounded-[3.5rem] space-y-10">
-              <h3 class="text-xl font-black uppercase tracking-widest text-zinc-500">Merit Status</h3>
-              <div class="grid grid-cols-2 gap-4">
-                 <div class="h-32 bg-white/5 rounded-3xl flex items-center justify-center border border-white/5 grayscale hover:grayscale-0 transition-all cursor-help" title="Registration Award">
-                    <svg class="w-12 h-12 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L3 7v11l9 4 9-4V7l-9-5z"/></svg>
-                 </div>
-                 <div class="h-32 bg-white/5 rounded-3xl flex items-center justify-center border border-white/5 opacity-20">
-                    <svg class="w-10 h-10 text-zinc-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                 </div>
-              </div>
-            </div>
-
-            <!-- Identity Keys -->
-            <div class="glass p-10 rounded-[3.5rem] space-y-8">
-               <h3 class="text-xl font-black uppercase tracking-widest text-zinc-500">Biometric Keys</h3>
-               <div class="space-y-6">
-                 <div>
-                    <p class="text-[10px] font-black text-zinc-700 uppercase tracking-widest mb-1">Gender</p>
-                    <p id="userGender" class="text-lg font-bold text-white tracking-tight italic">--</p>
-                 </div>
-                 <div>
-                    <p class="text-[10px] font-black text-zinc-700 uppercase tracking-widest mb-1">Age Index</p>
-                    <p id="userAge" class="text-lg font-bold text-white tracking-tight italic">--</p>
-                 </div>
-               </div>
-            </div>
-          </aside>
-        </div>
-      </main>
-    </div>
-
-    <script>
-      const userStr = localStorage.getItem('currentUser');
-      if (!userStr) {
-        window.location.href = '/auth.html';
-      }
-
-      const user = JSON.parse(userStr);
-      document.getElementById('userName').textContent = user.name || 'Anonymous Scholar';
-      document.getElementById('userEmail').textContent = user.email || 'offline@academy';
-      document.getElementById('userGrade').textContent = user.grade || '12';
-      document.getElementById('userSchool').textContent = user.schoolName || 'Smart X Academy';
-      document.getElementById('userGender').textContent = user.gender || '--';
-      document.getElementById('userAge').textContent = user.age || '--';
-      
-      const avatar = document.getElementById('userAvatar');
-      if (user.photo) {
-        avatar.style.backgroundImage = `url(${user.photo})`;
-        avatar.style.backgroundSize = 'cover';
-        avatar.style.backgroundPosition = 'center';
-        avatar.innerText = '';
-      } else {
-        avatar.innerText = (user.name || 'S').charAt(0);
-      }
-
-      document.getElementById('logoutBtn').onclick = () => {
-         localStorage.removeItem('currentUser');
-         window.location.href = '/';
-      };
-
-      async function loadLeaderboardAndStats() {
-         try {
-            const res = await fetch('/api/leaderboard');
-            const data = await res.json();
-            if (data.success && data.leaderboard) {
-               const myStats = data.leaderboard.find(u => u.name === user.name);
-               if (myStats) {
-                  document.getElementById('quizCount').textContent = myStats.totalScore; // Just using as a metric
-                  const avg = myStats.maxScore > 0 ? Math.round((myStats.totalScore / myStats.maxScore) * 100) : 0;
-                  document.getElementById('avgScore').textContent = avg + '%';
-               }
-            }
-         } catch (e) {
-            console.error('Failed fetching stats');
-         }
-      }
-      loadLeaderboardAndStats();
-    </script>
   </body>
 </html>

@@ -1,10 +1,8 @@
 -- Smart-X Academy Database Final Seed
--- Table structures are handled by server.ts automagically
+-- Focus exclusively on Questions dataset
+-- Schema handled by server.ts
 
--- 1. Insert/Sync Admin
-INSERT OR REPLACE INTO users (id, name, email, password, is_admin) VALUES (1, 'Academy Central Admin', 'admin@smartx.com', 'SmartX2026', 1);
-
--- 2. Insert Sample Questions (Grade 12 Focus)
+-- 1. Insert Sample Questions (Grade 12 & 10 Focus)
 INSERT OR REPLACE INTO questions (id, question, options, answer, subject, grade) VALUES 
 (1, 'Which Ethiopian Emperor defeated the Italians at the Battle of Adwa?', '["Menelik II", "Haile Selassie", "Tewodros II", "Yohannes IV"]', 'Menelik II', 'History', '12'),
 (2, 'What is the value of gravitational acceleration on Earth approximately?', '["8.9 m/s²", "9.8 m/s²", "10.2 m/s²", "7.5 m/s²"]', '9.8 m/s²', 'Physics', '12'),
@@ -21,9 +19,3 @@ INSERT OR REPLACE INTO questions (id, question, options, answer, subject, grade)
 (13, 'The Axumite Obelisk that was returned from Italy in 2005 is known as?', '["Obelisk of Axum", "Stela 3", "Rome Obelisk", "The Victory Pillar"]', 'Obelisk of Axum', 'History', '12'),
 (14, 'What is the main component of natural gas?', '["Ethane", "Propane", "Methane", "Butane"]', 'Methane', 'Chemistry', '12'),
 (15, 'Which gas is most abundant in the Earth atmosphere?', '["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"]', 'Nitrogen', 'Geography', '12');
-
--- 3. Insert Initial Teachers
-INSERT OR REPLACE INTO teachers (id, name, subject, bio, likes) VALUES
-(1, 'Dr. Abebe Kebede', 'Physics', 'Specialist in Quantum Physics with 15 years experience at AAU.', 150),
-(2, 'Ms. Selamawit Tadesse', 'Mathematics', 'Calculus and Algebra Expert. Known for simple exam tricks.', 120),
-(3, 'Mr. Dawit Yilma', 'English', 'ESLCE English Mastery Coach. Expert in Grammar and Reading.', 95);

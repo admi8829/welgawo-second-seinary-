@@ -2,134 +2,57 @@
 
 ## Database Setup Details (SQLite)
 
-This project uses an embedded SQLite database (`database.sqlite`) via `better-sqlite3` to store information. The tables are automatically created when the `server.ts` starts.
+The project uses an embedded SQLite database (`smartx.db`) via `better-sqlite3`. Tables are initialized on server start.
 
-### 1. `users` Table
-Stores student registration and profile details.
+### 1. `questions` Table
+Stores curriculum questions.
 ```sql
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS questions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  gender TEXT,
-  age INTEGER,
-  grade TEXT,
-  schoolName TEXT,
-  photo TEXT,
-  is_admin INTEGER DEFAULT 0,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  question TEXT NOT NULL,
+  options TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  subject TEXT,
+  grade TEXT DEFAULT '12'
 );
 ```
 
 ### 2. `quiz_results` Table
-Stores the score and performance of students after completing a quiz. Used to generate the leaderboard.
+Stores session performance for the global leaderboard.
 ```sql
 CREATE TABLE IF NOT EXISTS quiz_results (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER,
+  user_name TEXT,
   subject TEXT,
   grade TEXT,
   score INTEGER,
   total INTEGER,
-  completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY(user_id) REFERENCES users(id)
-);
-```
-
-### 3. `questions` Table
-Stores preset questions for quizzes.
-```sql
-CREATE TABLE IF NOT EXISTS questions (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  subject TEXT,
-  grade TEXT,
-  question TEXT NOT NULL,
-  options TEXT NOT NULL,
-  answer TEXT NOT NULL
-);
-```
-
-### 4. `teachers` Table
-Stores information about teachers at the academy, including a bio and upvotes/downvotes.
-```sql
-CREATE TABLE IF NOT EXISTS teachers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  subject TEXT NOT NULL,
-  photo TEXT,
-  bio TEXT,
-  likes INTEGER DEFAULT 0,
-  unlikes INTEGER DEFAULT 0
-);
-```
-
-### 5. `feedback` Table
-General student feedback on the academy and specific subjects.
-```sql
-CREATE TABLE IF NOT EXISTS feedback (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  student_name TEXT NOT NULL,
-  teacher_subject TEXT NOT NULL,
-  comment TEXT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
 ## How It Works
 
-1. **Registration**: When a user creates an account, a `POST` request is sent to `/api/register`. The server inserts this data into the `users` table and immediately logs the user in.
-2. **Quiz Page**: After successful registration, the app redirects the user to `/quiz.html`.
-3. **Fetching Quizzes**: The app makes a `GET` request to `/api/quiz` (or generates an AI quiz via `/api/generate_ai_quiz`). It fetches matching questions from the `questions` table.
-4. **Saving Scores**: At the end of the quiz, `POST /api/quiz_results` is called. It saves the student's score in the `quiz_results` table.
-5. **Leaderboard**: The `/leaderboard.html` page uses `GET /api/leaderboard` to aggregate `quiz_results.score` for each user and ranks them.
+1. **Academic Entrance**: Scholars access the `quiz.html` terminal without authentication barriers.
+2. **Assessment Engine**: Quizzes are deployed from the verified archive or synthesized in real-time via Gemini AI.
+3. **Score Propagation**: Final scores are transmitted to the `quiz_results` ledger for ranking.
+4. **Global Leaderboard**: Ranks scholars based on cumulative performance.
 
----
+## Folder Structure
 
-## Folder Structure for GitHub
+- `index.html`: Home & Dashboard
+- `quiz.html`: Assessment Terminal
+- `leaderboard.html`: Global Leaderboard
+- `about.html`: Our Vision
+- `contact.html`: Support Hub
+- `privacy.html`: Privacy Policy
+- `terms.html`: Terms of Service
+- `books.html`: Resource Library
+- `feedback.html`: Student Feedback
+- `profile.html`: Scholar Profile
 
-```text
-your-repo/
-├── server.ts           <-- Backend Server (Logic & API via Express/SQLite)
-├── index.html          <-- Home & Dashboard (UI)
-└── ...
-```
+## New Features
 
-## New Features & Admin Tools
-
-- **AI Hub**: Integrated in the student portal for real-time tutoring and quiz generation using Gemini 2.0 Flash Lite.
-- **Neural Engine**: Advanced MCQ generation with 99.9% logical accuracy tailored for Ethiopian exams.
-- **Zero-Photo Auth**: Streamlined registration focused on academic data rather than portraits.
-- **Admin Hub**: Manage students and questions with institutional precision.
-
-## Important Routes
-
-- `/auth` -> Authentication (Login & Register)
-- `/admin` -> Admin HUB (Manage Students, Questions)
-- `/quiz` -> Quiz Engine (Manual & AI Powered)
-- `/leaderboard` -> Top Scoring Students
-- `/about` -> Our Vision
-- `/contact` -> Support
-
-## How to use AI Chat
-The AI Chat on the home page uses the Gemini API. Ensure `GEMINI_API_KEY` is set in your environment.
-
-## Ethiopia Specifics
-The content is tailored for the Ethiopian grade system (G9-G12) and supports ESLCE (Grade 12 Entrance) preparation topics.
-
-## How it works
-
-1. **index.html**: Main landing page.
-2. **server.ts**: Uses an embedded SQLite database (`better-sqlite3`) to handle API endpoints for the Quiz, Authentication, Leaderboard, and Feedback pages.
-3. **AI Generation**: Integrates the `@google/genai` package for generating quizzes dynamically based on topic and grade.
-
-## Deployment
-
-1. Push your code to GitHub.
-2. Go to the [Cloudflare Dashboard](https://dash.cloudflare.com/).
-3. Select **Workers & Pages** -> **Pages** -> **Connect to Git**.
-4. Select your repository.
-5. For **Build settings**:
-   - If you have no build step (straight HTML), leave everything default.
-   - If using Vite, use `npm run build` and `dist` as the output directory.
-6. Click **Save and Deploy**.
+- **AI Hub**: AI-powered tutoring and quiz generation.
+- **Academic UI**: Clean, professional, and accessible design.
+- **Zero-Barrier Access**: Immediate deployment without registration protocols.

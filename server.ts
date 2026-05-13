@@ -110,7 +110,7 @@ async function startServer() {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-2.5-flash",
         contents: `Generate a multiple choice quiz question about the following topic: ${topic}. Provide 4 options and indicate the correct answer.`,
         config: {
           responseMimeType: "application/json",

@@ -25,6 +25,20 @@
         <a href="/" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">Exit Quiz</a>
       </div>
 
+      <!-- Topic Setup -->
+      <div id="topicSetup" class="bg-white p-12 rounded-[2.5rem] shadow-xl border border-slate-100 text-center space-y-6">
+        <h2 class="text-3xl font-extrabold text-slate-900">Create Custom Daily Quiz</h2>
+        <p class="text-slate-500 font-medium">Want to test your knowledge on a specific topic? Let our AI generate a custom question for you!</p>
+        <div class="flex gap-4 max-w-md mx-auto">
+          <input type="text" id="customTopic" placeholder="E.g., Ethiopian History, Calculus..." class="flex-1 px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <button id="generateQuizBtn" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-purple-200 hover:bg-purple-700 transition">Generate</button>
+        </div>
+        <div class="pt-4 border-t border-slate-100">
+          <p class="text-slate-500 font-medium mb-4">Or take today's standard quiz:</p>
+          <button id="standardQuizBtn" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">Start Standard Quiz</button>
+        </div>
+      </div>
+
       <!-- Loading State -->
       <div id="loadingState" class="bg-white p-20 rounded-[2.5rem] shadow-xl border border-slate-100 text-center space-y-4">
         <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -88,7 +102,14 @@
       const nextBtn = document.getElementById('nextBtn');
       const scoreDisplay = document.getElementById('scoreDisplay');
 
-      async function startQuiz() {
+      const topicSetup = document.getElementById('topicSetup');
+      const standardQuizBtn = document.getElementById('standardQuizBtn');
+      const generateQuizBtn = document.getElementById('generateQuizBtn');
+      const customTopic = document.getElementById('customTopic');
+
+      async function startStandardQuiz() {
+        topicSetup.classList.add('hidden');
+        loadingView.classList.remove('hidden');
         try {
           const res = await fetch('/api/quiz');
           const data = await res.json();
@@ -100,8 +121,54 @@
           }
         } catch (err) {
           alert('Error loading quiz: ' + err.message);
+          location.reload();
         }
       }
+
+      async function generateCustomQuiz() {
+        const topic = customTopic.value.trim();
+        if (!topic) return alert('Please enter a topic first.');
+        
+        topicSetup.classList.add('hidden');
+        loadingView.classList.remove('hidden');
+        
+        try {
+          const res = await fetch('/api/generate-question', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic })
+          });
+          const data = await res.json();
+          
+          if (data.success && data.data) {
+            const quiz = data.data;
+            // Format to match standard format
+            currentQuestions = [{
+              id: 'custom-1',
+              question: quiz.question,
+              options: JSON.stringify(quiz.options),
+              answer: quiz.correctAnswer
+            }];
+            loadingView.classList.add('hidden');
+            quizView.classList.remove('hidden');
+            renderQuestion();
+          } else {
+            alert('Failed to generate question: ' + (data.error || 'Unknown error'));
+            topicSetup.classList.remove('hidden');
+            loadingView.classList.add('hidden');
+          }
+        } catch (err) {
+          alert('Error generating quiz: ' + err.message);
+          topicSetup.classList.remove('hidden');
+          loadingView.classList.add('hidden');
+        }
+      }
+
+      standardQuizBtn.addEventListener('click', startStandardQuiz);
+      generateQuizBtn.addEventListener('click', generateCustomQuiz);
+
+      // Hide loading initially
+      loadingView.classList.add('hidden');
 
       function renderQuestion() {
         const q = currentQuestions[currentIndex];
@@ -161,7 +228,7 @@
         progressBar.style.width = '100%';
       }
 
-      window.onload = startQuiz;
+      // window.onload = startQuiz;
     </script>
   </body>
 </html>

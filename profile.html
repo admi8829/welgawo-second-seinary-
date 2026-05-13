@@ -167,94 +167,52 @@
       </main>
     </div>
 
-    <script type="module">
-      import { auth, db, onAuthStateChanged, signOut } from './src/lib/firebase.ts';
-      import { doc, getDoc, collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
+    <script>
+      const userStr = localStorage.getItem('currentUser');
+      if (!userStr) {
+        window.location.href = '/auth.html';
+      }
 
-      onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          // If we are already redirecting, don't do it again.
-          const urlParams = new URLSearchParams(window.location.search);
-          if (!urlParams.has('retry')) {
-            window.location.href = '/auth?mode=signin';
-          }
-          return;
-        }
+      const user = JSON.parse(userStr);
+      document.getElementById('userName').textContent = user.name || 'Anonymous Scholar';
+      document.getElementById('userEmail').textContent = user.email || 'offline@academy';
+      document.getElementById('userGrade').textContent = user.grade || '12';
+      document.getElementById('userSchool').textContent = user.schoolName || 'Smart X Academy';
+      document.getElementById('userGender').textContent = user.gender || '--';
+      document.getElementById('userAge').textContent = user.age || '--';
+      
+      const avatar = document.getElementById('userAvatar');
+      if (user.photo) {
+        avatar.style.backgroundImage = `url(${user.photo})`;
+        avatar.style.backgroundSize = 'cover';
+        avatar.style.backgroundPosition = 'center';
+        avatar.innerText = '';
+      } else {
+        avatar.innerText = (user.name || 'S').charAt(0);
+      }
 
-        // Fill basic identity
-        document.getElementById('userName').textContent = user.displayName || 'Discovery Scholar';
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userAvatar').textContent = (user.displayName || 'S').charAt(0);
-
-        try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists()) {
-            const data = userDoc.data();
-            document.getElementById('userGrade').textContent = data.grade || 'X';
-            document.getElementById('userSchool').textContent = data.schoolName || 'Global Academy';
-            document.getElementById('userGender').textContent = data.gender || '--';
-            document.getElementById('userAge').textContent = data.age || '--';
-            document.getElementById('userBio').textContent = data.bio || 'Your academy biography is currently offline. Update your profile to synchronize.';
-            
-            if (data.photoURL) {
-               const avatar = document.getElementById('userAvatar');
-               avatar.style.backgroundImage = `url(${data.photoURL})`;
-               avatar.style.backgroundSize = 'cover';
-               avatar.style.backgroundPosition = 'center';
-               avatar.innerText = '';
-            }
-          }
-
-          // Fetch Ledger entries (Results)
-          const resultsCol = collection(db, 'users', user.uid, 'quiz_results');
-          const q = query(resultsCol, orderBy('completedAt', 'desc'), limit(15));
-          const querySnapshot = await getDocs(q);
-          const activityLogs = document.getElementById('activityLogs');
-          
-          if (!querySnapshot.empty) {
-            activityLogs.innerHTML = '';
-            let totalS = 0, totalP = 0;
-
-            querySnapshot.forEach((doc) => {
-              const res = doc.data();
-              totalS += res.score;
-              totalP += res.total;
-
-              const logItem = document.createElement('div');
-              logItem.className = 'glass p-8 rounded-[2.5rem] flex items-center justify-between group hover:bg-white/[0.04] transition-all border-white/5';
-              logItem.innerHTML = `
-                <div class="flex items-center gap-6">
-                  <div class="w-12 h-12 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                  </div>
-                  <div>
-                    <h4 class="text-xl font-bold text-white tracking-tight">${res.subject || 'Intellectual Assessment'}</h4>
-                    <p class="text-[10px] font-black text-zinc-600 uppercase tracking-widest mt-1">${res.completedAt?.toDate().toLocaleDateString() || 'Recent Sync'}</p>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-3xl font-display font-black text-blue-500">${res.score}/${res.total}</p>
-                  <p class="text-[10px] font-bold text-zinc-700 uppercase tracking-widest">Score Ledger</p>
-                </div>
-              `;
-              activityLogs.appendChild(logItem);
-            });
-
-            document.getElementById('quizCount').textContent = querySnapshot.size;
-            const avg = totalP > 0 ? Math.round((totalS / totalP) * 100) : 0;
-            document.getElementById('avgScore').textContent = avg + '%';
-          }
-        } catch (error) {
-          console.error("Critical Neural Link Failure:", error);
-        }
-      });
-
-      document.getElementById('logoutBtn').onclick = async () => {
-        await signOut(auth);
-        window.location.href = '/';
+      document.getElementById('logoutBtn').onclick = () => {
+         localStorage.removeItem('currentUser');
+         window.location.href = '/';
       };
+
+      async function loadLeaderboardAndStats() {
+         try {
+            const res = await fetch('/api/leaderboard');
+            const data = await res.json();
+            if (data.success && data.leaderboard) {
+               const myStats = data.leaderboard.find(u => u.name === user.name);
+               if (myStats) {
+                  document.getElementById('quizCount').textContent = myStats.totalScore; // Just using as a metric
+                  const avg = myStats.maxScore > 0 ? Math.round((myStats.totalScore / myStats.maxScore) * 100) : 0;
+                  document.getElementById('avgScore').textContent = avg + '%';
+               }
+            }
+         } catch (e) {
+            console.error('Failed fetching stats');
+         }
+      }
+      loadLeaderboardAndStats();
     </script>
-  </body>
-</html>
   </body>
 </html>

@@ -137,16 +137,16 @@
       </div>
     </div>
 
-    <script type="module" id="feedbackScript">
-      import { auth, db, onAuthStateChanged } from './src/lib/firebase.ts';
-      import { collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, updateDoc, increment } from 'firebase/firestore';
-
+    <script id="feedbackScript">
       let currentUser = null;
 
-      onAuthStateChanged(auth, (user) => {
-        currentUser = user;
+      const userStr = localStorage.getItem('currentUser');
+      if (userStr) {
+        currentUser = JSON.parse(userStr);
         updateAuthUI();
-      });
+      } else {
+        updateAuthUI();
+      }
 
       function updateAuthUI() {
         const authSection = document.getElementById('authSection');
@@ -154,22 +154,22 @@
           authSection.innerHTML = `
             <div class="flex items-center gap-4 bg-surface-200 pl-4 pr-2 py-2 rounded-full border border-white/10">
               <div class="text-right hidden sm:block">
-                <p class="text-xs font-semibold text-white">${currentUser.displayName || 'Student'}</p>
+                <p class="text-xs font-semibold text-white">${currentUser.name || 'Student'}</p>
               </div>
               <div class="w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center uppercase shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-                ${(currentUser.displayName || 'S').charAt(0)}
+                ${(currentUser.name || 'S').charAt(0)}
               </div>
             </div>
           `;
         } else {
           authSection.innerHTML = `
-            <a href="/auth?mode=signin" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm hover:bg-zinc-200 transition-transform active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]">Login</a>
+            <a href="/auth.html" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm hover:bg-zinc-200 transition-transform active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]">Login</a>
           `;
         }
       }
 
       window.openLoginRedirect = () => {
-        window.location.href = '/auth?mode=signin';
+        window.location.href = '/auth.html';
       };
 
       async function loadTeachers() {
@@ -245,32 +245,22 @@
       async function loadComments(teacherId) {
         const container = document.getElementById(`comments-${teacherId}`);
         try {
-          const q = query(
-            collection(db, 'teachers', String(teacherId), 'comments'), 
-            orderBy('createdAt', 'desc')
-          );
-          const querySnapshot = await getDocs(q);
-          
-          if (!querySnapshot.empty) {
-            container.innerHTML = querySnapshot.docs.map(doc => {
-              const c = doc.data();
-              const date = c.createdAt?.toDate() ? c.createdAt.toDate().toLocaleDateString() : 'Just now';
-              return `
-                <div class="bg-surface-200 p-4 rounded-xl border border-white/5 transition-colors hover:border-white/10">
-                  <div class="flex justify-between items-start gap-2 mb-2">
-                    <span class="font-bold text-white text-sm">${c.userName}</span>
-                    <span class="text-[10px] font-semibold text-zinc-500 uppercase">${date}</span>
-                  </div>
-                  <p class="text-zinc-400 text-sm leading-relaxed">${c.text}</p>
+          const res = await fetch(`/api/teachers/${teacherId}/comments`);
+          const data = await res.json();
+          if (data.success && data.comments.length > 0) {
+            container.innerHTML = data.comments.map(c => `
+              <div class="bg-surface-200 p-4 rounded-xl border border-white/5 transition-colors hover:border-white/10">
+                <div class="flex justify-between items-start gap-2 mb-2">
+                  <span class="font-bold text-white text-sm">${c.student_name}</span>
                 </div>
-              `;
-            }).join('');
+                <p class="text-zinc-400 text-sm leading-relaxed">${c.comment}</p>
+              </div>
+            `).join('');
           } else {
             container.innerHTML = `<div class="h-full flex items-center justify-center flex-col py-8"><p class="text-zinc-600 text-sm font-medium">No feedback yet</p></div>`;
           }
-        } catch (e) { 
-          console.error(e);
-          container.innerHTML = `<div class="h-full flex items-center justify-center flex-col py-8"><p class="text-red-500 text-xs">Error loading reviews</p></div>`;
+        } catch(e) {
+           container.innerHTML = `<div class="h-full flex items-center justify-center flex-col py-8"><p class="text-red-500 text-xs">Error loading reviews</p></div>`;
         }
       }
 
@@ -279,8 +269,7 @@
         if(!currentUser) return window.openLoginRedirect();
         
         try {
-          // This would ideally update D1 or Firestore if we migrated teachers to Firestore
-          // For now, we update the UI count
+          await fetch(`/api/teachers/${id}/like`, { method: 'POST'});
           const span = btn.querySelector('.like-count');
           span.textContent = parseInt(span.textContent) + 1;
           btn.classList.add('bg-green-500/20', 'text-green-400', 'border-green-500/30');
@@ -331,14 +320,11 @@
         const text = document.getElementById('commentText').value;
 
         try {
-          await addDoc(collection(db, 'teachers', String(teacherId), 'comments'), {
-            teacherId: parseInt(teacherId),
-            userId: currentUser.uid,
-            userName: currentUser.displayName || 'Student',
-            text: text,
-            createdAt: serverTimestamp()
+          await fetch(`/api/teachers/${teacherId}/comments`, {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({ student_name: currentUser.name || 'Student', comment: text })
           });
-          
           window.closeCommentModal();
           loadComments(teacherId);
           document.getElementById('commentText').value = '';

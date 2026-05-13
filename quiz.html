@@ -48,7 +48,26 @@
       <section id="selectionView" class="animate-in fade-in slide-in-from-bottom-8 duration-700">
         <div class="text-center space-y-4 mb-16">
           <h2 class="text-4xl font-display font-black text-slate-900 tracking-tight uppercase italic">Choose your subject</h2>
-          <p class="text-slate-500 font-medium max-w-xl mx-auto">Select a module below to start your specialized exam preparation. Once you create an account, all subjects are unlocked.</p>
+          <p class="text-slate-500 font-medium max-w-xl mx-auto">Select a grade and learning module below to start your specialized exam preparation. Once you create an account, all subjects are unlocked.</p>
+          
+          <div class="flex items-center justify-center gap-4 mt-8 pt-4">
+             <button id="gradeBtn9" onclick="setGrade('9')" class="grade-btn bg-white text-slate-600 font-black uppercase tracking-widest px-6 py-3 rounded-full border border-slate-100 hover:border-blue-500 transition-all text-xs">Grade 9</button>
+             <button id="gradeBtn10" onclick="setGrade('10')" class="grade-btn bg-white text-slate-600 font-black uppercase tracking-widest px-6 py-3 rounded-full border border-slate-100 hover:border-blue-500 transition-all text-xs">Grade 10</button>
+             <button id="gradeBtn11" onclick="setGrade('11')" class="grade-btn bg-white text-slate-600 font-black uppercase tracking-widest px-6 py-3 rounded-full border border-slate-100 hover:border-blue-500 transition-all text-xs">Grade 11</button>
+             <button id="gradeBtn12" onclick="setGrade('12')" class="grade-btn bg-blue-600 text-white shadow-lg font-black uppercase tracking-widest px-6 py-3 rounded-full border border-slate-100 hover:border-blue-500 transition-all text-xs">Grade 12</button>
+          </div>
+          
+          <div class="mt-8 pt-8 border-t border-slate-200 max-w-2xl mx-auto text-left bg-blue-50 p-6 rounded-3xl">
+             <h4 class="text-sm font-black text-blue-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+               AI Quiz Generator
+             </h4>
+             <p class="text-xs font-bold text-slate-500 mb-4 tracking-wide">Enter any topic and AI will instantly create a high-quality quiz for your selected grade level.</p>
+             <div class="flex items-center gap-2">
+                <input type="text" id="aiTopicInput" placeholder="e.g. The Ethiopian Empire, Quantum Mechanics, African Geography..." class="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-blue-500 text-sm font-medium shadow-inner">
+                <button onclick="startAIQuiz()" id="aiGenBtn" class="bg-slate-900 text-white font-black uppercase tracking-widest px-6 py-3 rounded-xl hover:scale-105 transition-all text-[10px] whitespace-nowrap shadow-lg">Generate & Start</button>
+             </div>
+          </div>
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -162,29 +181,20 @@
     </div>
 
     <script type="module">
-      import { auth, db, onAuthStateChanged } from './src/lib/firebase.ts';
-      import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
-
       let user = null;
       let questions = [];
       let currentIndex = 0;
       let score = 0;
       let selected = null;
       let currentSubject = '';
+      let currentGrade = '12';
 
-      onAuthStateChanged(auth, async (u) => {
-        user = u;
-        if (u) {
-          document.getElementById('userInfo').classList.remove('hidden');
-          document.getElementById('userName').textContent = u.displayName || 'Student';
-          if (u.photoURL) {
-            const avatar = document.getElementById('userAvatar');
-            avatar.style.backgroundImage = `url(${u.photoURL})`;
-            avatar.style.backgroundSize = 'cover';
-            avatar.innerText = '';
-          }
-        }
-      });
+      const userStr = localStorage.getItem('currentUser');
+      if (userStr) {
+        user = JSON.parse(userStr);
+        document.getElementById('userInfo').classList.remove('hidden');
+        document.getElementById('userName').textContent = user.name || 'Student';
+      }
 
       const selectionView = document.getElementById('selectionView');
       const quizPortal = document.getElementById('quizPortal');
@@ -198,15 +208,28 @@
       const qIndex = document.getElementById('qIndex');
       const nextBtn = document.getElementById('nextBtn');
 
+      window.setGrade = (grade) => {
+        currentGrade = grade;
+        // visual update of grade buttons
+        document.querySelectorAll('.grade-btn').forEach(b => {
+           b.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
+           b.classList.add('bg-white', 'text-slate-600');
+        });
+        const btn = document.getElementById('gradeBtn' + grade);
+        if(btn) {
+           btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
+           btn.classList.remove('bg-white', 'text-slate-600');
+        }
+      }
+
       window.startQuiz = async (subject) => {
         currentSubject = subject;
         selectionView.classList.add('hidden');
         quizPortal.classList.remove('hidden');
-        subjectTitle.textContent = `${subject} Neural Sync`;
+        subjectTitle.textContent = `Grade ${currentGrade} ${subject} Neural Sync`;
         
         try {
-          // In a real app we might fetch by subject: /api/quiz?subject=${subject}
-          const res = await fetch('/api/quiz');
+          const res = await fetch(`/api/quiz?subject=${subject}&grade=${currentGrade}`);
           const data = await res.json();
           if (data.success) {
             questions = data.questions;
@@ -214,6 +237,40 @@
           }
         } catch (e) {
           alert('Sync Failure: ' + e.message);
+        }
+      };
+
+      window.startAIQuiz = async () => {
+        const topic = document.getElementById('aiTopicInput').value;
+        if (!topic) return alert("Please enter a topic.");
+        const btn = document.getElementById('aiGenBtn');
+        btn.textContent = 'Generating...';
+        btn.disabled = true;
+        
+        currentSubject = `AI: ${topic}`;
+        
+        try {
+          const res = await fetch('/api/generate_ai_quiz', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic, grade: currentGrade })
+          });
+          const data = await res.json();
+          selectionView.classList.add('hidden');
+          quizPortal.classList.remove('hidden');
+          subjectTitle.textContent = `Grade ${currentGrade} ${currentSubject} AI Sync`;
+          
+          if (data.success && data.questions && data.questions.length > 0) {
+            questions = data.questions;
+            renderQuestion();
+          } else {
+            alert('Failed to generate. AI might be overwhelmed.');
+            window.location.reload();
+          }
+        } catch (e) {
+            alert('GenAI Error: ' + e.message);
+            btn.textContent = 'Generate & Start';
+            btn.disabled = false;
         }
       };
 
@@ -279,15 +336,23 @@
         
         if (user) {
           try {
-            await addDoc(collection(db, 'users', user.uid, 'quiz_results'), {
-               score,
-               total: questions.length,
-               subject: currentSubject,
-               completedAt: serverTimestamp()
+            await fetch('/api/quiz_results', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json'},
+               body: JSON.stringify({
+                  userId: user.id || 1,
+                  subject: currentSubject,
+                  grade: currentGrade,
+                  score,
+                  total: questions.length
+               })
             });
           } catch (e) { console.error('Sync Error:', e); }
         }
       }
+      
+      // Initialize Grade Selection
+      window.setGrade('12');
     </script>
   </body>
 </html>

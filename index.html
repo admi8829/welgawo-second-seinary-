@@ -39,14 +39,14 @@
           <span class="font-extrabold text-xl tracking-tight text-slate-900">SMART <span class="text-blue-600">X</span> ACADEMY</span>
         </div>
         <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-          <a href="/about" class="hover:text-blue-600 transition-colors">About Us</a>
-          <a href="/contact" class="hover:text-blue-600 transition-colors">Contact</a>
-          <a href="/feedback" class="hover:text-blue-600 transition-colors">Faculty Feedback</a>
-          <a href="/quiz" class="hover:text-blue-600 transition-colors flex items-center gap-1.5">
-            <span class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
-            Daily Quiz
+          <a href="/about.html" class="hover:text-blue-600 transition-colors">About Us</a>
+          <a href="/features" class="hover:text-blue-600 transition-colors">Features</a>
+          <a href="/leaderboard.html" class="hover:text-blue-600 transition-colors tracking-widest text-[#f59e0b] font-black uppercase">👑 Leaderboard</a>
+          <a href="/books.html" class="hover:text-blue-600 transition-colors font-black uppercase tracking-widest text-slate-400">Books</a>
+          <a href="/quiz.html" class="hover:text-blue-600 transition-colors flex items-center gap-1.5 font-black uppercase tracking-widest text-blue-600">
+            <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+            Quiz/Exams
           </a>
-          <a href="#" class="hover:text-blue-600 transition-colors">More</a>
         </div>
         <div class="flex items-center gap-4" id="navAuth">
           <a href="/auth?mode=signin" class="text-sm font-semibold text-slate-600 hover:text-slate-900">Sign In</a>
@@ -441,37 +441,34 @@
         });
       }
     </script>
-    <script type="module">
-      import { auth, signOut, onAuthStateChanged } from './src/lib/firebase.ts';
-
+    <script>
       const navAuth = document.getElementById('navAuth');
-
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          navAuth.innerHTML = `
-            <div class="flex items-center gap-4">
-              <div class="text-right hidden sm:block">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Logged in as</p>
-                <p class="text-sm font-bold text-slate-900">${user.displayName || 'Student'}</p>
-              </div>
-              <div class="relative group">
-                <button class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg shadow-blue-200 uppercase">
-                  ${(user.displayName || 'S').charAt(0)}
-                </button>
-                <div class="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all p-2 z-[100]">
-                  <a href="/profile" class="block p-3 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-xl transition-colors">My Profile</a>
-                  <button id="logoutBtn" class="w-full text-left p-3 text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors">Sign Out</button>
-                </div>
-              </div>
+      const userStr = localStorage.getItem('currentUser');
+      
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        navAuth.innerHTML = `
+          <div class="flex items-center gap-4">
+            <div class="text-right hidden sm:block">
+               <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Logged in as</p>
+               <p class="text-sm font-bold text-slate-900">${user.name || 'Student'}</p>
             </div>
-          `;
-
-          document.getElementById('logoutBtn')?.addEventListener('click', async () => {
-             await signOut(auth);
-             window.location.reload();
-          });
-        }
-      });
+            <div class="relative group cursor-pointer">
+               <button class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg shadow-blue-200 uppercase">
+                 ${(user.name || 'S').charAt(0)}
+               </button>
+               <div class="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all p-2 z-[100]">
+                 <a href="/profile.html" class="block p-3 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-xl transition-colors">My Profile</a>
+                 <button id="logoutBtn" class="w-full text-left p-3 text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors">Sign Out</button>
+               </div>
+            </div>
+          </div>
+        `;
+        document.getElementById('logoutBtn')?.addEventListener('click', () => {
+           localStorage.removeItem('currentUser');
+           window.location.reload();
+        });
+      }
     </script>
   </body>
 </html>

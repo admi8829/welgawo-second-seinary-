@@ -1,20 +1,3 @@
-import { 
-  auth, 
-  db, 
-  onAuthStateChanged
-} from './lib/firebase.ts';
-import {
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  updateProfile
-} from 'firebase/auth';
-import {
-  doc,
-  getDoc,
-  setDoc,
-  serverTimestamp
-} from 'firebase/firestore';
-
 let mode: 'signin' | 'signup' = 'signin';
 
 // Elements
@@ -105,21 +88,6 @@ if (tabSignUp) tabSignUp.onclick = () => { mode = 'signup'; updateUI(); };
 if (switchSignIn) switchSignIn.onclick = () => { mode = 'signin'; updateUI(); };
 if (switchSignUp) switchSignUp.onclick = () => { mode = 'signup'; updateUI(); };
 
-async function syncUserProfile(user: any, details: any) {
-  const userRef = doc(db, 'users', user.uid);
-  await setDoc(userRef, {
-    uid: user.uid,
-    name: details.name || 'Discovery Scholar',
-    email: user.email,
-    photoURL: details.photoURL || '',
-    grade: details.grade || '12',
-    schoolName: details.schoolName || '',
-    gender: details.gender || 'Other',
-    age: details.age || 18,
-    createdAt: serverTimestamp()
-  }, { merge: true });
-}
-
 // Create Account Submit
 if (signUpForm) {
   signUpForm.addEventListener('submit', async (e) => {
@@ -142,22 +110,22 @@ if (signUpForm) {
 
     try {
       btn.disabled = true;
-      btn.textContent = 'Syncing Profile...';
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      // Update profile with name and optionally photo
-      await updateProfile(result.user, { 
-        displayName: name, 
-        photoURL: selectedPhotoBase64 || undefined 
+      btn.textContent = 'Registering...';
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, gender, age, grade, schoolName, photo: selectedPhotoBase64 })
       });
-      // Store extended data in Firestore
-      await syncUserProfile(result.user, { name, grade, gender, age, schoolName, photoURL: selectedPhotoBase64 });
-      window.location.href = '/profile';
-    } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
-        alert('Email already in use. Please sign in instead.');
+      const data = await res.json();
+      
+      if (data.success) {
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
+        window.location.href = '/quiz';
       } else {
-        alert('Registration failed: ' + error.message);
+        alert(data.message);
       }
+    } catch (error: any) {
+      alert('Registration failed: ' + error.message);
     } finally {
       btn.disabled = false;
       btn.textContent = 'Register';
@@ -176,8 +144,19 @@ if (signInForm) {
     try {
       btn.disabled = true;
       btn.textContent = 'Signing in...';
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = '/profile';
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
+        window.location.href = '/quiz';
+      } else {
+        alert(data.message);
+      }
     } catch (error: any) {
       alert('Sign in failed: ' + error.message);
     } finally {
@@ -186,11 +165,5 @@ if (signInForm) {
     }
   });
 }
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // If logged in, stay or redirect if needed
-  }
-});
 
 updateUI();

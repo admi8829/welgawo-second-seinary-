@@ -25,12 +25,29 @@
             <span class="font-display font-black text-lg leading-none tracking-tight text-slate-900 uppercase">Academy</span>
           </div>
         </div>
+        <div class="hidden lg:flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
+          <a href="/about" class="hover:text-blue-600 transition-colors">About</a>
+          <a href="/#features" class="hover:text-blue-600 transition-colors">Features</a>
+          <a href="/leaderboard" class="flex items-center gap-2 hover:text-blue-600 transition-colors">
+            👑 <span class="text-amber-500">Leaderboard</span>
+          </a>
+          <a href="/books" class="hover:text-blue-600 transition-colors">Books</a>
+          <a href="/quiz" class="flex items-center gap-2 text-blue-600 group">
+             <span class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
+             <span>Quiz / Exams</span>
+          </a>
+          <div class="w-px h-4 bg-slate-200"></div>
+          <a href="/feedback" class="hover:text-blue-600 transition-colors">Feedback</a>
+          <a href="/contact" class="hover:text-blue-600 transition-colors">Contact</a>
+        </div>
         <div class="flex items-center gap-6">
            <div id="quizTimer" class="hidden flex items-center gap-3 px-6 py-2 bg-slate-900 text-white rounded-full font-display font-black text-xs tracking-widest">
               <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
               <span id="timerDisplay">00:00</span>
            </div>
-           <a href="/" class="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600">Abort Session</a>
+           <a href="/profile" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 hover:border-blue-600 transition-all group">
+             <svg class="w-5 h-5 text-slate-400 group-hover:text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
+          </a>
         </div>
       </div>
     </nav>

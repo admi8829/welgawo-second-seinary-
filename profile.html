@@ -23,7 +23,27 @@
             <span class="font-display font-black text-lg leading-none tracking-tight text-slate-900 uppercase">Academy</span>
           </div>
         </a>
-        <a href="/" class="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600">Mainframe Exit</a>
+        <div class="hidden lg:flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
+          <a href="/about" class="hover:text-blue-600 transition-colors">About</a>
+          <a href="/#features" class="hover:text-blue-600 transition-colors">Features</a>
+          <a href="/leaderboard" class="flex items-center gap-2 hover:text-blue-600 transition-colors">
+            👑 <span class="text-amber-500">Leaderboard</span>
+          </a>
+          <a href="/books" class="hover:text-blue-600 transition-colors">Books</a>
+          <a href="/quiz" class="flex items-center gap-2 text-blue-600 group">
+             <span class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
+             <span>Quiz / Exams</span>
+          </a>
+          <div class="w-px h-4 bg-slate-200"></div>
+          <a href="/feedback" class="hover:text-blue-600 transition-colors">Feedback</a>
+          <a href="/contact" class="hover:text-blue-600 transition-colors">Contact</a>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="/profile" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 hover:border-blue-600 transition-all group">
+             <svg class="w-5 h-5 text-slate-400 group-hover:text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
+          </a>
+          <a href="/quiz" class="hidden sm:block bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl active:scale-95">Entry Portal</a>
+        </div>
       </div>
     </nav>
 
@@ -64,6 +84,50 @@
          <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px]"></div>
       </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-white pt-32 pb-16 px-8">
+      <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-16 border-b border-slate-100 pb-20 mb-12">
+        <div class="md:col-span-2 space-y-8">
+          <div class="flex items-center gap-3">
+             <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">X</div>
+             <span class="font-display font-black text-xl tracking-tight uppercase">Smart X Academy</span>
+          </div>
+          <p class="text-slate-500 max-w-sm leading-relaxed text-sm font-medium">Educating Ethiopia's next generation with technology, passion, and local expertise. Join the revolution today.</p>
+          <div class="flex gap-4">
+             <div class="w-10 h-10 bg-slate-50 rounded-full border border-slate-100"></div>
+             <div class="w-10 h-10 bg-slate-50 rounded-full border border-slate-100"></div>
+             <div class="w-10 h-10 bg-slate-50 rounded-full border border-slate-100"></div>
+          </div>
+        </div>
+        
+        <div class="space-y-8">
+           <h5 class="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em]">Resources</h5>
+           <ul class="space-y-4 text-sm font-semibold text-slate-400">
+              <li><a href="/books" class="hover:text-blue-600 transition-colors">Study Guides</a></li>
+              <li><a href="/quiz" class="hover:text-blue-600 transition-colors">Exam Papers</a></li>
+              <li><a href="#" class="hover:text-blue-600 transition-colors">Video Library</a></li>
+           </ul>
+        </div>
+
+        <div class="space-y-8">
+           <h5 class="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em]">Academy</h5>
+           <ul class="space-y-4 text-sm font-semibold text-slate-400">
+              <li><a href="/about" class="hover:text-blue-600 transition-colors">About Us</a></li>
+              <li><a href="/contact" class="hover:text-blue-600 transition-colors">Contact Support</a></li>
+              <li><a href="/feedback" class="hover:text-blue-600 transition-colors">Send Feedback</a></li>
+           </ul>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+         <p class="text-slate-400 text-[10px] font-bold">© 2026 Smart X Academy. Built for Ethiopian Students.</p>
+         <div class="flex gap-10 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <a href="/privacy" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
+            <a href="/terms" class="hover:text-slate-900 transition-colors">Terms of Service</a>
+         </div>
+      </div>
+    </footer>
 
   </body>
 </html>

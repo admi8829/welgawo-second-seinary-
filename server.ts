@@ -103,13 +103,14 @@ async function startServer() {
   app.use(express.json());
 
   app.post("/api/register", (req, res) => {
-    const { name, email, password, gender, age, grade, schoolName, photo } = req.body;
+    const { name, email, phone, password, gender, age, grade, schoolName, photo } = req.body;
     try {
-      const stmt = db.prepare('INSERT INTO users (name, email, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-      const info = stmt.run(name, email, password, gender, age, grade, schoolName, photo);
-      res.json({ success: true, user: { id: info.lastInsertRowid, name, email, grade, photo } });
+      const stmt = db.prepare('INSERT INTO users (name, email, phone, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+      const info = stmt.run(name, email, phone, password, gender, age, grade, schoolName, photo);
+      res.json({ success: true, user: { id: info.lastInsertRowid, name, email, phone, grade, schoolName, photo } });
     } catch (e) {
-      res.status(400).json({ success: false, message: 'Email maybe already exists' });
+      console.error(e);
+      res.status(400).json({ success: false, message: 'Registration failed. Email might already exist.' });
     }
   });
 
@@ -117,7 +118,7 @@ async function startServer() {
     const { email, password } = req.body;
     const user = db.prepare('SELECT * FROM users WHERE email = ? AND password = ?').get(email, password) as any;
     if (user) {
-      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email, grade: user.grade, photo: user.photo } });
+      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email, phone: user.phone, grade: user.grade, schoolName: user.schoolName, photo: user.photo, isAdmin: !!user.is_admin } });
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
     }
@@ -176,7 +177,6 @@ async function startServer() {
     const subject = req.query.subject || 'Physics';
     const grade = req.query.grade || '12';
     const questions = db.prepare('SELECT * FROM questions WHERE subject = ? COLLATE NOCASE AND grade = ?').all(subject, grade);
-    // If no questions in DB, return 1 dummy
     if (questions.length === 0) {
        res.json({ success: true, questions: [{
          id: 999, question: `What is a key concept in grade ${grade} ${subject}?`, options: JSON.stringify(['Concept A', 'Concept B', 'Concept C', 'Concept D']), answer: 'Concept A'
@@ -184,12 +184,6 @@ async function startServer() {
     } else {
        res.json({ success: true, questions });
     }
-  });
-
-  app.post("/api/quiz_results", (req, res) => {
-    const { userId, subject, grade, score, total } = req.body;
-    db.prepare('INSERT INTO quiz_results (user_id, subject, grade, score, total) VALUES (?, ?, ?, ?, ?)').run(userId, subject, grade, score, total);
-    res.json({ success: true });
   });
 
   // AI Quiz Generation
@@ -205,7 +199,7 @@ async function startServer() {
       Respond ONLY in raw valid JSON format as an array of objects. Each object must have "question" (string), "options" (array of 4 strings), and "answer" (string).`;
       
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-1.5-flash',
         contents: prompt
       });
       
@@ -241,9 +235,13 @@ async function startServer() {
     res.json({ success: true, leaderboard: results });
   });
 
-  app.get("/api/admin/feedback", (req, res) => {
-    const feedback = db.prepare('SELECT * FROM feedback ORDER BY created_at DESC').all();
-    res.json({ success: true, feedback });
+  app.get("/api/admin/students", (req, res) => {
+    try {
+      const students = db.prepare('SELECT id, name, email, phone, grade, schoolName, photo, is_admin, created_at FROM users ORDER BY created_at DESC').all();
+      res.json({ success: true, students });
+    } catch (e: any) {
+      res.status(500).json({ success: false, message: "Database Error: " + e.message });
+    }
   });
   
   app.get("/api/teachers", (req, res) => {
@@ -265,6 +263,29 @@ async function startServer() {
     const { question, options, answer, subject, grade } = req.body;
     db.prepare('INSERT INTO questions (question, options, answer, subject, grade) VALUES (?, ?, ?, ?, ?)').run(question, options, answer, subject, grade || '12');
     res.json({ success: true });
+  });
+
+  // AI Chat Endpoint
+  app.post("/api/chat", async (req, res) => {
+    const { message } = req.body;
+    try {
+      if (!process.env.GEMINI_API_KEY) {
+        return res.status(400).json({ success: false, message: "Gemini API Key is missing." });
+      }
+      const { GoogleGenAI } = await import("@google/genai");
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: 'gemini-1.5-flash',
+        contents: message,
+        config: {
+          systemInstruction: "You are Smart-X Academy AI, a helpful tutor for Ethiopian high school students. Be encouraging, clear, and focused on educational success. Keep responses relatively concise."
+        }
+      });
+      res.json({ success: true, text: response.text });
+    } catch (e: any) {
+      console.error(e);
+      res.status(500).json({ success: false, message: e.message });
+    }
   });
 
   app.get("/quiz.html", (req, res) => {

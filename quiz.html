@@ -181,8 +181,6 @@
     </div>
 
     <script type="module">
-      import { GoogleGenAI, Type } from "@google/genai";
-
       let user = null;
       let questions = [];
       let currentIndex = 0;
@@ -252,60 +250,25 @@
         btn.textContent = 'Neural Generating...';
         btn.disabled = true;
         
-        currentSubject = `AI: ${topic}`;
+        currentSubject = topic;
         
         try {
-          const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-          const response = await ai.models.generateContent({
-             model: "gemini-3-flash-preview",
-             contents: `Generate 5 multiple choice questions for Grade ${currentGrade} level about: ${topic}. Each question must have a unique answer.`,
-             config: {
-               responseMimeType: "application/json",
-               responseSchema: {
-                 type: Type.ARRAY,
-                 items: {
-                    type: Type.OBJECT,
-                    properties: {
-                      question: { type: Type.STRING },
-                      options: { 
-                         type: Type.ARRAY, 
-                         items: { type: Type.STRING },
-                         description: "List of 4 options"
-                      },
-                      answer: { type: Type.STRING, description: "The correct option text" }
-                    },
-                    required: ["question", "options", "answer"]
-                 }
-               }
-             }
+          const res = await fetch('/api/generate_ai_quiz', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic, grade: currentGrade })
           });
-
-          const aiQuestions = JSON.parse(response.text);
-          if (aiQuestions && aiQuestions.length > 0) {
+          const data = await res.json();
+          
+          if (data.success && data.questions && data.questions.length > 0) {
             selectionView.classList.add('hidden');
             quizPortal.classList.remove('hidden');
-            subjectTitle.textContent = `Grade ${currentGrade} ${currentSubject} AI Sync`;
+            subjectTitle.textContent = `Grade ${currentGrade} ${topic} AI Sync`;
             
-            // Map to match the expected format for renderQuestion (options as JSON string)
-            const formatted = aiQuestions.map(q => ({
-               question: q.question,
-               options: JSON.stringify(q.options),
-               answer: q.answer,
-               subject: currentSubject,
-               grade: currentGrade
-            }));
-            questions = formatted;
+            questions = data.questions;
             renderQuestion();
-
-            // Background save to database for persistence
-            fetch('/api/admin/bulk-questions', {
-               method: 'POST',
-               headers: { 'Content-Type': 'application/json' },
-               body: JSON.stringify({ questions: formatted })
-            }).catch(e => console.log("Silent DB save failed", e));
-
           } else {
-            throw new Error("No questions returned from AI");
+            throw new Error(data.message || "No questions returned from AI");
           }
         } catch (e) {
             alert('GenAI Error: ' + e.message);

@@ -96,18 +96,25 @@ your-repo/
 
 ## New Features & Admin Tools
 
-- **Student Dashboard**: Accessible at `/admin.html`. Shows all registered students.
-- **Question Engine**: Accessible at `/add-question.html`. Use this to add new quiz questions to the database via a form.
-- **Sample Data**: Use the SQL in `questions.sql` to populate your SQLite database initially.
+- **Student Dashboard**: Accessible at `/admin`. Sign in with `admin@smartx.com` and `admin123`.
+- **Question Engine**: Accessible within the `/admin` dashboard under "Add Quiz Question".
+- **AI Chat**: Integrated in the student portal for real-time tutoring.
+- **Sample Data**: Use `questions.sql` for initial population.
 
 ## Important Routes
 
-- `/join-free.html` -> Registration Page
-- `/admin.html` -> Admin Dashboard (Students)
-- `/add-question.html` -> Admin Question Engine
-- `/about.html` -> Academy Information
-- `/contact.html` -> Contact & Support
-- `/quiz.html` -> Daily Quiz Page 
+- `/auth` -> Authentication (Login & Register)
+- `/admin` -> Admin HUB (Manage Students, Questions)
+- `/quiz` -> Quiz Engine (Manual & AI Powered)
+- `/leaderboard` -> Top Scoring Students
+- `/about` -> Our Vision
+- `/contact` -> Support
+
+## How to use AI Chat
+The AI Chat on the home page uses the Gemini API. Ensure `GEMINI_API_KEY` is set in your environment.
+
+## Ethiopia Specifics
+The content is tailored for the Ethiopian grade system (G9-G12) and supports ESLCE (Grade 12 Entrance) preparation topics.
 
 ## How it works
 

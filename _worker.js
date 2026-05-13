@@ -1,122 +1,166 @@
+import { GoogleGenAI } from "@google/genai";
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const path = url.pathname;
+    const method = request.method;
 
-    // Helper for JSON responses
-    const jsonResponse = (data, status = 200) => new Response(JSON.stringify(data), {
-      status,
-      headers: { "Content-Type": "application/json" }
-    });
-
-    try {
-      if (url.pathname === "/api/health") {
-        return jsonResponse({ status: "ok", provider: "Cloudflare" });
-      }
-
-      // REGISTER
-      if (url.pathname === "/api/register" && request.method === "POST") {
-        const body = await request.json();
-        if (env.DB) {
-          try {
-            const result = await env.DB.prepare(
-              "INSERT INTO users (name, email, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-            ).bind(body.name, body.email, body.password, body.gender, body.age, body.grade, body.schoolName, body.photo || null).run();
-            
-            return jsonResponse({ success: true, user: { id: result.meta.last_row_id, name: body.name, email: body.email, grade: body.grade } });
-          } catch (e) {
-            return jsonResponse({ success: false, message: 'Email already exists or DB error' }, 400);
-          }
-        }
-        return jsonResponse({ success: false, message: "DB not connected" }, 500);
-      }
-
-      // LOGIN
-      if (url.pathname === "/api/login" && request.method === "POST") {
-        const body = await request.json();
-        if (env.DB) {
-          const user = await env.DB.prepare("SELECT * FROM users WHERE email = ? AND password = ?").bind(body.email, body.password).first();
-          if (user) {
-            return jsonResponse({ success: true, user: { id: user.id, name: user.name, email: user.email, grade: user.grade } });
-          }
-          return jsonResponse({ success: false, message: "Invalid email or password" }, 401);
-        }
-        return jsonResponse({ success: false, message: "DB not connected" }, 500);
-      }
-
-      // ADMIN LOGIN
-      if (url.pathname === "/api/admin/login" && request.method === "POST") {
-        const { email, password } = await request.json();
-        if (env.DB) {
-          const user = await env.DB.prepare("SELECT * FROM users WHERE email = ? AND password = ? AND is_admin = 1").bind(email, password).first();
-          if (user) {
-            return jsonResponse({ success: true, admin: { id: user.id, name: user.name, email: user.email } });
-          }
-          return jsonResponse({ success: false, message: "Invalid admin credentials" }, 401);
-        }
-      }
-
-      // ADMIN STUDENTS
-      if (url.pathname === "/api/admin/students" && request.method === "GET") {
-        if (env.DB) {
-          const { results } = await env.DB.prepare("SELECT id, name, email, grade, schoolName, created_at, photo FROM users WHERE is_admin = 0 OR is_admin IS NULL ORDER BY created_at DESC").all();
-          return jsonResponse({ success: true, students: results });
-        }
-        return jsonResponse({ success: true, students: [] });
-      }
-
-      // GENERATE AI QUIZ
-      if (url.pathname === "/api/generate_ai_quiz" && request.method === "POST") {
-        if (!env.GEMINI_API_KEY) {
-          return jsonResponse({ success: false, message: "Gemini API Key is missing. Please set GEMINI_API_KEY in Cloudflare Variable Secrets." }, 400);
-        }
-        const { topic, grade } = await request.json();
-        const prompt = `Generate 3 multiple-choice questions for grade ${grade} high school students about the topic: "${topic}". Respond ONLY in raw valid JSON format as an array of objects. Each object must have "question" (string), "options" (array of 4 strings), and "answer" (string).`;
-        
-        const geminiRes = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + env.GEMINI_API_KEY, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }]
-          })
+    // API Routes Handler
+    if (path.startsWith("/api/")) {
+      const jsonResponse = (data, status = 200) => {
+        return new Response(JSON.stringify(data), {
+          status,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
         });
-        
-        if (!geminiRes.ok) throw new Error("Failed to contact Gemini API");
-        const geminiData = await geminiRes.json();
-        const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
-        const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        const questions = JSON.parse(cleaned);
-        const formatted = questions.map((q, i) => ({
-          id: 1000 + i,
-          question: q.question,
-          options: typeof q.options === 'string' ? q.options : JSON.stringify(q.options),
-          answer: q.answer
-        }));
-        return jsonResponse({ success: true, questions: formatted });
+      };
+
+      // Handle Preflight
+      if (method === "OPTIONS") {
+        return new Response(null, {
+          status: 204,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
       }
 
-      // GET QUIZ
-      if (url.pathname === "/api/quiz" && request.method === "GET") {
-        const subject = url.searchParams.get('subject') || 'Physics';
-        const grade = url.searchParams.get('grade') || '12';
-        if (env.DB) {
-          const { results } = await env.DB.prepare("SELECT * FROM questions WHERE subject = ? AND grade = ? ORDER BY RANDOM() LIMIT 5").bind(subject, grade).all();
+      try {
+        // --- 1. Registration ---
+        if (path === "/api/register" && method === "POST") {
+          const body = await request.json();
+          const { name, email, phone, password, gender, age, grade, schoolName, photo } = body;
+
+          if (!email || !password || !name) {
+            return jsonResponse({ success: false, message: "Missing required fields." }, 400);
+          }
+
+          const existing = await env.DB.prepare("SELECT id FROM users WHERE email = ?").bind(email).first();
+          if (existing) {
+            return jsonResponse({ success: false, message: "Email already registered." }, 400);
+          }
+
+          const result = await env.DB.prepare(
+            "INSERT INTO users (name, email, phone, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+          )
+            .bind(name, email, phone, password, gender, parseInt(age) || 0, grade, schoolName, photo)
+            .run();
+
+          if (result.success) {
+            const user = await env.DB.prepare("SELECT id, name, email, phone, grade, schoolName, photo, is_admin FROM users WHERE email = ?")
+              .bind(email)
+              .first();
+            return jsonResponse({ success: true, user });
+          }
+          return jsonResponse({ success: false, message: "Database error during registration." }, 500);
+        }
+
+        // --- 2. Login ---
+        if (path === "/api/login" && method === "POST") {
+          const { email, password } = await request.json();
+          const user = await env.DB.prepare("SELECT * FROM users WHERE email = ? AND password = ?")
+            .bind(email, password)
+            .first();
+
+          if (user) {
+            return jsonResponse({
+              success: true,
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                grade: user.grade,
+                schoolName: user.schoolName,
+                photo: user.photo,
+                isAdmin: !!user.is_admin,
+              },
+            });
+          }
+          return jsonResponse({ success: false, message: "Invalid credentials." }, 401);
+        }
+
+        // --- 3. AI Chat ---
+        if (path === "/api/chat" && method === "POST") {
+          if (!env.GEMINI_API_KEY) {
+            return jsonResponse({ success: false, message: "GEMINI_API_KEY missing in environment." }, 400);
+          }
+          const { message } = await request.json();
+          const genAI = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+          const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash",
+            systemInstruction: "You are Smart-X Academy AI, a helpful tutor for Ethiopian high school students. Be encouraging, clear, and focused on educational success.",
+          });
+          const result = await model.generateContent(message);
+          const response = await result.response;
+          return jsonResponse({ success: true, text: response.text() });
+        }
+
+        // --- 4. Quiz Logic ---
+        if (path === "/api/quiz" && method === "GET") {
+          const subject = url.searchParams.get("subject") || "Physics";
+          const grade = url.searchParams.get("grade") || "12";
+          const { results } = await env.DB.prepare("SELECT * FROM questions WHERE subject = ? AND grade = ?")
+            .bind(subject, grade)
+            .all();
+          
+          if (results.length === 0) {
+            return jsonResponse({ 
+              success: true, 
+              questions: [{
+                id: 999, 
+                question: `What is a key concept in grade ${grade} ${subject}?`, 
+                options: JSON.stringify(['Concept A', 'Concept B', 'Concept C', 'Concept D']), 
+                answer: 'Concept A'
+              }]
+            });
+          }
           return jsonResponse({ success: true, questions: results });
         }
-        return jsonResponse({ success: true, questions: [] });
-      }
 
-      // SUBMIT QUIZ RESULTS
-      if (url.pathname === "/api/quiz_results" && request.method === "POST") {
-        const { userId, subject, grade, score, total } = await request.json();
-        if (env.DB) {
-          await env.DB.prepare("INSERT INTO quiz_results (user_id, subject, grade, score, total) VALUES (?, ?, ?, ?, ?)").bind(userId, subject, grade, score, total).run();
+        // --- 5. Generate AI Quiz ---
+        if (path === "/api/generate_ai_quiz" && method === "POST") {
+          if (!env.GEMINI_API_KEY) {
+             return jsonResponse({ success: false, message: "GEMINI_API_KEY missing." }, 400);
+          }
+          const { topic, grade } = await request.json();
+          const prompt = `Generate exactly 10 multiple choice questions for a Grade ${grade || '12'} student on the topic: "${topic}". 
+          Return ONLY a JSON array with objects containing: "question", "options" (array of 4 strings), and "answer" (string matching one of the options). 
+          Avoid markdown formatting blocks.`;
+
+          const genAI = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+          const result = await model.generateContent(prompt);
+          const response = await result.response;
+          const text = response.text().replace(/```json/g, "").replace(/```/g, "").trim();
+          const questions = JSON.parse(text);
+          
+          const formatted = questions.map((q, i) => ({
+            id: 2000 + i,
+            question: q.question,
+            options: JSON.stringify(q.options),
+            answer: q.answer
+          }));
+          return jsonResponse({ success: true, questions: formatted });
         }
-        return jsonResponse({ success: true });
-      }
 
-      // LEADERBOARD
-      if (url.pathname === "/api/leaderboard" && request.method === "GET") {
-        if (env.DB) {
+        // --- 6. Quiz Results & Leaderboard ---
+        if (path === "/api/quiz_results" && method === "POST") {
+          const { userId, subject, grade, score, total } = await request.json();
+          await env.DB.prepare("INSERT INTO quiz_results (user_id, subject, grade, score, total) VALUES (?, ?, ?, ?, ?)")
+            .bind(userId, subject, grade, score, total)
+            .run();
+          return jsonResponse({ success: true });
+        }
+
+        if (path === "/api/leaderboard" && method === "GET") {
           const { results } = await env.DB.prepare(`
             SELECT u.name, u.photo, SUM(q.score) as total_score 
             FROM quiz_results q 
@@ -126,21 +170,43 @@ export default {
           `).all();
           return jsonResponse({ success: true, leaderboard: results });
         }
-        return jsonResponse({ success: true, leaderboard: [] });
-      }
 
-      // Handle Clean URLs
-      const assets = ["/auth", "/about", "/contact", "/quiz", "/admin", "/terms", "/privacy", "/profile"];
-      const path = url.pathname;
-      if (assets.includes(path)) {
-        const resourcePath = path + ".html";
-        return env.ASSETS.fetch(new URL(resourcePath + url.search, request.url));
-      }
+        // --- 7. Admin & Teachers ---
+        if (path === "/api/admin/students" && method === "GET") {
+          const { results } = await env.DB.prepare("SELECT id, name, email, phone, grade, schoolName, created_at FROM users ORDER BY created_at DESC").all();
+          return jsonResponse({ success: true, students: results });
+        }
 
-      return env.ASSETS.fetch(request);
-      
-    } catch (err) {
-      return jsonResponse({ success: false, message: err.message }, 500);
+        if (path === "/api/teachers" && method === "GET") {
+          const { results } = await env.DB.prepare("SELECT * FROM teachers").all();
+          return jsonResponse({ success: true, teachers: results });
+        }
+
+        // Health check
+        if (path === "/api/health") {
+          return jsonResponse({ status: "ok", d1: !!env.DB });
+        }
+
+      } catch (e) {
+        return jsonResponse({ success: false, message: e.message }, 500);
+      }
     }
+
+    // --- Static File Routing for Clean URLs ---
+    // Pages environment serves static assets by default if not intercepted.
+    // However, for clean URLs (e.g., /auth), we might need to append .html if the file exists.
+    
+    // Check if the path ends with a file extension
+    const hasExtension = path.includes(".");
+    
+    // If it's a clean URL like /auth or /quiz, try to serve p.html
+    const cleanUrls = ["/auth", "/about", "/contact", "/quiz", "/admin", "/leaderboard", "/profile", "/books", "/terms", "/privacy", "/feedback"];
+    
+    if (!hasExtension && cleanUrls.includes(path)) {
+      return env.ASSETS.fetch(new Request(new URL(path + ".html", request.url), request));
+    }
+
+    // Default: Fallback to Pages static assets
+    return env.ASSETS.fetch(request);
   },
 };

@@ -1,6 +1,7 @@
 // --- Pure Fetch Helper for Gemini API ---
 async function geminiRequest(apiKey, prompt, systemInstruction = "") {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  // Use v1 instead of v1beta and ensure model name is correct
+  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
   const payload = {
     contents: [{ parts: [{ text: prompt }] }]
   };
@@ -15,8 +16,11 @@ async function geminiRequest(apiKey, prompt, systemInstruction = "") {
   });
   
   const data = await response.json();
-  if (data.error) throw new Error(data.error.message);
-  if (!data.candidates || !data.candidates[0]) throw new Error("No response from AI");
+  if (data.error) {
+    console.error("Gemini API Error:", data.error);
+    throw new Error(data.error.message);
+  }
+  if (!data.candidates || !data.candidates[0]) throw new Error("No response from AI candidates");
   return data.candidates[0].content.parts[0].text;
 }
 
@@ -58,13 +62,9 @@ export default {
           const body = await request.json();
           const { name, email, phone, password, gender, age, grade, schoolName, photo } = body;
 
-          if (!email || !password || !name) {
-            return jsonResponse({ success: false, message: "Missing required fields." }, 400);
-          }
-
           const existing = await env.DB.prepare("SELECT id FROM users WHERE email = ?").bind(email).first();
           if (existing) {
-            return jsonResponse({ success: false, message: "Email already registered." }, 400);
+            return jsonResponse({ success: false, message: "Identification already exists." }, 400);
           }
 
           const result = await env.DB.prepare(
@@ -74,12 +74,10 @@ export default {
             .run();
 
           if (result.success) {
-            const user = await env.DB.prepare("SELECT id, name, email, phone, grade, schoolName, photo, is_admin FROM users WHERE email = ?")
-              .bind(email)
-              .first();
+            const user = await env.DB.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
             return jsonResponse({ success: true, user });
           }
-          return jsonResponse({ success: false, message: "Database error during registration." }, 500);
+          return jsonResponse({ success: false, message: "Database refusal." }, 500);
         }
 
         // --- 2. Login ---
@@ -90,68 +88,34 @@ export default {
             .first();
 
           if (user) {
-            return jsonResponse({
-              success: true,
-              user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                grade: user.grade,
-                schoolName: user.schoolName,
-                photo: user.photo,
-                isAdmin: !!user.is_admin,
-              },
-            });
+             return jsonResponse({ success: true, user: { ...user, isAdmin: !!user.is_admin } });
           }
           return jsonResponse({ success: false, message: "Invalid credentials." }, 401);
         }
 
         // --- 3. AI Chat ---
         if (path === "/api/chat" && method === "POST") {
-          if (!env.GEMINI_API_KEY) {
-            return jsonResponse({ success: false, message: "GEMINI_API_KEY missing in environment." }, 400);
-          }
           const { message } = await request.json();
-          const aiText = await geminiRequest(
-            env.GEMINI_API_KEY, 
-            message, 
-            "You are Smart-X Academy AI, a helpful tutor for Ethiopian high school students. Be encouraging, clear, and focused on educational success."
-          );
+          const aiText = await geminiRequest(env.GEMINI_API_KEY, message, "You are Smart-X Academy AI Tutor.");
           return jsonResponse({ success: true, text: aiText });
         }
 
         // --- 4. Quiz Logic ---
         if (path === "/api/quiz" && method === "GET") {
-          const subject = url.searchParams.get("subject") || "Physics";
-          const grade = url.searchParams.get("grade") || "12";
-          const { results } = await env.DB.prepare("SELECT * FROM questions WHERE subject = ? AND grade = ?")
+          const subject = url.searchParams.get("subject");
+          const grade = url.searchParams.get("grade");
+          const { results } = await env.DB.prepare("SELECT * FROM questions WHERE subject = ? AND grade = ? LIMIT 10")
             .bind(subject, grade)
             .all();
-          
-          if (results.length === 0) {
-            return jsonResponse({ 
-              success: true, 
-              questions: [{
-                id: 999, 
-                question: `What is a key concept in grade ${grade} ${subject}?`, 
-                options: JSON.stringify(['Concept A', 'Concept B', 'Concept C', 'Concept D']), 
-                answer: 'Concept A'
-              }]
-            });
-          }
           return jsonResponse({ success: true, questions: results });
         }
 
-        // --- 5. Generate AI Quiz ---
+        // --- 5. AI Quiz Generation ---
         if (path === "/api/generate_ai_quiz" && method === "POST") {
-          if (!env.GEMINI_API_KEY) {
-             return jsonResponse({ success: false, message: "GEMINI_API_KEY missing." }, 400);
-          }
           const { topic, grade } = await request.json();
-          const prompt = `Generate exactly 10 multiple choice questions for a Grade ${grade || '12'} student on the topic: "${topic}". 
-          Return ONLY a JSON array with objects containing: "question", "options" (array of 4 strings), and "answer" (string matching one of the options). 
-          Avoid markdown formatting blocks.`;
+          const prompt = `Create 10 Grade ${grade || '12'} MCQs on "${topic}". 
+          Format as JSON array: [{"question": "...", "options": ["A", "B", "C", "D"], "answer": "correct_option_string"}]. 
+          No markdown blocks. Avoid difficult language.`;
 
           const aiText = await geminiRequest(env.GEMINI_API_KEY, prompt);
           const cleanText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
@@ -166,7 +130,7 @@ export default {
           return jsonResponse({ success: true, questions: formatted });
         }
 
-        // --- 6. Quiz Results & Leaderboard ---
+        // --- 6. Results & Leaderboard ---
         if (path === "/api/quiz_results" && method === "POST") {
           const { userId, subject, grade, score, total } = await request.json();
           await env.DB.prepare("INSERT INTO quiz_results (user_id, subject, grade, score, total) VALUES (?, ?, ?, ?, ?)")
@@ -186,20 +150,9 @@ export default {
           return jsonResponse({ success: true, leaderboard: results });
         }
 
-        // --- 7. Admin & Teachers ---
-        if (path === "/api/admin/students" && method === "GET") {
-          const { results } = await env.DB.prepare("SELECT id, name, email, phone, grade, schoolName, created_at FROM users ORDER BY created_at DESC").all();
-          return jsonResponse({ success: true, students: results });
-        }
-
         if (path === "/api/teachers" && method === "GET") {
           const { results } = await env.DB.prepare("SELECT * FROM teachers").all();
           return jsonResponse({ success: true, teachers: results });
-        }
-
-        // Health check
-        if (path === "/api/health") {
-          return jsonResponse({ status: "ok", d1: !!env.DB });
         }
 
       } catch (e) {
@@ -207,21 +160,14 @@ export default {
       }
     }
 
-    // --- Static File Routing for Clean URLs ---
-    // Pages environment serves static assets by default if not intercepted.
-    // However, for clean URLs (e.g., /auth), we might need to append .html if the file exists.
-    
-    // Check if the path ends with a file extension
-    const hasExtension = path.includes(".");
-    
-    // If it's a clean URL like /auth or /quiz, try to serve p.html
-    const cleanUrls = ["/auth", "/about", "/contact", "/quiz", "/admin", "/leaderboard", "/profile", "/books", "/terms", "/privacy", "/feedback"];
-    
-    if (!hasExtension && cleanUrls.includes(path)) {
-      return env.ASSETS.fetch(new Request(new URL(path + ".html", request.url), request));
+    // --- Elegant Static Asset Routing ---
+    // If it's a clean URL and not an API call, try to append .html
+    if (method === "GET" && !path.includes(".") && path !== "/") {
+      const assetResponse = await env.ASSETS.fetch(new Request(new URL(path + ".html", request.url), request));
+      if (assetResponse.status === 200) return assetResponse;
     }
 
-    // Default: Fallback to Pages static assets
+    // Fallback to default asset serving
     return env.ASSETS.fetch(request);
-  },
+  }
 };

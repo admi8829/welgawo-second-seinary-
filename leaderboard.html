@@ -11,31 +11,57 @@
       .font-display { font-family: 'Outfit', sans-serif; }
     </style>
   </head>
-  <body class="bg-[#f8fafc] min-h-screen">
+  <body class="bg-[#fafafa] min-h-screen text-slate-900 selection:bg-blue-100 selection:text-blue-900">
     
-    <div class="max-w-4xl mx-auto px-6 py-12 space-y-12">
-      <header class="text-center space-y-4">
-        <h1 class="text-5xl font-display font-black text-slate-900 uppercase italic tracking-tight">Hall of <span class="text-blue-600">Fame</span></h1>
-        <p class="text-slate-500 font-bold uppercase tracking-[0.2em] text-xs">Top performing scholars specialized by Smart-X AI</p>
+    <!-- Decorative Accents -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+      <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-400/5 blur-[120px] rounded-full"></div>
+      <div class="absolute top-[60%] -right-[10%] w-[50%] h-[50%] bg-indigo-500/5 blur-[140px] rounded-full"></div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-6 py-20 space-y-20">
+      <header class="text-center space-y-8">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+          Real-time Sync Active
+        </div>
+        <h1 class="text-7xl font-display font-black tracking-tight italic uppercase leading-none">Hall of <span class="text-blue-600">Elite</span></h1>
+        <p class="text-slate-400 font-medium max-w-xl mx-auto text-lg">The absolute highest performing scholars across the Smart-X neural academy network.</p>
       </header>
 
-      <div class="bg-white rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden">
-        <div class="p-8 bg-slate-900 flex items-center justify-between">
-           <div class="flex items-center gap-4">
-             <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black italic text-xl">X</div>
-             <span class="text-white font-black uppercase tracking-widest text-sm">Global Rankings</span>
-           </div>
-           <button onclick="loadLeaderboard()" class="text-blue-400 font-black uppercase tracking-[0.2em] text-[10px] hover:text-white transition-colors">Refresh Sync</button>
-        </div>
+      <div class="relative">
+        <!-- Top 3 Podium (Coming soon or just list) -->
+        <div class="bg-white rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.04)] border border-slate-100 overflow-hidden">
+          <div class="px-10 py-8 bg-slate-900 flex items-center justify-between border-b border-white/5">
+             <div class="flex items-center gap-6">
+               <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center text-white font-black italic text-2xl shadow-xl shadow-blue-500/20">X</div>
+               <div class="space-y-0.5">
+                  <h2 class="text-white font-black uppercase tracking-widest text-xs">Global Leaderboard</h2>
+                  <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Season 01 • Active</p>
+               </div>
+             </div>
+             <button onclick="loadLeaderboard()" class="group flex items-center gap-3 px-6 py-3 bg-white/10 rounded-xl text-white font-black uppercase tracking-widest text-[9px] hover:bg-white/20 transition-all">
+                <svg class="w-4 h-4 group-active:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Sync Nodes
+             </button>
+          </div>
 
-        <div id="leaderboardList" class="divide-y divide-slate-50">
-          <!-- Leaderboard items -->
-          <div class="p-20 text-center text-slate-300 font-black italic uppercase tracking-widest">Initialising Database...</div>
+          <div id="leaderboardList" class="p-4 space-y-2">
+            <!-- Leaderboard items -->
+            <div class="p-32 flex flex-col items-center gap-6">
+               <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+               <span class="text-slate-300 font-black italic uppercase tracking-widest text-sm">Establishing Peer Connection...</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="text-center">
-        <a href="/quiz.html" class="inline-block bg-blue-600 text-white font-black px-10 py-5 rounded-3xl shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all uppercase tracking-widest text-xs">Claim Your Spot</a>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+        <a href="/quiz" class="group relative bg-blue-600 text-white font-black px-12 py-7 rounded-[2.5rem] shadow-2xl shadow-blue-300 hover:scale-105 active:scale-95 transition-all uppercase tracking-widest text-sm flex items-center gap-4">
+          Challenge Academy
+          <svg class="w-5 h-5 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </a>
+        <a href="/" class="text-slate-400 font-black uppercase tracking-[0.3em] text-[10px] hover:text-slate-900 transition-colors">Return to Terminal</a>
       </div>
     </div>
 
@@ -46,40 +72,61 @@
           const res = await fetch('/api/leaderboard');
           const data = await res.json();
           
-          if (data.success && data.leaderboard.length > 0) {
+          if (data.success && data.leaderboard && data.leaderboard.length > 0) {
             container.innerHTML = '';
             data.leaderboard.forEach((user, index) => {
               const rank = index + 1;
-              let rankColor = 'text-slate-400';
-              if (rank === 1) rankColor = 'text-yellow-500';
-              if (rank === 2) rankColor = 'text-slate-500';
-              if (rank === 3) rankColor = 'text-orange-500';
+              let rankStyle = 'bg-slate-50 text-slate-400 border-slate-100';
+              let badge = '';
+              
+              if (rank === 1) {
+                rankStyle = 'bg-yellow-50 text-yellow-600 border-yellow-200';
+                badge = '<div class="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-white"></div>';
+              }
+              if (rank === 2) rankStyle = 'bg-slate-100 text-slate-500 border-slate-200';
+              if (rank === 3) rankStyle = 'bg-orange-50 text-orange-600 border-orange-200';
 
               const item = document.createElement('div');
-              item.className = 'flex items-center gap-6 p-6 hover:bg-slate-50 transition-colors group cursor-default';
+              item.className = 'flex items-center gap-8 px-10 py-6 rounded-3xl hover:bg-slate-50 transition-all group cursor-default';
               item.innerHTML = `
-                <div class="w-12 text-center">
-                  <span class="text-3xl font-display font-black ${rankColor}">#${rank}</span>
+                <div class="w-16 h-16 flex-shrink-0 flex items-center justify-center rounded-2xl border-2 font-display font-black text-2xl italic ${rankStyle}">
+                  ${rank}
                 </div>
-                <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border-2 border-white group-hover:scale-110 transition-all">
-                  <img src="${user.photo || 'https://ui-avatars.com/api/?name=' + user.name + '&background=random'}" class="w-full h-full object-cover">
+                <div class="relative w-20 h-20 flex-shrink-0 rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white group-hover:scale-105 transition-all duration-500">
+                  <img src="${user.photo || 'https://ui-avatars.com/api/?name=' + user.name + '&background=000&color=fff'}" class="w-full h-full object-cover">
+                  ${badge}
                 </div>
-                <div class="flex-1">
-                  <h3 class="text-xl font-display font-black text-slate-800 leading-none">${user.name}</h3>
-                  <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Verified Scholar</p>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-2xl font-display font-black text-slate-800 leading-tight truncate italic uppercase">${user.name}</h3>
+                  <div class="flex items-center gap-3 mt-1.5">
+                    <span class="px-3 py-0.5 bg-blue-50 text-blue-600 rounded-lg text-[9px] font-black uppercase tracking-widest">Master Scholar</span>
+                    <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">D1 Verified</span>
+                  </div>
                 </div>
                 <div class="text-right">
-                  <p class="text-3xl font-display font-black text-blue-600">${user.total_score}</p>
-                  <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Mastery Points</p>
+                  <div class="text-4xl font-display font-black text-blue-600 tracking-tight leading-none">${user.total_score}</div>
+                  <div class="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mt-3">Proficiency Units</div>
                 </div>
               `;
               container.appendChild(item);
             });
           } else {
-            container.innerHTML = '<div class="p-20 text-center text-slate-400 font-bold">No results found in the neural archives.</div>';
+            container.innerHTML = `
+              <div class="p-32 text-center space-y-6">
+                <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto">
+                   <svg class="w-10 h-10 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                </div>
+                <p class="text-slate-300 font-black italic uppercase tracking-widest text-sm">Neural archives are currently empty.</p>
+              </div>
+            `;
           }
         } catch (e) {
-          container.innerHTML = '<div class="p-20 text-center text-red-500 font-bold">Sync Error: Failed to reach D1 Cluster.</div>';
+          container.innerHTML = `
+            <div class="p-32 text-center">
+              <p class="text-red-500 font-black italic uppercase tracking-widest text-sm">D1 Sync Failure: Pipeline Interrupted.</p>
+            </div>
+          `;
         }
       }
 

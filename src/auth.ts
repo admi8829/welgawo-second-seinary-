@@ -127,10 +127,11 @@ if (signUpForm) {
         }, 1500);
       } else {
         alert(data.message);
+        btn.disabled = false;
+        btn.textContent = 'Register';
       }
     } catch (error: any) {
       alert('Registration failed: ' + error.message);
-    } finally {
       btn.disabled = false;
       btn.textContent = 'Register';
     }
@@ -157,13 +158,16 @@ if (signInForm) {
       
       if (data.success) {
         localStorage.setItem('currentUser', JSON.stringify(data.user));
+        btn.textContent = 'Success! Redirecting...';
+        btn.classList.add('bg-green-600', 'hover:bg-green-700');
         window.location.href = '/';
       } else {
         alert(data.message);
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
       }
     } catch (error: any) {
       alert('Sign in failed: ' + error.message);
-    } finally {
       btn.disabled = false;
       btn.textContent = 'Sign In';
     }

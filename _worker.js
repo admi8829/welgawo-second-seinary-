@@ -2,241 +2,145 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // 1. መጀመሪያ API መሆኑን ቼክ እናደርጋለን
-    if (url.pathname === "/api/health") {
-      return new Response(JSON.stringify({ status: "ok", provider: "Cloudflare" }), {
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+    // Helper for JSON responses
+    const jsonResponse = (data, status = 200) => new Response(JSON.stringify(data), {
+      status,
+      headers: { "Content-Type": "application/json" }
+    });
 
-    // 2. ተማሪዎችን ለመመዝገብ (Firebase ስለተጠቀምን ይህ የድሮ D1 ኮድ አያስፈልግም)
-    // ግን ለሪፈረንስ ተውኩት ወይም ሙሉ በሙሉ አጥፋው
-    if (url.pathname === "/api/register" && request.method === "POST") {
-      try {
-        const student = await request.json();
-        
-        // Cloudflare D1 Database code
-        // ማሳሰቢያ፡ env.DB በ Cloudflare dashboard ላይ መጠቃት አለበት
-        if (env.DB) {
-          await env.DB.prepare(
-            "INSERT INTO enrollments (name, email, grade, phone) VALUES (?, ?, ?, ?)"
-          )
-          .bind(student.name, student.email, student.grade, student.phone)
-          .run();
-        }
-
-        return new Response(JSON.stringify({ success: true, message: "በተሳካ ሁኔታ ተመዝግበዋል!" }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
+    try {
+      if (url.pathname === "/api/health") {
+        return jsonResponse({ status: "ok", provider: "Cloudflare" });
       }
-    }
 
-    // 3. Admin Students Fetching
-    if (url.pathname === "/api/admin/students" && request.method === "GET") {
-      try {
-        if (env.DB) {
-          const results = await env.DB.prepare("SELECT * FROM enrollments ORDER BY id DESC").all();
-          return new Response(JSON.stringify({ success: true, students: results.results }), {
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-        return new Response(JSON.stringify({ success: true, students: [] }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // 4. Quiz Data Fetching
-    if (url.pathname === "/api/quiz") {
-      try {
-        if (env.DB) {
-          const results = await env.DB.prepare(
-            "SELECT * FROM questions ORDER BY RANDOM() LIMIT 5"
-          ).all();
-          return new Response(JSON.stringify({ success: true, questions: results.results }), {
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-        
-        // Fallback or Sample for initial setup
-        const sampleQuestions = [
-          {
-            id: 1,
-            question: "Which of the following is a scalar quantity?",
-            options: JSON.stringify(["Velocity", "Force", "Acceleration", "Mass"]),
-            answer: "Mass"
-          },
-          {
-            id: 2,
-            question: "I ____ to the library every Wednesday.",
-            options: JSON.stringify(["go", "goes", "going", "gone"]),
-            answer: "go"
-          }
-        ];
-        return new Response(JSON.stringify({ success: true, questions: sampleQuestions }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // 4. Add Question to Database
-    if (url.pathname === "/api/questions" && request.method === "POST") {
-      try {
-        const q = await request.json();
-        if (env.DB) {
-          await env.DB.prepare(
-            "INSERT INTO questions (question, options, answer, subject) VALUES (?, ?, ?, ?)"
-          )
-          .bind(q.question, q.options, q.answer, q.subject)
-          .run();
-        }
-        return new Response(JSON.stringify({ success: true }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // 5. Submit Student Feedback
-    if (url.pathname === "/api/feedback" && request.method === "POST") {
-      try {
-        const fb = await request.json();
-        if (env.DB) {
-          await env.DB.prepare(
-            "INSERT INTO feedback (student_name, teacher_subject, comment) VALUES (?, ?, ?)"
-          )
-          .bind(fb.student_name, fb.teacher_subject, fb.comment)
-          .run();
-        }
-        return new Response(JSON.stringify({ success: true }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // 6. Fetch Feedback for Admin
-    if (url.pathname === "/api/admin/feedback" && request.method === "GET") {
-      try {
-        if (env.DB) {
-          const results = await env.DB.prepare("SELECT * FROM feedback ORDER BY id DESC").all();
-          return new Response(JSON.stringify({ success: true, feedback: results.results }), {
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-        return new Response(JSON.stringify({ success: true, feedback: [] }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    if (url.pathname === "/api/admin/teacher-comments" && request.method === "GET") {
-      try {
-        if (env.DB) {
-          const results = await env.DB.prepare("SELECT * FROM teacher_feedback ORDER BY id DESC").all();
-          return new Response(JSON.stringify({ success: true, comments: results.results }), {
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-        return new Response(JSON.stringify({ success: true, comments: [] }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // 7. Teacher API
-    if (url.pathname === "/api/teachers" && request.method === "GET") {
-      try {
-        if (env.DB) {
-          const results = await env.DB.prepare("SELECT * FROM teachers").all();
-          return new Response(JSON.stringify({ success: true, teachers: results.results }), {
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), { status: 500 });
-      }
-    }
-
-    if (url.pathname.startsWith("/api/teachers/") && url.pathname.endsWith("/like") && request.method === "POST") {
-      const teacherId = url.pathname.split("/")[3];
-      if (env.DB) {
-        await env.DB.prepare("UPDATE teachers SET likes = likes + 1 WHERE id = ?").bind(teacherId).run();
-      }
-      return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
-    }
-
-    if (url.pathname.startsWith("/api/teachers/") && url.pathname.endsWith("/unlike") && request.method === "POST") {
-      const teacherId = url.pathname.split("/")[3];
-      if (env.DB) {
-        await env.DB.prepare("UPDATE teachers SET unlikes = unlikes + 1 WHERE id = ?").bind(teacherId).run();
-      }
-      return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
-    }
-
-    if (url.pathname.startsWith("/api/teachers/") && url.pathname.endsWith("/comments")) {
-      const teacherId = url.pathname.split("/")[3];
-      if (request.method === "GET") {
-        if (env.DB) {
-          const results = await env.DB.prepare("SELECT * FROM teacher_feedback WHERE teacher_id = ? ORDER BY id DESC").bind(teacherId).all();
-          return new Response(JSON.stringify({ success: true, comments: results.results }), { headers: { "Content-Type": "application/json" } });
-        }
-      }
-      if (request.method === "POST") {
+      // REGISTER
+      if (url.pathname === "/api/register" && request.method === "POST") {
         const body = await request.json();
         if (env.DB) {
-          await env.DB.prepare("INSERT INTO teacher_feedback (teacher_id, student_name, comment) VALUES (?, ?, ?)")
-            .bind(teacherId, body.student_name, body.comment)
-            .run();
+          try {
+            const result = await env.DB.prepare(
+              "INSERT INTO users (name, email, password, gender, age, grade, schoolName, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            ).bind(body.name, body.email, body.password, body.gender, body.age, body.grade, body.schoolName, body.photo || null).run();
+            
+            return jsonResponse({ success: true, user: { id: result.meta.last_row_id, name: body.name, email: body.email, grade: body.grade } });
+          } catch (e) {
+            return jsonResponse({ success: false, message: 'Email already exists or DB error' }, 400);
+          }
         }
-        return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
+        return jsonResponse({ success: false, message: "DB not connected" }, 500);
       }
-    }
 
-    // 8. Handle Clean URLs without loops
-    const assets = ["/auth", "/about", "/contact", "/feedback", "/quiz", "/admin", "/terms", "/privacy", "/profile"];
-    const path = url.pathname;
-    
-    if (assets.includes(path)) {
-      // Serve the .html file directly without redirecting the browser
-      const resourcePath = path + ".html";
-      return env.ASSETS.fetch(new URL(resourcePath + url.search, request.url));
+      // LOGIN
+      if (url.pathname === "/api/login" && request.method === "POST") {
+        const body = await request.json();
+        if (env.DB) {
+          const user = await env.DB.prepare("SELECT * FROM users WHERE email = ? AND password = ?").bind(body.email, body.password).first();
+          if (user) {
+            return jsonResponse({ success: true, user: { id: user.id, name: user.name, email: user.email, grade: user.grade } });
+          }
+          return jsonResponse({ success: false, message: "Invalid email or password" }, 401);
+        }
+        return jsonResponse({ success: false, message: "DB not connected" }, 500);
+      }
+
+      // ADMIN LOGIN
+      if (url.pathname === "/api/admin/login" && request.method === "POST") {
+        const { email, password } = await request.json();
+        if (env.DB) {
+          const user = await env.DB.prepare("SELECT * FROM users WHERE email = ? AND password = ? AND is_admin = 1").bind(email, password).first();
+          if (user) {
+            return jsonResponse({ success: true, admin: { id: user.id, name: user.name, email: user.email } });
+          }
+          return jsonResponse({ success: false, message: "Invalid admin credentials" }, 401);
+        }
+      }
+
+      // ADMIN STUDENTS
+      if (url.pathname === "/api/admin/students" && request.method === "GET") {
+        if (env.DB) {
+          const { results } = await env.DB.prepare("SELECT id, name, email, grade, schoolName, created_at, photo FROM users WHERE is_admin = 0 OR is_admin IS NULL ORDER BY created_at DESC").all();
+          return jsonResponse({ success: true, students: results });
+        }
+        return jsonResponse({ success: true, students: [] });
+      }
+
+      // GENERATE AI QUIZ
+      if (url.pathname === "/api/generate_ai_quiz" && request.method === "POST") {
+        if (!env.GEMINI_API_KEY) {
+          return jsonResponse({ success: false, message: "Gemini API Key is missing. Please set GEMINI_API_KEY in Cloudflare Variable Secrets." }, 400);
+        }
+        const { topic, grade } = await request.json();
+        const prompt = `Generate 3 multiple-choice questions for grade ${grade} high school students about the topic: "${topic}". Respond ONLY in raw valid JSON format as an array of objects. Each object must have "question" (string), "options" (array of 4 strings), and "answer" (string).`;
+        
+        const geminiRes = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + env.GEMINI_API_KEY, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          })
+        });
+        
+        if (!geminiRes.ok) throw new Error("Failed to contact Gemini API");
+        const geminiData = await geminiRes.json();
+        const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+        const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const questions = JSON.parse(cleaned);
+        const formatted = questions.map((q, i) => ({
+          id: 1000 + i,
+          question: q.question,
+          options: typeof q.options === 'string' ? q.options : JSON.stringify(q.options),
+          answer: q.answer
+        }));
+        return jsonResponse({ success: true, questions: formatted });
+      }
+
+      // GET QUIZ
+      if (url.pathname === "/api/quiz" && request.method === "GET") {
+        const subject = url.searchParams.get('subject') || 'Physics';
+        const grade = url.searchParams.get('grade') || '12';
+        if (env.DB) {
+          const { results } = await env.DB.prepare("SELECT * FROM questions WHERE subject = ? AND grade = ? ORDER BY RANDOM() LIMIT 5").bind(subject, grade).all();
+          return jsonResponse({ success: true, questions: results });
+        }
+        return jsonResponse({ success: true, questions: [] });
+      }
+
+      // SUBMIT QUIZ RESULTS
+      if (url.pathname === "/api/quiz_results" && request.method === "POST") {
+        const { userId, subject, grade, score, total } = await request.json();
+        if (env.DB) {
+          await env.DB.prepare("INSERT INTO quiz_results (user_id, subject, grade, score, total) VALUES (?, ?, ?, ?, ?)").bind(userId, subject, grade, score, total).run();
+        }
+        return jsonResponse({ success: true });
+      }
+
+      // LEADERBOARD
+      if (url.pathname === "/api/leaderboard" && request.method === "GET") {
+        if (env.DB) {
+          const { results } = await env.DB.prepare(`
+            SELECT u.name, u.photo, SUM(q.score) as total_score 
+            FROM quiz_results q 
+            JOIN users u ON q.user_id = u.id 
+            GROUP BY u.id 
+            ORDER BY total_score DESC LIMIT 10
+          `).all();
+          return jsonResponse({ success: true, leaderboard: results });
+        }
+        return jsonResponse({ success: true, leaderboard: [] });
+      }
+
+      // Handle Clean URLs
+      const assets = ["/auth", "/about", "/contact", "/quiz", "/admin", "/terms", "/privacy", "/profile"];
+      const path = url.pathname;
+      if (assets.includes(path)) {
+        const resourcePath = path + ".html";
+        return env.ASSETS.fetch(new URL(resourcePath + url.search, request.url));
+      }
+
+      return env.ASSETS.fetch(request);
+      
+    } catch (err) {
+      return jsonResponse({ success: false, message: err.message }, 500);
     }
-    
-    // 9. Default asset delivery
-    return env.ASSETS.fetch(request);
   },
 };
